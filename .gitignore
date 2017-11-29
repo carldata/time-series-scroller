@@ -1,0 +1,5 @@
+# npm and webpack related files folders from test-site folder
+.vscode/
+node_modules/
+dist/
+bundle.js
