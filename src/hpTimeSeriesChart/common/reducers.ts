@@ -9,20 +9,20 @@ import * as collections from 'typescript-collections';
 import { handleActions, Action } from 'redux-actions';
 import { Dispatch } from 'redux';
 import * as fetch from 'isomorphic-fetch';
-import { EnumChartPointsSelectionMode, EnumZoomSelected } from '../models/enums';
+import { EnumChartPointsSelectionMode, EnumZoomSelected } from '../state/enums';
 import { calculations as c } from './calculations';
 import { IEventChartConfiguration } from './interfaces';
-import { IChartZoomSettings } from '../models/chartZoomSettings';
-import { ITimeSeries } from '../models/timeSeries';
-import { IDateTimePoint } from '../models/dateTimePoint';
-import { IChartState } from '../models/chartState';
+import { IChartZoomSettings } from '../state/chartZoomSettings';
+import { ITimeSeries } from '../state/timeSeries';
+import { IDateTimePoint } from '../state/dateTimePoint';
+import { IHpTimeSeriesChartState } from '../state';
 import { csvDataLoadInitialize, csvDataLoadFinalize } from './csvLoading/reducers';
 
 const SAMPLE_VALUE_MAX = 150;
 const SECONDS_PER_SAMPLE = 5;
 
-const buildInitialState = ():IChartState => {
-  let result: IChartState = <IChartState>{
+const buildInitialState = ():IHpTimeSeriesChartState => {
+  let result: IHpTimeSeriesChartState = <IHpTimeSeriesChartState>{
     chartZoomSettings: <IChartZoomSettings>{
       zoomSelected: EnumZoomSelected.NoZoom
     },
@@ -76,9 +76,9 @@ const generateRandomData = (
   windowDateFrom: Date, 
   windowDateTo: Date,
   dateRangeDateFrom: Date,
-  dateRangeDateTo: Date): IChartState => {
+  dateRangeDateTo: Date): IHpTimeSeriesChartState => {
   let points: Array<IDateTimePoint> = randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
-  return <IChartState>{
+  return <IHpTimeSeriesChartState>{
     series: _.concat([], <ITimeSeries>{
       color: "steelblue",
       from: new Date(dateRangeDateFrom.getTime()),
@@ -134,7 +134,7 @@ const setFrameDatesByZoomLevel = (settings: IChartZoomSettings, points: Date[]):
   return settings;
 }
 
-const regenerateRandomData = (state: IChartState, action: Action<Date[]>): IChartState => {
+const regenerateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo] = action.payload;
   return generateRandomData(dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo);
 }
@@ -153,7 +153,7 @@ const setEvents = (series: ITimeSeries, action: Action<collections.Dictionary<nu
   });
 }
 
-const setWindowDateFromTo = (state: IChartState, action: Action<Date[]>): IChartState => {
+const setWindowDateFromTo = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateFrom, dateTo] = action.payload;
   if (dateFns.isBefore(dateFrom, state.dateRangeDateFrom)) {
     console.log(`rejecting - ${dateFrom} is before date range min value ${state.dateRangeDateFrom}`);
@@ -169,19 +169,19 @@ const setWindowDateFromTo = (state: IChartState, action: Action<Date[]>): IChart
   });
 }
 
-const setWindowWidthMinutes = (state: IChartState, action: Action<number>): IChartState => {
+const setWindowWidthMinutes = (state: IHpTimeSeriesChartState, action: Action<number>): IHpTimeSeriesChartState => {
   return _.extend({}, state, {
     dateFromToMinimalWidthMinutes: action.payload
   });
 }
 
-const setChartPointsSelectionMode = (state: IChartState, action: Action<EnumChartPointsSelectionMode>): IChartState => {
+const setChartPointsSelectionMode = (state: IHpTimeSeriesChartState, action: Action<EnumChartPointsSelectionMode>): IHpTimeSeriesChartState => {
   return _.extend({}, state, {
     graphPointsSelectionMode: action.payload
   });
 }
 
-const setZoom = (state: IChartState, action: Action<EnumZoomSelected>): IChartState => {
+const setZoom = (state: IHpTimeSeriesChartState, action: Action<EnumZoomSelected>): IHpTimeSeriesChartState => {
   /**
    * Auxiliary function rebuilding rFactorSampleCache in all the series belonging to state
    */
@@ -195,7 +195,7 @@ const setZoom = (state: IChartState, action: Action<EnumZoomSelected>): IChartSt
     return result;
   }
 
-  let result = <IChartState>{};
+  let result = <IHpTimeSeriesChartState>{};
   let chartZoomSettings = <IChartZoomSettings> _.extend({}, state.chartZoomSettings, {
     zoomSelected: action.payload
   });
@@ -212,12 +212,12 @@ const setZoom = (state: IChartState, action: Action<EnumZoomSelected>): IChartSt
           zoomLevel1FramePointsFrom: new Date(state.windowDateFrom.getTime()),
           zoomLevel1FramePointsTo: new Date(state.windowDateTo.getTime())
         });
-        result = _.extend({}, state, <IChartState>{
+        result = _.extend({}, state, <IHpTimeSeriesChartState>{
           chartZoomSettings: chartZoomSettings,
           series: rebuildSeriesSampleCache(chartZoomSettings)
         });
       } else {
-        result = _.extend({}, state, <IChartState>{
+        result = _.extend({}, state, <IHpTimeSeriesChartState>{
           chartZoomSettings: chartZoomSettings,
           series: rebuildSeriesSampleCache(chartZoomSettings),
           windowDateFrom: new Date(state.windowDateFrom.getTime()),
@@ -242,44 +242,6 @@ const setZoom = (state: IChartState, action: Action<EnumZoomSelected>): IChartSt
   }
   return result;
 }
-
-// Frame scroll not supported for now...
-
-// const scrollToThePreviousFrame = (state: IChartState, action: Action<void>): IChartState => {
-//   let chartZoomSettings = <IChartZoomSettings> _.extend({}, state.chartZoomSettings);
-//   let [frameDateFrom, frameDateTo] = getFrameDatesByZoomLevel(state.chartZoomSettings);
-//   let frameLengthSeconds = dateFns.differenceInSeconds(frameDateTo, frameDateFrom);
-//   let windowLengthSeconds = dateFns.differenceInSeconds(state.windowDateTo.toDate(), state.windowDateFrom.toDate());
-//   let suggestedFrameDateFrom = dateFns.subSeconds(frameDateFrom, frameLengthSeconds);
-//   frameDateFrom = dateFns.isBefore(suggestedFrameDateFrom, state.dateRangeDateFrom.toDate()) ? state.dateRangeDateFrom.toDate() : suggestedFrameDateFrom;
-//   frameDateTo = dateFns.addSeconds(frameDateFrom, frameLengthSeconds);
-//   chartZoomSettings = setFrameDatesByZoomLevel(chartZoomSettings, [frameDateFrom, frameDateTo]);
-//   let result = _.extend({}, state, <IChartState> {
-//     windowDateFrom: moment(dateFns.subSeconds(frameDateTo, windowLengthSeconds)),
-//     windowDateTo: moment(frameDateTo),
-//     rFactorSampleCache: c.rebuildSampleCacheAdjustedToCurrentZoomLevel(state.rFactorSampleCache, chartZoomSettings),
-//     chartZoomSettings: chartZoomSettings
-//   });
-//   return result;
-// }
-
-// const scrollToTheNextFrame = (state: IChartState, action: Action<void>): IChartState => {
-//   let chartZoomSettings = <IChartZoomSettings> _.extend({}, state.chartZoomSettings);
-//   let [frameDateFrom, frameDateTo] = getFrameDatesByZoomLevel(state.chartZoomSettings);
-//   let frameLengthSeconds = dateFns.differenceInSeconds(frameDateTo, frameDateFrom);
-//   let windowLengthSeconds = dateFns.differenceInSeconds(state.windowDateTo.toDate(), state.windowDateFrom.toDate());
-//   let suggestedFrameDateTo = dateFns.addSeconds(frameDateTo, frameLengthSeconds);
-//   frameDateTo = dateFns.isAfter(suggestedFrameDateTo, state.dateRangeDateTo.toDate()) ? state.dateRangeDateTo.toDate() : suggestedFrameDateTo;
-//   frameDateFrom = dateFns.subSeconds(frameDateTo, frameLengthSeconds);
-//   chartZoomSettings = setFrameDatesByZoomLevel(chartZoomSettings, [frameDateFrom, frameDateTo]);
-//   let result = _.extend({}, state, <IChartState> {
-//     windowDateFrom: moment(frameDateFrom),
-//     windowDateTo: moment(dateFns.addSeconds(frameDateFrom, windowLengthSeconds)),
-//     rFactorSampleCache: c.rebuildSampleCacheAdjustedToCurrentZoomLevel(state.rFactorSampleCache, chartZoomSettings),
-//     chartZoomSettings: chartZoomSettings
-//   });
-//   return result;
-// }
 
 export const reducers = {
   buildInitialState,

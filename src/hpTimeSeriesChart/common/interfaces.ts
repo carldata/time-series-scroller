@@ -1,5 +1,5 @@
-import { IDateTimePoint } from '../models/dateTimePoint';
-import { EnumZoomSelected } from '../models/enums';
+import { IDateTimePoint } from '../state/dateTimePoint';
+import { EnumZoomSelected } from '../state/enums';
 
 export interface IZoomCacheElementDescription {
   rFactorMin: number, 

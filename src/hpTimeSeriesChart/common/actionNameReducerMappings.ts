@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { chartActionNames } from './actions';
+import { chartActionTypes } from './action-creators';
 import { reducers } from './reducers';
 
 interface IActionNameReducerMapping {
@@ -9,31 +9,31 @@ interface IActionNameReducerMapping {
 
 let mappings: Array<IActionNameReducerMapping> = [
   <IActionNameReducerMapping>{
-    name: chartActionNames.CSV_DATA_LOAD_INITIALIZE,
+    name: chartActionTypes.CSV_DATA_LOAD_INITIALIZE,
     action: reducers.csvDataLoadInitialize
   },
   <IActionNameReducerMapping>{
-    name: chartActionNames.CSV_DATA_LOAD_FINALIZE,
+    name: chartActionTypes.CSV_DATA_LOAD_FINALIZE,
     action: reducers.csvDataLoadFinalize
   },
   <IActionNameReducerMapping>{
-    name: chartActionNames.REGENERATE_RANDOM_DATA,
+    name: chartActionTypes.REGENERATE_RANDOM_DATA,
     action: reducers.regenerateRandomData
   },
   <IActionNameReducerMapping>{
-    name: chartActionNames.SET_CHART_POINTS_SELECTION_MODE,
+    name: chartActionTypes.SET_CHART_POINTS_SELECTION_MODE,
     action: reducers.setChartPointsSelectionMode
   },
   <IActionNameReducerMapping>{
-    name: chartActionNames.SET_WINDOW_DATE_FROM_TO,
+    name: chartActionTypes.SET_WINDOW_DATE_FROM_TO,
     action: reducers.setWindowDateFromTo
   },
   <IActionNameReducerMapping>{
-    name: chartActionNames.SET_WINDOW_WIDTH_MINUTES,
+    name: chartActionTypes.SET_WINDOW_WIDTH_MINUTES,
     action: reducers.setWindowWidthMinutes
   },
   <IActionNameReducerMapping>{
-    name: chartActionNames.SET_ZOOM,
+    name: chartActionTypes.SET_ZOOM,
     action: reducers.setZoom
   },
   // Frame scroll not supported for now...

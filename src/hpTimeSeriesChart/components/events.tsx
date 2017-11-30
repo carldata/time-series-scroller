@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { DateTimeAxis } from './dateTimeAxis';
 import { IChartDimensions, IEventChartConfiguration } from '../common/interfaces';
-import { IDateTimePoint } from '../models/dateTimePoint';
+import { IDateTimePoint } from '../state/dateTimePoint';
 
 export interface IEventsProps {
   /**

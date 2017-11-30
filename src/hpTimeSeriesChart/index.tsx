@@ -1,18 +1,18 @@
 import * as React from 'react';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
-import { IChartState } from './models/chartState';
+import { IHpTimeSeriesChartState } from './state';
 import { calculations } from './common/calculations';
 import { IChartDimensions, IEventChartConfiguration, IChartTimeSeries } from './common/interfaces';
-import { IDateTimePoint } from './models/dateTimePoint';
-import { IChartZoomSettings } from './models/chartZoomSettings';
+import { IDateTimePoint } from './state/dateTimePoint';
+import { IChartZoomSettings } from './state/chartZoomSettings';
 import { TimeSeries } from './components/timeSeries';
 import { DateTimeAxis } from './components/dateTimeAxis';
 import { ValueAxis } from './components/valueAxis';
 import { Events } from './components/events';
 
 export interface IHpTimeSeriesChartProps {
-  state: IChartState;
+  state: IHpTimeSeriesChartState;
   chartDimensions: IChartDimensions;
   /**
    * If set, chart will display events on the bottom of the screeen (in spectrogram chart)
