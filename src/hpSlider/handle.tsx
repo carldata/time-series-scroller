@@ -43,12 +43,12 @@ export class HpSliderHandle extends React.Component<IHpSliderHandleProps, IHpSli
     };
   }
 
-  componentDidMount = () => {
+  public componentDidMount() {
     window.addEventListener('mouseup', this.globalMouseUp, false);
     window.addEventListener('mousemove', this.globalMouseMove, false);
   }
 
-  componentWillUnmount = () => {    
+  public componentWillUnmount() {
     window.removeEventListener('mouseup', this.globalMouseUp);
     window.removeEventListener('mousemove', this.globalMouseMove);
   }

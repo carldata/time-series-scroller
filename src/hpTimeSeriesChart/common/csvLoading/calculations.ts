@@ -61,10 +61,7 @@ const extractDateTimePointsOutOfCsvFileContents = (response: ICsvDataLoadedActio
 const estimateSecondsPerSample = (array: IDateTimePoint[]): number => {
   if (array.length <= 1)
     return 1;
-  let firstSample = array[0].time;
-  let lastSample = array[array.length-1].time;
-  let result = lastSample.clone().diff(firstSample, "seconds") / (array.length-1);
-  return result;
+  return dateFns.differenceInSeconds(_.last(array).date, _.first(array).date) / (array.length-1);
 }
 
 export const calculations = {

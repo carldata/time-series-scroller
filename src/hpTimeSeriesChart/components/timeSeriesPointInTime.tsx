@@ -18,7 +18,7 @@ export interface TimeSeriesPointInTimeProps {
   stoppedDragging: Function;
 }
 
-export class TimeSeriesPointInTime extends React.Component<TimeSeriesPointInTimeProps, void> {
+export class TimeSeriesPointInTime extends React.Component<TimeSeriesPointInTimeProps> {
   render() {
     var circleProps = {
       cx: this.props.cx,

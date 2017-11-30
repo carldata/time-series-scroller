@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import * as moment from 'moment';
 import * as d3 from 'd3';
 import { IChartDimensions } from '../common/interfaces';
 import { EnumChartPointsSelectionMode } from '../models/enums';

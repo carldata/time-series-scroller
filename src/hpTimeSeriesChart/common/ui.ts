@@ -1,5 +1,5 @@
-import * as moment from 'Moment';
 import * as _ from 'lodash';
+import * as dateFns from 'date-fns';
 import { IZoomCacheElementDescription, IPluginFunctions } from './interfaces';
 import { EnumZoomSelected } from '../models/enums';
 import { IChartState } from '../models/chartState';
@@ -24,18 +24,18 @@ const preDefinedPeriodDescriptions = [
 
 export const getZoomLevelButtonCaption = (buttonZoomLevel: EnumZoomSelected, state: IChartState): string => {
   let result = "";
-  let windowDifferenceHours = state.windowDateTo.clone().diff(state.windowDateFrom, "hours");
+  let windowDifferenceHours = dateFns.differenceInHours(state.windowDateTo, state.windowDateFrom);
   let windowPreDefinedPeriodDescription: ITimePeriod = _.find(preDefinedPeriodDescriptions, el => windowDifferenceHours >= el.minimalHours && windowDifferenceHours < el.maximalHours);
   
   let zoomLevelDifferenceHours = 0;
   let zoomLevelPeriodDescription: ITimePeriod = null;
   switch (state.chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.ZoomLevel1:
-      zoomLevelDifferenceHours = state.chartZoomSettings.zoomLevel1FramePointsTo.clone().diff(state.chartZoomSettings.zoomLevel1FramePointsFrom, "hours");
+      zoomLevelDifferenceHours = dateFns.differenceInHours(state.chartZoomSettings.zoomLevel1FramePointsTo, state.chartZoomSettings.zoomLevel1FramePointsFrom);
       zoomLevelPeriodDescription = _.find(preDefinedPeriodDescriptions, el => zoomLevelDifferenceHours >= el.minimalHours && zoomLevelDifferenceHours < el.maximalHours);
       break;
     case EnumZoomSelected.ZoomLevel2:
-      zoomLevelDifferenceHours = state.chartZoomSettings.zoomLevel2FramePointsTo.clone().diff(state.chartZoomSettings.zoomLevel2FramePointsFrom, "hours");
+      zoomLevelDifferenceHours = dateFns.differenceInHours(state.chartZoomSettings.zoomLevel2FramePointsTo, state.chartZoomSettings.zoomLevel2FramePointsFrom);
       zoomLevelPeriodDescription = _.find(preDefinedPeriodDescriptions, el => zoomLevelDifferenceHours >= el.minimalHours && zoomLevelDifferenceHours < el.maximalHours);
       break;
   }

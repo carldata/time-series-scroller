@@ -7,7 +7,6 @@ import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import * as collections from 'typescript-collections';
 import { handleActions, Action } from 'redux-actions';
-import { Promise } from 'es6-promise';
 import { Dispatch } from 'redux';
 import * as fetch from 'isomorphic-fetch';
 import { EnumChartPointsSelectionMode, EnumZoomSelected } from '../models/enums';
@@ -28,12 +27,12 @@ const buildInitialState = ():IChartState => {
       zoomSelected: EnumZoomSelected.NoZoom
     },
     series: [],
-    dateRangeDateFrom: moment(),
-    dateRangeDateTo: moment(),
+    dateRangeDateFrom: new Date(),
+    dateRangeDateTo: new Date(),
     graphPointsSelectionMode: EnumChartPointsSelectionMode.NoSelection,
     isDataLoading: false,
-    windowDateFrom: moment(),
-    windowDateTo: moment(),
+    windowDateFrom: new Date(),
+    windowDateTo: new Date(),
     yMinValue: 0,
     yMaxValue: 0
   };
@@ -41,20 +40,20 @@ const buildInitialState = ():IChartState => {
   return result;
 }
 
-const randomDateTimePoints = (dateRangeDateFrom: moment.Moment, dateRangeDateTo: moment.Moment): IDateTimePoint[] => {
-  let referenceDate = dateRangeDateFrom.clone();  
+const randomDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IDateTimePoint[] => {
+  let referenceDate = new Date(dateRangeDateFrom.getTime());
   let result = [];
   let currentValue = _.random(50, 100);
   let iterationIndex = 0;
-  while (referenceDate.isBefore(dateRangeDateTo)) {
+  while (dateFns.isBefore(referenceDate, dateRangeDateTo)) {
     result.push(<IDateTimePoint>{ 
-      date: referenceDate.clone(), 
-      unix: referenceDate.unix(), 
+      date: new Date(referenceDate.getTime()), 
+      unix: referenceDate.getTime(), 
       value: currentValue, 
       envelopeValueMax: currentValue, 
       envelopeValueMin: currentValue 
     });
-    referenceDate.add(SECONDS_PER_SAMPLE, "second");
+    referenceDate = dateFns.addSeconds(referenceDate, SECONDS_PER_SAMPLE);
     let chanceForChangeIndexValue = _.random(0, 100);
     if (_.inRange(chanceForChangeIndexValue, 0, 10)) {
       currentValue += 40 - _.random(0, 80);
@@ -64,7 +63,7 @@ const randomDateTimePoints = (dateRangeDateFrom: moment.Moment, dateRangeDateTo:
     }
     iterationIndex++;
     if (iterationIndex % 50000 == 0) {
-      console.log(`Generated for ${referenceDate.format("YYYY-MM-DD HH:mm")}`);
+      console.log(`Generated for ${dateFns.format(referenceDate, "YYYY-MM-DD HH:mm")}`);
     }
   }
   return result;
@@ -73,16 +72,17 @@ const randomDateTimePoints = (dateRangeDateFrom: moment.Moment, dateRangeDateTo:
 /**
  * Builds (initial) chart state with several outer settings
  */
-const generateRandomData = (windowDateFrom: moment.Moment, 
-  windowDateTo: moment.Moment,
-  dateRangeDateFrom: moment.Moment,
-  dateRangeDateTo: moment.Moment): IChartState => {
+const generateRandomData = (
+  windowDateFrom: Date, 
+  windowDateTo: Date,
+  dateRangeDateFrom: Date,
+  dateRangeDateTo: Date): IChartState => {
   let points: Array<IDateTimePoint> = randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
   return <IChartState>{
     series: _.concat([], <ITimeSeries>{
       color: "steelblue",
-      from: dateRangeDateFrom.clone(),
-      to: dateRangeDateTo.clone(),
+      from: new Date(dateRangeDateFrom.getTime()),
+      to: new Date(dateRangeDateTo.getTime()),
       name: "random series",
       points: points,
       rFactorSampleCache: c.createResampledPointsCache(points),
@@ -99,8 +99,8 @@ const generateRandomData = (windowDateFrom: moment.Moment,
     },
     yMinValue: _.min(_.map(points, el => el.value)),
     yMaxValue: _.max(_.map(points, el => el.value)),
-    windowDateFrom: windowDateFrom.clone(),
-    windowDateTo: windowDateTo.clone(),
+    windowDateFrom: new Date(windowDateFrom.getTime()),
+    windowDateTo: new Date(windowDateTo.getTime()),
     graphPointsSelectionMode: EnumChartPointsSelectionMode.NoSelection,
   }
 }
@@ -113,9 +113,9 @@ const cameToThisZoomLevelByZoomingIn = (currentMode: EnumZoomSelected, newMode: 
 const getFrameDatesByZoomLevel = (settings: IChartZoomSettings): Date[] => {
   switch (settings.zoomSelected) {
     case EnumZoomSelected.ZoomLevel1:
-      return [settings.zoomLevel1FramePointsFrom.toDate(), settings.zoomLevel1FramePointsTo.toDate()];
+      return [new Date(settings.zoomLevel1FramePointsFrom.getTime()), new Date(settings.zoomLevel1FramePointsTo.getTime())];
     case EnumZoomSelected.ZoomLevel2:
-      return [settings.zoomLevel2FramePointsFrom.toDate(), settings.zoomLevel2FramePointsTo.toDate()];
+      return [new Date(settings.zoomLevel2FramePointsFrom.getTime()), new Date(settings.zoomLevel2FramePointsTo.getTime())];
   }
 }
 
@@ -123,18 +123,18 @@ const setFrameDatesByZoomLevel = (settings: IChartZoomSettings, points: Date[]):
   let [pointFrom, pointTo] = points;
   switch (settings.zoomSelected) {
     case EnumZoomSelected.ZoomLevel1:
-      settings.zoomLevel1FramePointsFrom = moment(pointFrom);
-      settings.zoomLevel1FramePointsTo = moment(pointTo);
+      settings.zoomLevel1FramePointsFrom = new Date(pointFrom.getTime());
+      settings.zoomLevel1FramePointsTo = new Date(pointTo.getTime());
       break; 
     case EnumZoomSelected.ZoomLevel2:
-      settings.zoomLevel2FramePointsFrom = moment(pointFrom);
-      settings.zoomLevel2FramePointsTo = moment(pointTo);
+      settings.zoomLevel2FramePointsFrom = new Date(pointFrom.getTime());
+      settings.zoomLevel2FramePointsTo = new Date(pointTo.getTime());
       break;
   }
   return settings;
 }
 
-const regenerateRandomData = (state: IChartState, action: Action<moment.Moment[]>): IChartState => {
+const regenerateRandomData = (state: IChartState, action: Action<Date[]>): IChartState => {
   let [dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo] = action.payload;
   return generateRandomData(dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo);
 }
@@ -153,19 +153,19 @@ const setEvents = (series: ITimeSeries, action: Action<collections.Dictionary<nu
   });
 }
 
-const setWindowDateFromTo = (state: IChartState, action: Action<moment.Moment[]>): IChartState => {
+const setWindowDateFromTo = (state: IChartState, action: Action<Date[]>): IChartState => {
   let [dateFrom, dateTo] = action.payload;
-  if (dateFrom.isBefore(state.dateRangeDateFrom)) {
-    console.log(`rejecting - ${dateFrom.toDate()} is before date range min value ${state.dateRangeDateFrom.toDate()}`);
+  if (dateFns.isBefore(dateFrom, state.dateRangeDateFrom)) {
+    console.log(`rejecting - ${dateFrom} is before date range min value ${state.dateRangeDateFrom}`);
     return state;
   }
-  if (dateTo.isAfter(state.dateRangeDateTo)) {
-    console.log(`rejecting - ${dateTo.toDate()} is after date range max value ${state.dateRangeDateTo.toDate()}`);
+  if (dateFns.isAfter(dateTo, state.dateRangeDateTo)) {
+    console.log(`rejecting - ${dateTo} is after date range max value ${state.dateRangeDateTo}`);
     return state;
   }
   return _.extend({}, state, {
-    windowDateFrom: dateFrom.clone(),
-    windowDateTo: dateTo.clone()
+    windowDateFrom: new Date(dateFrom.getTime()),
+    windowDateTo: new Date(dateTo.getTime())
   });
 }
 
@@ -203,14 +203,14 @@ const setZoom = (state: IChartState, action: Action<EnumZoomSelected>): IChartSt
     case EnumZoomSelected.NoZoom:
       result = _.extend({}, state, {
         chartZoomSettings: chartZoomSettings,
-        dateFromToMinimalWidthMinutes: state.windowDateTo.clone().diff(state.windowDateFrom, "minute")
+        dateFromToMinimalWidthMinutes: dateFns.differenceInMinutes(state.windowDateTo, state.windowDateFrom)
       });
       break;
     case EnumZoomSelected.ZoomLevel1:
       if (cameToThisZoomLevelByZoomingIn(state.chartZoomSettings.zoomSelected, action.payload)) {
         chartZoomSettings = _.extend({}, chartZoomSettings, <IChartZoomSettings>{
-          zoomLevel1FramePointsFrom: state.windowDateFrom.clone(),
-          zoomLevel1FramePointsTo: state.windowDateTo.clone()
+          zoomLevel1FramePointsFrom: new Date(state.windowDateFrom.getTime()),
+          zoomLevel1FramePointsTo: new Date(state.windowDateTo.getTime())
         });
         result = _.extend({}, state, <IChartState>{
           chartZoomSettings: chartZoomSettings,
@@ -220,16 +220,16 @@ const setZoom = (state: IChartState, action: Action<EnumZoomSelected>): IChartSt
         result = _.extend({}, state, <IChartState>{
           chartZoomSettings: chartZoomSettings,
           series: rebuildSeriesSampleCache(chartZoomSettings),
-          windowDateFrom: state.windowDateFrom.clone(),
-          windowDateTo: state.windowDateTo.clone()
+          windowDateFrom: new Date(state.windowDateFrom.getTime()),
+          windowDateTo: new Date(state.windowDateTo.getTime())
         });
       }
       break;
     case EnumZoomSelected.ZoomLevel2:
       if (cameToThisZoomLevelByZoomingIn(state.chartZoomSettings.zoomSelected, action.payload)) {
         chartZoomSettings = _.extend({}, chartZoomSettings, <IChartZoomSettings>{
-          zoomLevel2FramePointsFrom: state.windowDateFrom.clone(),
-          zoomLevel2FramePointsTo: state.windowDateTo.clone()
+          zoomLevel2FramePointsFrom: new Date(state.windowDateFrom.getTime()),
+          zoomLevel2FramePointsTo: new Date(state.windowDateTo.getTime())
         });
         result = _.extend({}, state, {
           chartZoomSettings: chartZoomSettings,

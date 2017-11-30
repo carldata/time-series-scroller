@@ -26,7 +26,7 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
    */  
   let getXScale = () => {
     return d3.scaleTime()
-      .domain([props.state.windowDateFrom.toDate(), props.state.windowDateTo.toDate()])
+      .domain([props.state.windowDateFrom, props.state.windowDateTo])
       .range([props.chartDimensions.timeSeriesChartPaddingLeft, 
         props.chartDimensions.canvasWidth - props.chartDimensions.timeSeriesChartPaddingLeft - props.chartDimensions.timeSeriesChartPaddingRight]);
   };

@@ -57,8 +57,8 @@ export const csvDataLoadFinalize = (state: IChartState, action: Action<ICsvDataL
   chartState.yMaxValue = _.min(_.map(chartState.series, el => el.yMaxValue));
   
   if (action.payload.config.source == EnumCsvFileSource.LocalFileSystem) {
-    chartState.windowDateFrom = chartState.dateRangeDateFrom.clone(),
-    chartState.windowDateTo = chartState.dateRangeDateTo.clone() 
+    chartState.windowDateFrom = new Date(chartState.dateRangeDateFrom.getTime()),
+    chartState.windowDateTo = new Date(chartState.dateRangeDateTo.getTime()) 
   }
 
   return [chartState, timeSeries];

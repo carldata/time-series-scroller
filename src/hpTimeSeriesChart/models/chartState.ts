@@ -1,4 +1,3 @@
-import { Moment } from 'moment';
 import { IDateTimePoint } from './dateTimePoint';
 import { ITimeSeries } from './timeSeries';
 import { IDateTimePointSeriesCache } from './dateTimePointSeriesCache';
@@ -11,20 +10,20 @@ export interface IChartState {
   /**
    * In the scrolling chart - the moment of time user sees on X-axis coordinate equal 0
    */
-  windowDateFrom: Moment,
+  windowDateFrom: Date,
   /**
    * In the scrolling chart - the moment of time user sees on X-axis coordinate equal to max/full canvas width
    */
-  windowDateTo: Moment,
+  windowDateTo: Date,
 
   /**
    * The minimal date we can find in all the series of chart
    */
-  dateRangeDateFrom: Moment;
+  dateRangeDateFrom: Date;
   /**
    * The maximal date we can find in all the series of chart
    */
-  dateRangeDateTo: Moment;
+  dateRangeDateTo: Date;
 
   /**
    * Minimum y-value we can find in all the series of chart

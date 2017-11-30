@@ -1,5 +1,5 @@
-import * as moment from 'Moment';
 import * as _ from 'lodash';
+import * as dateFns from 'date-fns';
 import { IChartTimeSeries, IZoomCacheElementDescription, IPluginFunctions } from './interfaces';
 import { IDateTimePointSeriesCache } from '../models/dateTimePointSeriesCache';
 import { ITimeSeries } from '../models/timeSeries';
@@ -26,8 +26,8 @@ const pluginFunctions = {
       detectedEventInResampleFactorChunk = data[i].event || detectedEventInResampleFactorChunk;
       if (i % rFactor == 0) {
         result.push(<IDateTimePoint>{
-          date: data[i].date.clone(),
-          unix: data[i].date.unix(),
+          date: new Date(data[i].date.getTime()),
+          unix: data[i].date.getTime(),
           value: _.sum(resampledTemporaryCache)/ rFactor,
           envelopeValueMin: _.min(resampledTemporaryCache),
           envelopeValueMax: _.max(resampledTemporaryCache),
@@ -68,9 +68,8 @@ const getHorizontalSampleDistancePx = (series: any[], widthPx: number) => {
  * 
  * rawDataSecondsPerSample holds declared density in the RAW data sample array
  */
-const resampleFactor = (rawDataSecondsPerSample: number, widthPx: number, momentFrom: moment.Moment, momentTo: moment.Moment) => {
-  let numberOfSecondsInDateRange = momentTo.diff(momentFrom, "second");
-  let rawDataNumberOfSamplesInDateRange = numberOfSecondsInDateRange / rawDataSecondsPerSample;
+const resampleFactor = (rawDataSecondsPerSample: number, widthPx: number, dateFrom: Date, dateTo: Date) => {
+  let rawDataNumberOfSamplesInDateRange = dateFns.differenceInSeconds(dateTo, dateFrom) / rawDataSecondsPerSample;
   let samplesPerPixel = rawDataNumberOfSamplesInDateRange / widthPx;
   return samplesPerPixel < 1 ? 1 : _.ceil(samplesPerPixel);
 }
@@ -131,7 +130,7 @@ const createResampledPointsCache = (allSamples: IDateTimePoint[]): IDateTimePoin
  * That Selection is based on rFactor (resample factor), after a proper cache is chosen, samples are filtered by date from / to range.
  * Function important in regards to performance aspect.
  */
-const getFilteredChartTimeSeries = (series: ITimeSeries, from: moment.Moment, to: moment.Moment, chartZoomSettings: IChartZoomSettings, canvasWidthPx: number): IChartTimeSeries => {  
+const getFilteredChartTimeSeries = (series: ITimeSeries, from: Date, to: Date, chartZoomSettings: IChartZoomSettings, canvasWidthPx: number): IChartTimeSeries => {  
   let result: IChartTimeSeries = {
     name: series.name,
     points: new Array<IDateTimePoint>(), //keep in mind array might represent resampled, not the exact samples read
@@ -139,9 +138,9 @@ const getFilteredChartTimeSeries = (series: ITimeSeries, from: moment.Moment, to
     color: series.color,
     horizontalSampleDistancePx: 1
   };
-  let unixFrom = from.unix();
-  let unixTo = to.unix();
-  let rFactorExact = resampleFactor(series.secondsPerSample, canvasWidthPx, from.clone(), to.clone());
+  let unixFrom = from.getTime();
+  let unixTo = to.getTime();
+  let rFactorExact = resampleFactor(series.secondsPerSample, canvasWidthPx, new Date(from.getTime()), new Date(to.getTime()));
   result.rFactor = resampleFactorApproximation(rFactorExact);
   let rFactorCacheElement = _.find(series.rFactorSampleCache, el => el.rFactor == result.rFactor);
   if (series.applyResampling && _.isObject(rFactorCacheElement)) {
@@ -168,12 +167,12 @@ const getUnixTimeStampLimitationsFromTo = (chartZoomSettings: IChartZoomSettings
   let result = { unixFrom: 0, unixTo: 0 };
   switch (chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.ZoomLevel1:
-      result.unixFrom = chartZoomSettings.zoomLevel1FramePointsFrom.unix();
-      result.unixTo = chartZoomSettings.zoomLevel1FramePointsTo.unix();
+      result.unixFrom = chartZoomSettings.zoomLevel1FramePointsFrom.getTime();
+      result.unixTo = chartZoomSettings.zoomLevel1FramePointsTo.getTime();
       break;
     case EnumZoomSelected.ZoomLevel2:
-      result.unixFrom = chartZoomSettings.zoomLevel2FramePointsFrom.unix();
-      result.unixTo = chartZoomSettings.zoomLevel2FramePointsTo.unix();
+      result.unixFrom = chartZoomSettings.zoomLevel2FramePointsFrom.getTime();
+      result.unixTo = chartZoomSettings.zoomLevel2FramePointsTo.getTime();
       break;
   }
   return result;
@@ -183,17 +182,17 @@ const getUnixTimeStampLimitationsFromTo = (chartZoomSettings: IChartZoomSettings
  * Calculates the difference - in minutes - between the datetime 
  * of the last point visible in window and the first point available in window
  */
-const translateDateTimeToMinutesDomain = (state: IChartState, dateTime: moment.Moment): number => {
+const translateDateTimeToMinutesDomain = (state: IChartState, date: Date): number => {
   var result: number;
   switch (state.chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.NoZoom:
-      result = dateTime.diff(state.dateRangeDateFrom.clone(), "minutes");
+      result = dateFns.differenceInMinutes(date, state.dateRangeDateFrom);
       break;
     case EnumZoomSelected.ZoomLevel1:
-      result = dateTime.diff(state.chartZoomSettings.zoomLevel1FramePointsFrom.clone(), "minutes");
+      result = dateFns.differenceInMinutes(date, state.chartZoomSettings.zoomLevel1FramePointsFrom);
       break;
     case EnumZoomSelected.ZoomLevel2:
-      result = dateTime.diff(state.chartZoomSettings.zoomLevel2FramePointsFrom.clone(), "minutes");
+      result = dateFns.differenceInMinutes(date, state.chartZoomSettings.zoomLevel2FramePointsFrom);
       break;
   }
   return result;
@@ -215,17 +214,16 @@ const calculateDomainLengthMinutes = (state: IChartState): number => {
   return result;
 }
 
-const translateMinutesDomainToDateTime = (state: IChartState, minutes: number): moment.Moment => {
-  var result: moment.Moment;
+const translateMinutesDomainToDateTime = (state: IChartState, minutes: number): Date => {
+  var result: Date;
   switch (state.chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.NoZoom:
-      result = state.dateRangeDateFrom.clone().add(minutes, "minutes");
+      result = dateFns.addMinutes(state.dateRangeDateFrom, minutes)
       break;
     case EnumZoomSelected.ZoomLevel1:
-      result = state.chartZoomSettings.zoomLevel1FramePointsFrom.clone().add(minutes, "minutes");
       break;
     case EnumZoomSelected.ZoomLevel2:
-      result = state.chartZoomSettings.zoomLevel2FramePointsFrom.clone().add(minutes, "minutes");
+      result = dateFns.addMinutes(state.chartZoomSettings.zoomLevel2FramePointsFrom, minutes)
       break;
   }
   return result;

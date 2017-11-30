@@ -1,4 +1,3 @@
-import { Moment } from 'Moment';
 import { IDateTimePoint } from '../models/dateTimePoint';
 import { EnumZoomSelected } from '../models/enums';
 

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import * as moment from 'moment';
 import * as d3 from 'd3';
 import { TimeSeriesPointInTime } from './timeSeriesPointInTime';
 import { EnumChartPointsSelectionMode } from '../models/enums';
@@ -129,39 +128,6 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
         });
       }}
       toggleSelected={(unix) => {
-        // selecting points not supported for now !
-        //switch (this.props.graphPointsSelectionMode) {
-        //  case EnumChartPointsSelectionMode.SelectUnselectSingle:
-        //    if (this.elementMarkedByUnixTimeStapmIsOnSelectedList(unix))
-        //      this.setState((prevState) => {
-        //        return {
-        //          selectedPoints: _.filter(prevState.selectedPoints, (point: IDateTimePoint) => point.unix != unix),
-        //          draggedPointTextGauge: prevState.draggedPointTextGauge
-        //        }
-        //      });
-        //    else
-        //      this.setState((prevState) => { 
-        //        return {
-        //          selectedPoints: _.concat(prevState.selectedPoints, [el]),
-        //          draggedPointTextGauge: prevState.draggedPointTextGauge
-        //        }
-        //      });
-        //    break;
-        //  case EnumChartPointsSelectionMode.SelectMultiple:
-        //    if (!this.elementMarkedByUnixTimeStapmIsOnSelectedList(unix))
-        //      this.setState({
-        //        selectedPoints: _.concat(this.state.selectedPoints, [el]),
-        //        draggedPointTextGauge: this.state.draggedPointTextGauge
-        //      });
-        //    break;
-        //  case EnumChartPointsSelectionMode.UnselectMultiple:
-        //    if (this.elementMarkedByUnixTimeStapmIsOnSelectedList(unix))
-        //      this.setState({ 
-        //        selectedPoints: _.filter(this.state.selectedPoints, (point: IDateTimePoint) => point.unix != unix),
-        //        draggedPointTextGauge: this.state.draggedPointTextGauge
-        //      });
-        //    break;
-        //}
       }}
       graphPointsSelectionMode={this.props.graphPointsSelectionMode}
     />

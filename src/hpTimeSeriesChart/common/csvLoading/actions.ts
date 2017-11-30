@@ -1,6 +1,5 @@
 import { createAction } from 'redux-actions';
 import { Dispatch } from 'redux';
-import { Promise } from 'es6-promise';
 import { ICsvRawParseConfiguration, ICsvDataLoadedActionResponse } from './models';
 
 export const actionNames = {

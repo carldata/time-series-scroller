@@ -1,11 +1,10 @@
 /**
  * Declares reusable actions that can be used by screen using this component  
  */
-import * as moment from 'moment';
 import * as _ from 'lodash';
+import * as dateFns from 'date-fns';
 import { createAction } from 'redux-actions';
 import { Dispatch } from 'redux';
-import { Promise } from 'es6-promise';
 import * as collections from 'typescript-collections';
 import { EnumChartPointsSelectionMode, EnumZoomSelected } from '../models/enums';
 import { actionNames as csvLoadingActionNames, csvDataLoadInitialize, csvDataLoadFinalize } from './csvLoading/actions';
@@ -31,9 +30,9 @@ export const chartActionNames = {
  * (the returned type is the FIRST generic type parameter).
  */
 export const chartActions = {
-  regenerateRandomData: createAction<moment.Moment[], moment.Moment[]>(
+  regenerateRandomData: createAction<Date[], Date[]>(
     chartActionNames.REGENERATE_RANDOM_DATA,
-    (dates: moment.Moment[]) => dates
+    (dates: Date[]) => dates
   ),
   csvDataLoad: csvDataLoadInitialize,
   csvDataLoaded: csvDataLoadFinalize,
@@ -45,9 +44,9 @@ export const chartActions = {
       return result;
     }
   ), 
-  setWindowDateFromTo: createAction<moment.Moment[], string, string>(
+  setWindowDateFromTo: createAction<Date[], string, string>(
     chartActionNames.SET_WINDOW_DATE_FROM_TO,
-    (from: string, to: string) => [moment(from), moment(to)]
+    (from: string, to: string) => [dateFns.parse(from), dateFns.parse(to)]
   ),
   setWindowWidthMinutes: createAction<number, number>(
     chartActionNames.SET_WINDOW_WIDTH_MINUTES,

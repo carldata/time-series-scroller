@@ -44,11 +44,11 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
     };
   }
 
-  componentDidMount = () => {
+  public componentDidMount() {
     window.addEventListener('mouseup', this.globalMouseUp, false);
   }
 
-  componentWillUnmount = () => {    
+  public componentWillUnmount() {
     window.removeEventListener('mouseup', this.globalMouseUp);
   }
 

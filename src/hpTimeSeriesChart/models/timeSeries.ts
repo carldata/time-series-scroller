@@ -1,4 +1,3 @@
-import * as moment from 'moment';
 import { EnumTimeSeriesDisplayStyle } from './enums';
 import { IChartZoomSettings } from './chartZoomSettings';
 import { IDateTimePoint } from './dateTimePoint';
@@ -27,12 +26,12 @@ export interface ITimeSeries {
   /**
    * Equivalent of points[0].time
    */
-  from: moment.Moment;
+  from: Date;
 
   /**
    * Equivalent of points[points.length-1].time
    */
-  to: moment.Moment;
+  to: Date;
 
   /**
    * The declared density provided in data: DateTimePoint[] collection,
