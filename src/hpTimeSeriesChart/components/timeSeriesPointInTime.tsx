@@ -48,7 +48,7 @@ export class TimeSeriesPointInTime extends React.Component<TimeSeriesPointInTime
                 break;
             }
           }}
-        />        
+        />
         <circle {...circleProps} ref={(c) => {
           if (!_.isObject(c))
             return;
@@ -69,7 +69,7 @@ export class TimeSeriesPointInTime extends React.Component<TimeSeriesPointInTime
               d3SelectionResult.on("click", () => self.props.toggleSelected(self.props.unix));
               break;
             case EnumChartPointsSelectionMode.SelectMultiple:
-            case EnumChartPointsSelectionMode.UnselectMultiple:      
+            case EnumChartPointsSelectionMode.UnselectMultiple:
               d3SelectionResult.on("mouseenter", () => { self.props.toggleSelected(self.props.unix); });
               break;
           }

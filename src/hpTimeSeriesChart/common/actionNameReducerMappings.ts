@@ -17,8 +17,8 @@ let mappings: Array<IActionNameReducerMapping> = [
     action: reducers.csvDataLoadFinalize
   },
   <IActionNameReducerMapping>{
-    name: chartActionTypes.REGENERATE_RANDOM_DATA,
-    action: reducers.regenerateRandomData
+    name: chartActionTypes.GENERATE_RANDOM_DATA,
+    action: reducers.generateRandomData
   },
   <IActionNameReducerMapping>{
     name: chartActionTypes.SET_CHART_POINTS_SELECTION_MODE,

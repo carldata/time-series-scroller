@@ -1,10 +1,11 @@
+import 'bootstrap/dist/css/bootstrap.css';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
-import { Dispatch } from 'redux';
 import * as React from 'react';
+import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { Panel, ButtonGroup, Button, ListGroup, ListGroupItem, Grid, Form, Row, Col, FormGroup, ControlLabel, FormControl, HelpBlock  } from 'react-bootstrap';
-import * as DropZone from 'react-dropzone';
+import * as Dropzone from 'react-dropzone'
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { calculations as c } from '../hpTimeSeriesChart/common/calculations';
@@ -16,11 +17,10 @@ import { chartActionCreators } from '../hpTimeSeriesChart/common/action-creators
 import { HpSlider } from '../hpSlider';
 import { IDomain, IHpSliderScreenDimensions, IHpSliderHandleValues } from '../hpSlider/interfaces';
 import { EnumHandleType } from '../hpSlider/enums';
-import { HpTimeSeriesChart } from '../hpTimeSeriesChart/index';
+import { HpTimeSeriesChart } from '../hpTimeSeriesChart';
 import { bindActionCreators } from 'redux';
 import { IAppState } from '../state/index';
 import { IHpTimeSeriesChartState } from '../hpTimeSeriesChart/state/index';
-
 
 export interface IGraphScreenProps {
   chartState: IHpTimeSeriesChartState;
@@ -29,17 +29,18 @@ export interface IGraphScreenProps {
 export interface IGraphScreenState {
 }
 
-export interface IGraphScreenActionCreators {
+export interface IGraphScreenDispatchProps {
   setGraphPointsSelectionMode: (mode: EnumChartPointsSelectionMode) => void,
   csvDataLoaded: (text: string, config: ICsvRawParseConfiguration) => ICsvDataLoadedActionResponse,
   setWindowWidthMinutes: (width: number) => number,
   setZoomWindowLevel: (level: EnumZoomSelected) => EnumZoomSelected,
   scrollToThePreviousFrame: () => void,
-  scrollToTheNextFrame: () => void
+  scrollToTheNextFrame: () => void,
+  generateRandomData: (dates: Date[]) => void
 }
 
-class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScreenActionCreators, IGraphScreenState> {
-  constructor(props: IGraphScreenProps & IGraphScreenActionCreators) {
+class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScreenDispatchProps, IGraphScreenState> {
+  constructor(props: IGraphScreenProps & IGraphScreenDispatchProps) {
     super(props);
   }
 
@@ -120,7 +121,7 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
           </Row>
           <Row>
             <Col componentClass={ControlLabel} md={2}>
-                Samples from:
+              Samples from:
             </Col>
             <Col md={2}>
               <ControlLabel>{dateFns.format(this.props.chartState.dateRangeDateFrom, "YYYY-MM-DD HH:mm")}</ControlLabel>
@@ -183,14 +184,25 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
               </ButtonGroup>
               &nbsp;
               <ButtonGroup>
-                <DropZone className="dropZone" 
+                {/* <Dropzone className="dropZone" 
                   ref={(node) => this.dropZone = node } 
                   onDrop={(files: File[]) => this.parseCsvFiles(files)}>
-                </DropZone>
+                </Dropzone> */}
                 <Button 
                   bsSize="xs" 
                   onClick={() => { this.dropZone.open() }}>
                   Load csv file
+                </Button>
+              </ButtonGroup>
+              &nbsp;
+              <ButtonGroup>
+                <Button 
+                  bsSize="xs" 
+                  onClick={() => {
+                    let date = new Date();
+                    this.props.generateRandomData([date, dateFns.addHours(date, 6), date, dateFns.addHours(date, 6)]);
+                  }}>
+                  Load random data
                 </Button>
               </ButtonGroup>
             </Col>
@@ -264,14 +276,9 @@ const matchDispatchToProps = (dispatch: Dispatch<void>) => {
     setGraphPointsSelectionMode: chartActionCreators.setGraphPointsSelectionMode,
     csvDataLoaded: chartActionCreators.csvDataLoaded,
     setWindowWidthMinutes: chartActionCreators.setWindowWidthMinutes,
-    setZoomWindowLevel: chartActionCreators.setZoomWindowLevel
+    setZoomWindowLevel: chartActionCreators.setZoomWindowLevel,
+    generateRandomData: chartActionCreators.generateRandomData
   }, dispatch);
 }
 
-//need to make this little dirty trick, being fed up with fighting TypeScript system this time
-export const RealTimeTesting = connect<IGraphScreenProps & IGraphScreenActionCreators, IGraphScreenState, void>(mapStateToProps, matchDispatchToProps)(GraphScreenComponent)
-
-// export declare function connect<TStateProps, TDispatchProps, TOwnProps>(
-//   mapStateToProps: MapStateToPropsParam<TStateProps, TOwnProps>,
-//   mapDispatchToProps: MapDispatchToPropsParam<TDispatchProps, TOwnProps>
-// ): ComponentDecorator<TStateProps & TDispatchProps, TOwnProps>;
+export const RealTimeTesting = connect<IGraphScreenProps, IGraphScreenDispatchProps, {}>(mapStateToProps, matchDispatchToProps)(GraphScreenComponent)

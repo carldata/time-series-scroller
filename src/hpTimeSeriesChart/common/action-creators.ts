@@ -11,7 +11,7 @@ import { actionTypes as csvLoadingActionTypes, csvDataLoadInitialize, csvDataLoa
 import { ICsvRawParseConfiguration, ICsvDataLoadedActionResponse } from './csvLoading/models';
 
 export const chartActionTypes = {
-  REGENERATE_RANDOM_DATA: 'REGENERATE_RANDOM_DATA',
+  GENERATE_RANDOM_DATA: 'GENERATE_RANDOM_DATA',
   CSV_DATA_LOAD_INITIALIZE: csvLoadingActionTypes.CSV_DATA_LOAD_INITIALIZE,
   CSV_DATA_LOAD_FINALIZE: csvLoadingActionTypes.CSV_DATA_LOAD_FINALIZE,
   SET_EVENTS: 'SET_EVENTS',
@@ -30,8 +30,8 @@ export const chartActionTypes = {
  * (the returned type is the FIRST generic type parameter).
  */
 export const chartActionCreators = {
-  regenerateRandomData: createAction<Date[], Date[]>(
-    chartActionTypes.REGENERATE_RANDOM_DATA,
+  generateRandomData: createAction<Date[], Date[]>(
+    chartActionTypes.GENERATE_RANDOM_DATA,
     (dates: Date[]) => dates
   ),
   csvDataLoad: csvDataLoadInitialize,

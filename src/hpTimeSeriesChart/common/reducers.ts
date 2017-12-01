@@ -22,17 +22,18 @@ const SAMPLE_VALUE_MAX = 150;
 const SECONDS_PER_SAMPLE = 5;
 
 const buildInitialState = ():IHpTimeSeriesChartState => {
+  let currentDate = new Date();
   let result: IHpTimeSeriesChartState = <IHpTimeSeriesChartState>{
     chartZoomSettings: <IChartZoomSettings>{
       zoomSelected: EnumZoomSelected.NoZoom
     },
     series: [],
-    dateRangeDateFrom: new Date(),
-    dateRangeDateTo: new Date(),
+    dateRangeDateFrom: currentDate,
+    dateRangeDateTo: dateFns.addHours(currentDate, 6),
     graphPointsSelectionMode: EnumChartPointsSelectionMode.NoSelection,
     isDataLoading: false,
-    windowDateFrom: new Date(),
-    windowDateTo: new Date(),
+    windowDateFrom: currentDate,
+    windowDateTo: dateFns.addHours(currentDate, 6),
     yMinValue: 0,
     yMaxValue: 0
   };
@@ -69,43 +70,6 @@ const randomDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): I
   return result;
 };
 
-/**
- * Builds (initial) chart state with several outer settings
- */
-const generateRandomData = (
-  windowDateFrom: Date, 
-  windowDateTo: Date,
-  dateRangeDateFrom: Date,
-  dateRangeDateTo: Date): IHpTimeSeriesChartState => {
-  let points: Array<IDateTimePoint> = randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
-  return <IHpTimeSeriesChartState>{
-    series: _.concat([], <ITimeSeries>{
-      color: "steelblue",
-      from: new Date(dateRangeDateFrom.getTime()),
-      to: new Date(dateRangeDateTo.getTime()),
-      name: "random series",
-      points: points,
-      rFactorSampleCache: c.createResampledPointsCache(points),
-      secondsPerSample: SECONDS_PER_SAMPLE,
-      yMinValue: _.min(_.map(points, el => el.value)),
-      yMaxValue: _.max(_.map(points, el => el.value))
-    }),
-    chartZoomSettings: {
-      zoomSelected: EnumZoomSelected.NoZoom,
-      zoomLevel1FramePointsFrom: null,
-      zoomLevel1FramePointsTo: null,
-      zoomLevel2FramePointsFrom: null,
-      zoomLevel2FramePointsTo: null
-    },
-    yMinValue: _.min(_.map(points, el => el.value)),
-    yMaxValue: _.max(_.map(points, el => el.value)),
-    windowDateFrom: new Date(windowDateFrom.getTime()),
-    windowDateTo: new Date(windowDateTo.getTime()),
-    graphPointsSelectionMode: EnumChartPointsSelectionMode.NoSelection,
-  }
-}
-
-
 const cameToThisZoomLevelByZoomingIn = (currentMode: EnumZoomSelected, newMode: EnumZoomSelected) => {
   return newMode > currentMode;
 }
@@ -134,9 +98,38 @@ const setFrameDatesByZoomLevel = (settings: IChartZoomSettings, points: Date[]):
   return settings;
 }
 
-const regenerateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
+/**
+ * Builds (initial) chart state with several outer settings
+ */
+const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo] = action.payload;
-  return generateRandomData(dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo);
+  let points: Array<IDateTimePoint> = randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
+  console.log(points, dateRangeDateFrom, dateRangeDateTo);
+  return <IHpTimeSeriesChartState> {
+    series: _.concat([], <ITimeSeries>{
+      color: "steelblue",
+      from: new Date(dateRangeDateFrom.getTime()),
+      to: new Date(dateRangeDateTo.getTime()),
+      name: "random series",
+      points: points,
+      rFactorSampleCache: c.createResampledPointsCache(points),
+      secondsPerSample: SECONDS_PER_SAMPLE,
+      yMinValue: _.min(_.map(points, el => el.value)),
+      yMaxValue: _.max(_.map(points, el => el.value))
+    }),
+    chartZoomSettings: {
+      zoomSelected: EnumZoomSelected.NoZoom,
+      zoomLevel1FramePointsFrom: null,
+      zoomLevel1FramePointsTo: null,
+      zoomLevel2FramePointsFrom: null,
+      zoomLevel2FramePointsTo: null
+    },
+    yMinValue: _.min(_.map(points, el => el.value)),
+    yMaxValue: _.max(_.map(points, el => el.value)),
+    windowDateFrom: new Date(windowDateFrom.getTime()),
+    windowDateTo: new Date(windowDateTo.getTime()),
+    graphPointsSelectionMode: EnumChartPointsSelectionMode.NoSelection,
+  }
 }
 
 const setEvents = (series: ITimeSeries, action: Action<collections.Dictionary<number, boolean>>): ITimeSeries => {  
@@ -248,7 +241,7 @@ export const reducers = {
   csvDataLoadInitialize,
   csvDataLoadFinalize,
   setEvents,
-  regenerateRandomData,
+  generateRandomData,
   setWindowDateFromTo,
   setWindowWidthMinutes,
   setChartPointsSelectionMode,
