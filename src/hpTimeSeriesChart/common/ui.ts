@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { IZoomCacheElementDescription, IPluginFunctions } from './interfaces';
-import { EnumZoomSelected } from '../models/enums';
-import { IChartState } from '../models/chartState';
+import { EnumZoomSelected } from '../state/enums';
+import { IHpTimeSeriesChartState } from '../state/'
 
 interface ITimePeriod {
   minimalHours: number;
@@ -22,7 +22,7 @@ const preDefinedPeriodDescriptions = [
   <ITimePeriod>{ minimalHours: 24*7*4*12, maximalHours: Number.MAX_VALUE, caption: "years" },
 ]
 
-export const getZoomLevelButtonCaption = (buttonZoomLevel: EnumZoomSelected, state: IChartState): string => {
+export const getZoomLevelButtonCaption = (buttonZoomLevel: EnumZoomSelected, state: IHpTimeSeriesChartState): string => {
   let result = "";
   let windowDifferenceHours = dateFns.differenceInHours(state.windowDateTo, state.windowDateFrom);
   let windowPreDefinedPeriodDescription: ITimePeriod = _.find(preDefinedPeriodDescriptions, el => windowDifferenceHours >= el.minimalHours && windowDifferenceHours < el.maximalHours);

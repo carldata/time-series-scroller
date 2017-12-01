@@ -5,7 +5,7 @@ import { EnumChartPointsSelectionMode } from './enums';
 import { IChartZoomSettings } from './chartZoomSettings';
 import { IEventChartConfiguration } from '../common/interfaces';
 
-export interface IChartState {
+export interface IHpTimeSeriesChartState {
   isDataLoading: boolean;
   /**
    * In the scrolling chart - the moment of time user sees on X-axis coordinate equal 0

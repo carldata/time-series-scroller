@@ -1,18 +1,18 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { handleActions, Action } from 'redux-actions';
-import { IChartState } from '../../models/chartState';
+import { IHpTimeSeriesChartState } from '../../state';
 import { calculations as chartCalculations } from '../calculations';
-import { EnumZoomSelected, EnumChartPointsSelectionMode } from '../../models/enums';
+import { EnumZoomSelected, EnumChartPointsSelectionMode } from '../../state/enums';
 import { IEventChartConfiguration } from '../interfaces';
-import { ITimeSeries } from '../../models/timeSeries';
-import { IDateTimePoint } from '../../models/dateTimePoint';
+import { ITimeSeries } from '../../state/timeSeries';
+import { IDateTimePoint } from '../../state/dateTimePoint';
 import { calculations as csvCalculations } from './calculations';
 import { ICsvDataLoadedActionResponse, EnumCsvFileSource } from './models';
 
-export const csvDataLoadInitialize = (state: IChartState, action: Action<Date[]>): IChartState => {
+export const csvDataLoadInitialize = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateRangeDateFrom, dateRangeDateTo] = action.payload;
-  return _.extend({}, state, <IChartState> {
+  return _.extend({}, state, <IHpTimeSeriesChartState> {
     isDataLoading: true,
     dateRangeDateFrom: new Date(dateRangeDateFrom.getTime()),
     dateRangeDateTo: new Date(dateRangeDateTo.getTime()),
@@ -24,7 +24,7 @@ export const csvDataLoadInitialize = (state: IChartState, action: Action<Date[]>
 /**
  * Returns a new, updated IChartState and ITimeSeries that was created and added to IChartState
  */
-export const csvDataLoadFinalize = (state: IChartState, action: Action<ICsvDataLoadedActionResponse>): [IChartState, ITimeSeries] => {
+export const csvDataLoadFinalize = (state: IHpTimeSeriesChartState, action: Action<ICsvDataLoadedActionResponse>): [IHpTimeSeriesChartState, ITimeSeries] => {
   let points: Array<IDateTimePoint> = csvCalculations.extractDateTimePointsOutOfCsvFileContents(action.payload);
   if (points.length <= 1)
     return [state, null];
@@ -41,7 +41,7 @@ export const csvDataLoadFinalize = (state: IChartState, action: Action<ICsvDataL
     yMaxValue: _.max(_.map(points, el => el.value)),    
   }  
 
-  let chartState = _.extend({}, state, <IChartState> {
+  let chartState = _.extend({}, state, <IHpTimeSeriesChartState> {
     isDataLoading: false,
     graphPointsSelectionMode: EnumChartPointsSelectionMode.NoSelection,
     chartMarkerConfiguration: <IEventChartConfiguration> {

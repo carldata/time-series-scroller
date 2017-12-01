@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
-import { IDateTimePoint } from '../../models/dateTimePoint';
-import { IChartState } from '../../models/chartState';
+import { IDateTimePoint } from '../../state/dateTimePoint';
+import { IHpTimeSeriesChartState } from '../../state';
 import { ICsvDataLoadedActionResponse, EnumCsvDataType } from './models';
 
 const debug = false;

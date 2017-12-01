@@ -1,12 +1,12 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { IChartTimeSeries, IZoomCacheElementDescription, IPluginFunctions } from './interfaces';
-import { IDateTimePointSeriesCache } from '../models/dateTimePointSeriesCache';
-import { ITimeSeries } from '../models/timeSeries';
-import { IDateTimePoint } from '../models/dateTimePoint';
-import { IChartZoomSettings } from '../models/chartZoomSettings';
-import { EnumZoomSelected } from '../models/enums';
-import { IChartState } from '../models/chartState';
+import { IDateTimePointSeriesCache } from '../state/dateTimePointSeriesCache';
+import { ITimeSeries } from '../state/timeSeries';
+import { IDateTimePoint } from '../state/dateTimePoint';
+import { IChartZoomSettings } from '../state/chartZoomSettings';
+import { EnumZoomSelected } from '../state/enums';
+import { IHpTimeSeriesChartState } from '../state';
 
 const debug = false;
 
@@ -182,7 +182,7 @@ const getUnixTimeStampLimitationsFromTo = (chartZoomSettings: IChartZoomSettings
  * Calculates the difference - in minutes - between the datetime 
  * of the last point visible in window and the first point available in window
  */
-const translateDateTimeToMinutesDomain = (state: IChartState, date: Date): number => {
+const translateDateTimeToMinutesDomain = (state: IHpTimeSeriesChartState, date: Date): number => {
   var result: number;
   switch (state.chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.NoZoom:
@@ -198,7 +198,7 @@ const translateDateTimeToMinutesDomain = (state: IChartState, date: Date): numbe
   return result;
 }
 
-const calculateDomainLengthMinutes = (state: IChartState): number => {
+const calculateDomainLengthMinutes = (state: IHpTimeSeriesChartState): number => {
   var result: number;
   switch (state.chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.NoZoom:
@@ -214,7 +214,7 @@ const calculateDomainLengthMinutes = (state: IChartState): number => {
   return result;
 }
 
-const translateMinutesDomainToDateTime = (state: IChartState, minutes: number): Date => {
+const translateMinutesDomainToDateTime = (state: IHpTimeSeriesChartState, minutes: number): Date => {
   var result: Date;
   switch (state.chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.NoZoom:

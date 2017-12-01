@@ -2,7 +2,7 @@ import { createAction } from 'redux-actions';
 import { Dispatch } from 'redux';
 import { ICsvRawParseConfiguration, ICsvDataLoadedActionResponse } from './models';
 
-export const actionNames = {
+export const actionTypes = {
   CSV_DATA_LOAD_INITIALIZE: 'CSV_DATA_LOAD_INITIALIZE',
   CSV_DATA_LOAD_FINALIZE: 'CSV_DATA_LOAD_FINALIZE'
 }
@@ -18,7 +18,7 @@ export const actionNames = {
  * dateRange: Date[] - date range from / to HP Time Series component should display dates
  */  
 export const csvDataLoadInitialize = createAction<Date[], Dispatch<void>, Date[], ICsvRawParseConfiguration>(
-  actionNames.CSV_DATA_LOAD_INITIALIZE,
+  actionTypes.CSV_DATA_LOAD_INITIALIZE,
   (dispatch: Dispatch<void>, dateRange: Date[], config: ICsvRawParseConfiguration) => {
     fetch(config.url)
       .then(response => response.text())
@@ -35,7 +35,7 @@ export const csvDataLoadInitialize = createAction<Date[], Dispatch<void>, Date[]
  * 2) initializeCsvDataLoad action, when loading succeeds.
  */
 export const csvDataLoadFinalize = createAction<ICsvDataLoadedActionResponse, string, ICsvRawParseConfiguration>(
-  actionNames.CSV_DATA_LOAD_FINALIZE,
+  actionTypes.CSV_DATA_LOAD_FINALIZE,
   (text: string, config: ICsvRawParseConfiguration) => <ICsvDataLoadedActionResponse>{
     text: text,
     config: config
