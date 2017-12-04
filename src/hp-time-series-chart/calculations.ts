@@ -1,12 +1,12 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { IChartTimeSeries, IZoomCacheElementDescription, IPluginFunctions } from './interfaces';
-import { IDateTimePointSeriesCache } from '../state/dateTimePointSeriesCache';
-import { ITimeSeries } from '../state/timeSeries';
-import { IDateTimePoint } from '../state/dateTimePoint';
-import { IChartZoomSettings } from '../state/chartZoomSettings';
-import { EnumZoomSelected } from '../state/enums';
-import { IHpTimeSeriesChartState } from '../state';
+import { IDateTimePointSeriesCache } from './state/date-time-point-series-cache';
+import { ITimeSeries } from './state/time-series';
+import { IDateTimePoint } from './state/date-time-point';
+import { IChartZoomSettings } from './state/chart-zoom-settings';
+import { EnumZoomSelected } from './state/enums';
+import { IHpTimeSeriesChartState } from './state';
 
 const debug = false;
 

@@ -9,14 +9,14 @@ import * as collections from 'typescript-collections';
 import { handleActions, Action } from 'redux-actions';
 import { Dispatch } from 'redux';
 import * as fetch from 'isomorphic-fetch';
-import { EnumChartPointsSelectionMode, EnumZoomSelected } from '../state/enums';
+import { EnumChartPointsSelectionMode, EnumZoomSelected } from './state/enums';
 import { calculations as c } from './calculations';
 import { IEventChartConfiguration } from './interfaces';
-import { IChartZoomSettings } from '../state/chartZoomSettings';
-import { ITimeSeries } from '../state/timeSeries';
-import { IDateTimePoint } from '../state/dateTimePoint';
-import { IHpTimeSeriesChartState } from '../state';
-import { csvDataLoadInitialize, csvDataLoadFinalize } from './csvLoading/reducers';
+import { IChartZoomSettings } from './state/chart-zoom-settings';
+import { ITimeSeries } from './state/time-series';
+import { IDateTimePoint } from './state/date-time-point';
+import { IHpTimeSeriesChartState } from './state';
+import { csvDataLoadInitialize, csvDataLoadFinalize } from './csv-loading/reducers';
 
 const SAMPLE_VALUE_MAX = 150;
 const SECONDS_PER_SAMPLE = 5;
@@ -236,17 +236,17 @@ const setZoom = (state: IHpTimeSeriesChartState, action: Action<EnumZoomSelected
   return result;
 }
 
-export const reducers = {
+export const auxFunctions = {
   buildInitialState,
+  setEvents
+}
+
+export const reducers = {
   csvDataLoadInitialize,
   csvDataLoadFinalize,
-  setEvents,
   generateRandomData,
   setWindowDateFromTo,
   setWindowWidthMinutes,
   setChartPointsSelectionMode,
-  setZoom,
-  // Frame scroll not supported for now...
-  // scrollToThePreviousFrame,
-  // scrollToTheNextFrame
+  setZoom
 }

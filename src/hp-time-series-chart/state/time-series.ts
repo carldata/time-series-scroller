@@ -1,7 +1,7 @@
 import { EnumTimeSeriesDisplayStyle } from './enums';
-import { IChartZoomSettings } from './chartZoomSettings';
-import { IDateTimePoint } from './dateTimePoint';
-import { IDateTimePointSeriesCache } from './dateTimePointSeriesCache';
+import { IChartZoomSettings } from './chart-zoom-settings';
+import { IDateTimePoint } from './date-time-point';
+import { IDateTimePointSeriesCache } from './date-time-point-series-cache';
 
 /**
  * Describes a data series as loaded from CSV / database / web service

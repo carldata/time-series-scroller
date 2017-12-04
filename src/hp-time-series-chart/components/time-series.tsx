@@ -1,10 +1,10 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
-import { TimeSeriesPointInTime } from './timeSeriesPointInTime';
+import { TimeSeriesPointInTime } from './time-series-point-in-time';
 import { EnumChartPointsSelectionMode } from '../state/enums';
-import { IDateTimePoint } from '../state/dateTimePoint';
-import { IChartDimensions, IEventChartConfiguration, IChartTimeSeries } from '../common/interfaces';
+import { IDateTimePoint } from '../state/date-time-point';
+import { IChartDimensions, IEventChartConfiguration, IChartTimeSeries } from '../interfaces';
 
 export interface ITimeSeriesProps {
   /**

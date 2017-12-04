@@ -8,7 +8,7 @@ var config = {
    * recursively go through every "require" statement in app.ts and
    * efficiently build out the application's dependency tree.
    */
-  entry: ["./src"],
+  entry: ["./src/demo-app"],
   devtool: "cheap-eval-source-map",
   /*
    * The combination of path and filename tells Webpack what name to give to

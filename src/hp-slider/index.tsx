@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { common } from './common';
 import { calculations } from './calculations';
 import { IHpSliderScreenDimensions, IDomain, IHpSliderHandleValues } from './interfaces';
-import { HpSliderHandle, IHpSliderHandleMoved } from './handle';
+import { HpSliderHandle, IHpSliderHandleMoved } from './components/handle';
 import { EnumHandleType } from './enums';
 
 export interface IHpSliderProps {

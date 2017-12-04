@@ -1,4 +1,4 @@
-import { IDateTimePoint } from './dateTimePoint';
+import { IDateTimePoint } from './date-time-point';
 
 /**
  * Describes a single cache entry

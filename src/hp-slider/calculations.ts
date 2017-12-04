@@ -2,7 +2,6 @@ import { IDomain, IHpSliderScreenDimensions } from './interfaces';
 import { EnumHandleType } from './enums';
 
 let translateValueToHandleLeftPositionPx = (domain: IDomain<number>, dimensions: IHpSliderScreenDimensions, type: EnumHandleType, value: number): number => {
-  // console.log('translateValueToHandleLeftPositionPx', domain, dimensions, type, value);
   let result = (value / (domain.domainMax - domain.domainMin)) * dimensions.sliderWidthPx;
   if (type == EnumHandleType.Right)
     result -= dimensions.sliderHandleWidthThicknessPx;
