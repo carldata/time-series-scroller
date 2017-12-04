@@ -182,7 +182,7 @@ const getUnixTimeStampLimitationsFromTo = (chartZoomSettings: IChartZoomSettings
  * Calculates the difference - in minutes - between the datetime 
  * of the last point visible in window and the first point available in window
  */
-const translateDateTimeToMinutesDomain = (state: IHpTimeSeriesChartState, date: Date): number => {
+const translateDateTimeToUnixMinutesDomain = (state: IHpTimeSeriesChartState, date: Date): number => {
   var result: number;
   switch (state.chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.NoZoom:
@@ -202,13 +202,13 @@ const calculateDomainLengthMinutes = (state: IHpTimeSeriesChartState): number =>
   var result: number;
   switch (state.chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.NoZoom:
-      result = translateDateTimeToMinutesDomain(state, state.dateRangeDateTo);
+      result = translateDateTimeToUnixMinutesDomain(state, state.dateRangeDateTo);
       break;
     case EnumZoomSelected.ZoomLevel1:
-      result = translateDateTimeToMinutesDomain(state, state.chartZoomSettings.zoomLevel1FramePointsTo);
+      result = translateDateTimeToUnixMinutesDomain(state, state.chartZoomSettings.zoomLevel1FramePointsTo);
       break;
     case EnumZoomSelected.ZoomLevel2:
-      result = translateDateTimeToMinutesDomain(state, state.chartZoomSettings.zoomLevel2FramePointsTo);
+      result = translateDateTimeToUnixMinutesDomain(state, state.chartZoomSettings.zoomLevel2FramePointsTo);
       break;
   }
   return result;
@@ -221,6 +221,7 @@ const translateMinutesDomainToDateTime = (state: IHpTimeSeriesChartState, minute
       result = dateFns.addMinutes(state.dateRangeDateFrom, minutes)
       break;
     case EnumZoomSelected.ZoomLevel1:
+      result = dateFns.addMinutes(state.chartZoomSettings.zoomLevel1FramePointsFrom, minutes)
       break;
     case EnumZoomSelected.ZoomLevel2:
       result = dateFns.addMinutes(state.chartZoomSettings.zoomLevel2FramePointsFrom, minutes)
@@ -252,8 +253,8 @@ const rebuildSampleCacheAdjustedToCurrentZoomLevel = (rFactorSampleCache: IDateT
 export const calculations = {
   createResampledPointsCache: createResampledPointsCache,
   getFilteredTimeSeries: getFilteredChartTimeSeries,
-  translateDateTimeToMinutesDomain: translateDateTimeToMinutesDomain,
+  translateDateTimeToMinutesDomain: translateDateTimeToUnixMinutesDomain,
   calculateDomainLengthMinutes: calculateDomainLengthMinutes,
-  translateMinutesDomainToDateTime: translateMinutesDomainToDateTime,
+  translateUnixMinutesDomainToDateTime: translateMinutesDomainToDateTime,
   rebuildSampleCacheAdjustedToCurrentZoomLevel: rebuildSampleCacheAdjustedToCurrentZoomLevel
 }

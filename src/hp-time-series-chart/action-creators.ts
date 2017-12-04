@@ -44,9 +44,9 @@ export const chartActionCreators = {
       return result;
     }
   ), 
-  setWindowDateFromTo: createAction<Date[], string, string>(
+  setWindowDateFromTo: createAction<Date[], Date, Date>(
     chartActionTypes.SET_WINDOW_DATE_FROM_TO,
-    (from: string, to: string) => [dateFns.parse(from), dateFns.parse(to)]
+    (dateFrom: Date, dateTo: Date) => [dateFrom, dateTo]
   ),
   setWindowWidthMinutes: createAction<number, number>(
     chartActionTypes.SET_WINDOW_WIDTH_MINUTES,

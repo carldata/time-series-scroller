@@ -32,5 +32,3 @@ export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
 },
   auxFunctions.buildInitialState()
 );
-
-console.log(storeCreator);

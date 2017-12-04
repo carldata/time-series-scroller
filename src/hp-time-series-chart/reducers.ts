@@ -128,6 +128,8 @@ const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[
     yMaxValue: _.max(_.map(points, el => el.value)),
     windowDateFrom: new Date(windowDateFrom.getTime()),
     windowDateTo: new Date(windowDateTo.getTime()),
+    dateRangeDateFrom: new Date(windowDateFrom.getTime()),
+    dateRangeDateTo: new Date(windowDateTo.getTime()),
     graphPointsSelectionMode: EnumChartPointsSelectionMode.NoSelection,
   }
 }

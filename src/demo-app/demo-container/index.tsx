@@ -36,7 +36,8 @@ export interface IGraphScreenDispatchProps {
   setZoomWindowLevel: (level: EnumZoomSelected) => EnumZoomSelected,
   scrollToThePreviousFrame: () => void,
   scrollToTheNextFrame: () => void,
-  generateRandomData: (dates: Date[]) => void
+  generateRandomData: (dates: Date[]) => void,
+  setWindowDateFromTo: (dateFrom: Date, dateTo: Date) => void
 }
 
 class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScreenDispatchProps, IGraphScreenState> {
@@ -259,6 +260,36 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
               </ButtonGroup>
             </Col>
           </Row>
+          <Row>
+          <Row>
+          <Col componentClass={ControlLabel} md={12}>
+            <HpSlider 
+              dimensions={{sliderWidthPx: 800, sliderHeightPx: 50, sliderHandleWidthThicknessPx: 10 }}
+              domain={{ domainMin: 0, domainMax: c.calculateDomainLengthMinutes(this.props.chartState) }}
+              handleValues={this.calculateSliderHandleValues(this.props.chartState)}
+              displayDragBar={true}
+              handleMoved={(value: number | number[], type: EnumHandleType) => {
+                let handleValues = this.calculateSliderHandleValues(this.props.chartState);
+                let newDateFrom = c.translateUnixMinutesDomainToDateTime(this.props.chartState, handleValues.left);
+                let newDateTo = c.translateUnixMinutesDomainToDateTime(this.props.chartState, handleValues.right);
+                switch (type) {
+                  case EnumHandleType.Left:
+                    newDateFrom = c.translateUnixMinutesDomainToDateTime(this.props.chartState, _.isNumber(value) ? value : 0);
+                    break;
+                  case EnumHandleType.Right:
+                    newDateTo = c.translateUnixMinutesDomainToDateTime(this.props.chartState, _.isNumber(value) ? value : 0);
+                    break;
+                  case EnumHandleType.DragBar:
+                    newDateFrom = c.translateUnixMinutesDomainToDateTime(this.props.chartState, value[0]);
+                    newDateTo = c.translateUnixMinutesDomainToDateTime(this.props.chartState, value[1]);
+                    break;
+                }
+                this.props.setWindowDateFromTo(newDateFrom, newDateTo);
+              }}
+            />
+          </Col>
+        </Row>
+          </Row>
         </Grid>
       </div>
     );
@@ -277,7 +308,8 @@ const matchDispatchToProps = (dispatch: Dispatch<void>) => {
     csvDataLoaded: chartActionCreators.csvDataLoaded,
     setWindowWidthMinutes: chartActionCreators.setWindowWidthMinutes,
     setZoomWindowLevel: chartActionCreators.setZoomWindowLevel,
-    generateRandomData: chartActionCreators.generateRandomData
+    generateRandomData: chartActionCreators.generateRandomData,
+    setWindowDateFromTo: chartActionCreators.setWindowDateFromTo
   }, dispatch);
 }
 
