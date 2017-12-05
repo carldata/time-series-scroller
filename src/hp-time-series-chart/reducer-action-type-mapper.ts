@@ -1,50 +1,41 @@
 import * as _ from 'lodash';
 import { chartActionTypes } from './action-creators';
-import { reducers } from './reducers';
+import { reducers, auxFunctions } from './reducers';
 
-interface IActionNameReducerMapping {
-  name: string;
+interface IReducerActionTypeMapping {
   action: Function;
+  name: string;
 }
 
-let mappings: Array<IActionNameReducerMapping> = [
-  <IActionNameReducerMapping>{
+let mappings: Array<IReducerActionTypeMapping> = [
+  <IReducerActionTypeMapping>{
     name: chartActionTypes.CSV_DATA_LOAD_INITIALIZE,
     action: reducers.csvDataLoadInitialize
   },
-  <IActionNameReducerMapping>{
+  <IReducerActionTypeMapping>{
     name: chartActionTypes.CSV_DATA_LOAD_FINALIZE,
     action: reducers.csvDataLoadFinalize
   },
-  <IActionNameReducerMapping>{
+  <IReducerActionTypeMapping>{
     name: chartActionTypes.GENERATE_RANDOM_DATA,
     action: reducers.generateRandomData
   },
-  <IActionNameReducerMapping>{
+  <IReducerActionTypeMapping>{
     name: chartActionTypes.SET_CHART_POINTS_SELECTION_MODE,
     action: reducers.setChartPointsSelectionMode
   },
-  <IActionNameReducerMapping>{
+  <IReducerActionTypeMapping>{
     name: chartActionTypes.SET_WINDOW_DATE_FROM_TO,
     action: reducers.setWindowDateFromTo
   },
-  <IActionNameReducerMapping>{
+  <IReducerActionTypeMapping>{
     name: chartActionTypes.SET_WINDOW_WIDTH_MINUTES,
     action: reducers.setWindowWidthMinutes
   },
-  <IActionNameReducerMapping>{
+  <IReducerActionTypeMapping>{
     name: chartActionTypes.SET_ZOOM,
     action: reducers.setZoom
-  },
-  // Frame scroll not supported for now...
-  // <IActionNameReducerMapping>{
-  //   name: chartActionNames.SCROLL_TO_THE_PREVIOUS_FRAME,
-  //   action: reducers.scrollToThePreviousFrame
-  // },
-  // <IActionNameReducerMapping>{
-  //   name: chartActionNames.SCROLL_TO_THE_NEXT_FRAME,
-  //   action: reducers.scrollToTheNextFrame
-  // }
+  }
 ];
 
 /**
@@ -52,7 +43,7 @@ let mappings: Array<IActionNameReducerMapping> = [
  * where actions names (part of the HP Time Series Chart public API) are mapped to higher-order reducers,
  * that call, in turn, HP Time Series Chart reducers 
  */
-export let chartActionName = (reducer: Function): string => {
-  let mapping = _.find(mappings, el => el.action === reducer);
+export const reducerActionTypeMapper = (reducer: Function): string => {
+  const mapping = _.find(mappings, el => el.action === reducer);
   return _.isObject(mapping) ? mapping.name : "";
 }

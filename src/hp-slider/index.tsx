@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { common } from './common';
 import { calculations } from './calculations';
 import { IHpSliderScreenDimensions, IDomain, IHpSliderHandleValues } from './interfaces';
-import { HpSliderHandle, IHpSliderHandleMoved } from './handle';
+import { HpSliderHandle, IHpSliderHandleMoved } from './components/handle';
 import { EnumHandleType } from './enums';
 
 export interface IHpSliderProps {
@@ -26,7 +26,7 @@ export interface IHpSliderProps {
   /**
    * Renders an additional element called a "drag bar", since it is designed for dragging.
    */
-  diplayDragBar: boolean;
+  displayDragBar: boolean;
   handleMoved: IHpSliderHandleMoved;  
 }
 
@@ -150,7 +150,7 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
             this.setState({ pressedHandle: isPressed ? type : null });
           }}
         />
-        {this.props.diplayDragBar && 
+        {this.props.displayDragBar && 
           <HpSliderHandle
             dimensions={this.props.dimensions}
             domain={this.props.domain}

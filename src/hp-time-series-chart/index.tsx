@@ -2,13 +2,13 @@ import * as React from 'react';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 import { IHpTimeSeriesChartState } from './state';
-import { calculations } from './common/calculations';
-import { IChartDimensions, IEventChartConfiguration, IChartTimeSeries } from './common/interfaces';
-import { IDateTimePoint } from './state/dateTimePoint';
-import { IChartZoomSettings } from './state/chartZoomSettings';
-import { TimeSeries } from './components/timeSeries';
-import { DateTimeAxis } from './components/dateTimeAxis';
-import { ValueAxis } from './components/valueAxis';
+import { calculations } from './calculations';
+import { IChartDimensions, IEventChartConfiguration, IChartTimeSeries } from './interfaces';
+import { IDateTimePoint } from './state/date-time-point';
+import { IChartZoomSettings } from './state/chart-zoom-settings';
+import { TimeSeries } from './components/time-series';
+import { DateTimeAxis } from './components/date-time-axis';
+import { ValueAxis } from './components/value-axis';
 import { Events } from './components/events';
 
 export interface IHpTimeSeriesChartProps {

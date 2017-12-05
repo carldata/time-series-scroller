@@ -4,12 +4,12 @@ import thunk from 'redux-thunk';
 import { HashRouter, Route } from 'react-router-dom';
 import { Store, createStore, compose, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
-import { HpTimeSeriesChart } from './hpTimeSeriesChart/index';
-import { RealTimeTesting } from './test-component/index';
-import { testComponentReducer } from './test-component/reducer';
+import { HpTimeSeriesChart } from '../hp-time-series-chart';
+import { RealTimeTesting } from './demo-container';
+import { storeCreator } from './demo-container/store-creator';
 
 const combinedReducers = combineReducers({
-  chartState: testComponentReducer
+  chartState: storeCreator
 });
 
 //this is the callback function required in order to have this Chrome extension https://github.com/zalmoxisus/redux-devtools-extension working
@@ -20,7 +20,9 @@ console.log(store);
 
 ReactDOM.render(
   <Provider store={store}>
-    <RealTimeTesting />
+    <div>
+      <RealTimeTesting />
+    </div>
   </Provider>,
   document.body.appendChild(document.createElement('div'))
 );

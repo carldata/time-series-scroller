@@ -1,14 +1,14 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { handleActions, Action } from 'redux-actions';
-import { IHpTimeSeriesChartState } from '../../state';
 import { calculations as chartCalculations } from '../calculations';
-import { EnumZoomSelected, EnumChartPointsSelectionMode } from '../../state/enums';
 import { IEventChartConfiguration } from '../interfaces';
-import { ITimeSeries } from '../../state/timeSeries';
-import { IDateTimePoint } from '../../state/dateTimePoint';
 import { calculations as csvCalculations } from './calculations';
 import { ICsvDataLoadedActionResponse, EnumCsvFileSource } from './models';
+import { IHpTimeSeriesChartState } from '../state/index';
+import { IDateTimePoint } from '../state/date-time-point';
+import { ITimeSeries } from '../state/time-series';
+import { EnumChartPointsSelectionMode } from '../state/enums';
 
 export const csvDataLoadInitialize = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateRangeDateFrom, dateRangeDateTo] = action.payload;

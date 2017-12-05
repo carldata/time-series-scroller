@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { IZoomCacheElementDescription, IPluginFunctions } from './interfaces';
-import { EnumZoomSelected } from '../state/enums';
-import { IHpTimeSeriesChartState } from '../state/'
+import { EnumZoomSelected } from './state/enums';
+import { IHpTimeSeriesChartState } from './state'
 
 interface ITimePeriod {
   minimalHours: number;

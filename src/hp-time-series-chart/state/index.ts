@@ -1,9 +1,9 @@
-import { IDateTimePoint } from './dateTimePoint';
-import { ITimeSeries } from './timeSeries';
-import { IDateTimePointSeriesCache } from './dateTimePointSeriesCache';
+import { IDateTimePoint } from './date-time-point';
+import { ITimeSeries } from './time-series';
+import { IDateTimePointSeriesCache } from './date-time-point-series-cache';
 import { EnumChartPointsSelectionMode } from './enums';
-import { IChartZoomSettings } from './chartZoomSettings';
-import { IEventChartConfiguration } from '../common/interfaces';
+import { IChartZoomSettings } from './chart-zoom-settings';
+import { IEventChartConfiguration } from '../interfaces';
 
 export interface IHpTimeSeriesChartState {
   isDataLoading: boolean;

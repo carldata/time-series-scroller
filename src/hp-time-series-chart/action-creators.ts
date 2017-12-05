@@ -6,9 +6,9 @@ import * as dateFns from 'date-fns';
 import { createAction } from 'redux-actions';
 import { Dispatch } from 'redux';
 import * as collections from 'typescript-collections';
-import { EnumChartPointsSelectionMode, EnumZoomSelected } from '../state/enums';
-import { actionTypes as csvLoadingActionTypes, csvDataLoadInitialize, csvDataLoadFinalize } from './csvLoading/actions';
-import { ICsvRawParseConfiguration, ICsvDataLoadedActionResponse } from './csvLoading/models';
+import { EnumChartPointsSelectionMode, EnumZoomSelected } from './state/enums';
+import { actionTypes as csvLoadingActionTypes, csvDataLoadInitialize, csvDataLoadFinalize } from './csv-loading/action-creators';
+import { ICsvRawParseConfiguration, ICsvDataLoadedActionResponse } from './csv-loading/models';
 
 export const chartActionTypes = {
   GENERATE_RANDOM_DATA: 'GENERATE_RANDOM_DATA',
@@ -44,9 +44,9 @@ export const chartActionCreators = {
       return result;
     }
   ), 
-  setWindowDateFromTo: createAction<Date[], string, string>(
+  setWindowDateFromTo: createAction<Date[], Date, Date>(
     chartActionTypes.SET_WINDOW_DATE_FROM_TO,
-    (from: string, to: string) => [dateFns.parse(from), dateFns.parse(to)]
+    (dateFrom: Date, dateTo: Date) => [dateFrom, dateTo]
   ),
   setWindowWidthMinutes: createAction<number, number>(
     chartActionTypes.SET_WINDOW_WIDTH_MINUTES,

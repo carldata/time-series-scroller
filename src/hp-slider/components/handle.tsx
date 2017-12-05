@@ -1,9 +1,9 @@
 import * as React from 'react';
 import * as _ from 'lodash'; 
-import { common } from './common';
-import { calculations } from './calculations';
-import { EnumHandleType } from './enums';
-import { IHpSliderScreenDimensions, IDomain, IHpSliderHandleValues } from './interfaces';
+import { common } from '../common';
+import { calculations } from '../calculations';
+import { EnumHandleType } from '../enums';
+import { IHpSliderScreenDimensions, IDomain, IHpSliderHandleValues } from '../interfaces';
 
 export interface IHpSliderHandleMoved {
   (newValue: number | number[], handle: EnumHandleType): void;

@@ -8,19 +8,19 @@ import { Panel, ButtonGroup, Button, ListGroup, ListGroupItem, Grid, Form, Row, 
 import * as Dropzone from 'react-dropzone'
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
-import { calculations as c } from '../hpTimeSeriesChart/common/calculations';
-import * as ui from '../hpTimeSeriesChart/common/ui';
-import { EnumChartPointsSelectionMode, EnumZoomSelected } from '../hpTimeSeriesChart/state/enums';
-import { IChartDimensions, IEventChartConfiguration }  from '../hpTimeSeriesChart/common/interfaces';
-import { ICsvRawParseConfiguration, ICsvColumn, EnumCsvDataType, EnumCsvFileSource, ICsvDataLoadedActionResponse }  from '../hpTimeSeriesChart/common/csvLoading/models';
-import { chartActionCreators } from '../hpTimeSeriesChart/common/action-creators';
-import { HpSlider } from '../hpSlider';
-import { IDomain, IHpSliderScreenDimensions, IHpSliderHandleValues } from '../hpSlider/interfaces';
-import { EnumHandleType } from '../hpSlider/enums';
-import { HpTimeSeriesChart } from '../hpTimeSeriesChart';
+import { calculations as c } from '../../hp-time-series-chart/calculations';
+import * as ui from '../../hp-time-series-chart/ui';
+import { EnumChartPointsSelectionMode, EnumZoomSelected } from '../../hp-time-series-chart/state/enums';
+import { IChartDimensions, IEventChartConfiguration }  from '../../hp-time-series-chart/interfaces';
+import { ICsvRawParseConfiguration, ICsvColumn, EnumCsvDataType, EnumCsvFileSource, ICsvDataLoadedActionResponse }  from '../../hp-time-series-chart/csv-loading/models';
+import { chartActionCreators } from '../../hp-time-series-chart/action-creators';
+import { HpSlider } from '../../hp-slider';
+import { IDomain, IHpSliderScreenDimensions, IHpSliderHandleValues } from '../../hp-slider/interfaces';
+import { EnumHandleType } from '../../hp-slider/enums';
+import { HpTimeSeriesChart } from '../../hp-time-series-chart';
 import { bindActionCreators } from 'redux';
 import { IAppState } from '../state/index';
-import { IHpTimeSeriesChartState } from '../hpTimeSeriesChart/state/index';
+import { IHpTimeSeriesChartState } from '../../hp-time-series-chart/state';
 
 export interface IGraphScreenProps {
   chartState: IHpTimeSeriesChartState;
@@ -36,7 +36,8 @@ export interface IGraphScreenDispatchProps {
   setZoomWindowLevel: (level: EnumZoomSelected) => EnumZoomSelected,
   scrollToThePreviousFrame: () => void,
   scrollToTheNextFrame: () => void,
-  generateRandomData: (dates: Date[]) => void
+  generateRandomData: (dates: Date[]) => void,
+  setWindowDateFromTo: (dateFrom: Date, dateTo: Date) => void
 }
 
 class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScreenDispatchProps, IGraphScreenState> {
@@ -259,6 +260,36 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
               </ButtonGroup>
             </Col>
           </Row>
+          <Row>
+          <Row>
+          <Col componentClass={ControlLabel} md={12}>
+            <HpSlider 
+              dimensions={{sliderWidthPx: 800, sliderHeightPx: 50, sliderHandleWidthThicknessPx: 10 }}
+              domain={{ domainMin: 0, domainMax: c.calculateDomainLengthMinutes(this.props.chartState) }}
+              handleValues={this.calculateSliderHandleValues(this.props.chartState)}
+              displayDragBar={true}
+              handleMoved={(value: number | number[], type: EnumHandleType) => {
+                let handleValues = this.calculateSliderHandleValues(this.props.chartState);
+                let newDateFrom = c.translateUnixMinutesDomainToDateTime(this.props.chartState, handleValues.left);
+                let newDateTo = c.translateUnixMinutesDomainToDateTime(this.props.chartState, handleValues.right);
+                switch (type) {
+                  case EnumHandleType.Left:
+                    newDateFrom = c.translateUnixMinutesDomainToDateTime(this.props.chartState, _.isNumber(value) ? value : 0);
+                    break;
+                  case EnumHandleType.Right:
+                    newDateTo = c.translateUnixMinutesDomainToDateTime(this.props.chartState, _.isNumber(value) ? value : 0);
+                    break;
+                  case EnumHandleType.DragBar:
+                    newDateFrom = c.translateUnixMinutesDomainToDateTime(this.props.chartState, value[0]);
+                    newDateTo = c.translateUnixMinutesDomainToDateTime(this.props.chartState, value[1]);
+                    break;
+                }
+                this.props.setWindowDateFromTo(newDateFrom, newDateTo);
+              }}
+            />
+          </Col>
+        </Row>
+          </Row>
         </Grid>
       </div>
     );
@@ -277,7 +308,8 @@ const matchDispatchToProps = (dispatch: Dispatch<void>) => {
     csvDataLoaded: chartActionCreators.csvDataLoaded,
     setWindowWidthMinutes: chartActionCreators.setWindowWidthMinutes,
     setZoomWindowLevel: chartActionCreators.setZoomWindowLevel,
-    generateRandomData: chartActionCreators.generateRandomData
+    generateRandomData: chartActionCreators.generateRandomData,
+    setWindowDateFromTo: chartActionCreators.setWindowDateFromTo
   }, dispatch);
 }
 

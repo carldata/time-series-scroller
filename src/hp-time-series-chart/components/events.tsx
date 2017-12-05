@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { DateTimeAxis } from './dateTimeAxis';
-import { IChartDimensions, IEventChartConfiguration } from '../common/interfaces';
-import { IDateTimePoint } from '../state/dateTimePoint';
+import { DateTimeAxis } from './date-time-axis';
+import { IChartDimensions, IEventChartConfiguration } from '../interfaces';
+import { IDateTimePoint } from '../state/date-time-point';
 
 export interface IEventsProps {
   /**
