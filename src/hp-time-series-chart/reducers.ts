@@ -19,7 +19,7 @@ import { IHpTimeSeriesChartState } from './state';
 import { csvDataLoadInitialize, csvDataLoadFinalize } from './csv-loading/reducers';
 
 const SAMPLE_VALUE_MAX = 150;
-const SECONDS_PER_SAMPLE = 5;
+const SECONDS_PER_SAMPLE = 60;
 
 const buildInitialState = ():IHpTimeSeriesChartState => {
   let currentDate = new Date();

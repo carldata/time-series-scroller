@@ -95,7 +95,6 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
       //in all other cases - move the left one (includes "do not touch the right handle" scenario) !
       else
         result[0] = this.props.handleValues.right-2*handleWidthInDomainUnits;
-      console.log('correcting handle values...', handleWidthInDomainUnits, result);
     }
     return result;
   }
