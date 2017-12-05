@@ -43,7 +43,7 @@ export class TimeSeriesPointInTime extends React.Component<TimeSeriesPointInTime
             d3SelectionResult.on("mouseenter", null);
             switch (self.props.graphPointsSelectionMode) {
               case EnumChartPointsSelectionMode.SelectMultiple:
-              case EnumChartPointsSelectionMode.UnselectMultiple:      
+              case EnumChartPointsSelectionMode.UnselectMultiple:
                 d3SelectionResult.on("mouseenter", () => { self.props.toggleSelected(self.props.unix); });
                 break;
             }

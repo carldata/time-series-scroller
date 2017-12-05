@@ -30,12 +30,8 @@ export interface IGraphScreenState {
 }
 
 export interface IGraphScreenDispatchProps {
-  setGraphPointsSelectionMode: (mode: EnumChartPointsSelectionMode) => void,
   csvDataLoaded: (text: string, config: ICsvRawParseConfiguration) => ICsvDataLoadedActionResponse,
-  setWindowWidthMinutes: (width: number) => number,
   setZoomWindowLevel: (level: EnumZoomSelected) => EnumZoomSelected,
-  scrollToThePreviousFrame: () => void,
-  scrollToTheNextFrame: () => void,
   generateRandomData: (dates: Date[]) => void,
   setWindowDateFromTo: (dateFrom: Date, dateTo: Date) => void
 }
@@ -102,10 +98,6 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
     return Math.abs(zoomLimitationLevelButtonIsPresenting - currentZoomLimitationLevel) > 1;
   }
 
-  private isFrameButtonDisabled = (stateMode: EnumZoomSelected): boolean => {
-    return stateMode == EnumZoomSelected.NoZoom;
-  }
-
   private parseCsvFiles = (files: File[]): void => {
     let fileReader = new FileReader();
     let file = _.first(files);
@@ -163,40 +155,6 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
           <Row>
             <Col componentClass={ControlLabel} md={12}>
               <ButtonGroup>
-                <Button bsSize="xs" onClick={() => this.props.setGraphPointsSelectionMode(EnumChartPointsSelectionMode.NoSelection) } 
-                  bsStyle={this.getGraphPointsSelectionButtonStyle(this.props.chartState.graphPointsSelectionMode, EnumChartPointsSelectionMode.NoSelection)}>No selection</Button>
-                <Button bsSize="xs" onClick={() => this.props.setGraphPointsSelectionMode(EnumChartPointsSelectionMode.SelectUnselectSingle) } 
-                  bsStyle={this.getGraphPointsSelectionButtonStyle(this.props.chartState.graphPointsSelectionMode, EnumChartPointsSelectionMode.SelectUnselectSingle)}>Select single point</Button>
-                <Button bsSize="xs" onClick={() => this.props.setGraphPointsSelectionMode(EnumChartPointsSelectionMode.SelectMultiple) } 
-                  bsStyle={this.getGraphPointsSelectionButtonStyle(this.props.chartState.graphPointsSelectionMode, EnumChartPointsSelectionMode.SelectMultiple)}>Select multiple points</Button>
-                <Button bsSize="xs" onClick={() => this.props.setGraphPointsSelectionMode(EnumChartPointsSelectionMode.UnselectMultiple) } 
-                  bsStyle={this.getGraphPointsSelectionButtonStyle(this.props.chartState.graphPointsSelectionMode, EnumChartPointsSelectionMode.UnselectMultiple)}>Unselect multiple points</Button>
-              </ButtonGroup>
-              &nbsp;
-              <ButtonGroup>
-                <Button bsSize="xs"
-                  onClick={() => this.props.setWindowWidthMinutes(dateFns.differenceInMinutes(this.props.chartState.windowDateTo, this.props.chartState.windowDateFrom)) }>
-                  Lock window width to current
-                </Button>
-                <Button bsSize="xs"
-                  onClick={() => this.props.setWindowWidthMinutes(5) }>
-                  Unlock window width
-                </Button>
-              </ButtonGroup>
-              &nbsp;
-              <ButtonGroup>
-                {/* <Dropzone className="dropZone" 
-                  ref={(node) => this.dropZone = node } 
-                  onDrop={(files: File[]) => this.parseCsvFiles(files)}>
-                </Dropzone> */}
-                <Button 
-                  bsSize="xs" 
-                  onClick={() => { this.dropZone.open() }}>
-                  Load csv file
-                </Button>
-              </ButtonGroup>
-              &nbsp;
-              <ButtonGroup>
                 <Button 
                   bsSize="xs" 
                   onClick={() => {
@@ -239,23 +197,6 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                   onClick={() => this.props.setZoomWindowLevel(EnumZoomSelected.ZoomLevel2) } 
                   bsStyle={this.getZoomButtonStyle(this.props.chartState.chartZoomSettings.zoomSelected, EnumZoomSelected.ZoomLevel2)}>
                   {ui.getZoomLevelButtonCaption(EnumZoomSelected.ZoomLevel2, this.props.chartState)}
-                </Button>
-              </ButtonGroup>
-              &nbsp;
-              <ButtonGroup>
-                <Button 
-                  disabled={this.isFrameButtonDisabled(this.props.chartState.chartZoomSettings.zoomSelected)} 
-                  bsSize="xs" 
-                  onClick={() => { this.props.scrollToThePreviousFrame() }} 
-                  bsStyle="default">
-                  Previous Frame
-                </Button>
-                <Button 
-                  disabled={this.isFrameButtonDisabled(this.props.chartState.chartZoomSettings.zoomSelected)}
-                  bsSize="xs" 
-                  onClick={() => this.props.scrollToTheNextFrame() } 
-                  bsStyle="default">
-                  Next Frame
                 </Button>
               </ButtonGroup>
             </Col>
@@ -304,9 +245,7 @@ const mapStateToProps = (state: IAppState): IGraphScreenProps => {
 
 const matchDispatchToProps = (dispatch: Dispatch<void>) => {
   return bindActionCreators({
-    setGraphPointsSelectionMode: chartActionCreators.setGraphPointsSelectionMode,
     csvDataLoaded: chartActionCreators.csvDataLoaded,
-    setWindowWidthMinutes: chartActionCreators.setWindowWidthMinutes,
     setZoomWindowLevel: chartActionCreators.setZoomWindowLevel,
     generateRandomData: chartActionCreators.generateRandomData,
     setWindowDateFromTo: chartActionCreators.setWindowDateFromTo
