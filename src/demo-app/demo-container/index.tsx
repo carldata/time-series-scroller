@@ -5,7 +5,6 @@ import * as React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { Panel, ButtonGroup, Button, ListGroup, ListGroupItem, Grid, Form, Row, Col, FormGroup, ControlLabel, FormControl, HelpBlock  } from 'react-bootstrap';
-import * as Dropzone from 'react-dropzone'
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { calculations as c } from '../../hp-time-series-chart/calculations';

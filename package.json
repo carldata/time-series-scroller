@@ -12,6 +12,7 @@
   },
   "author": "Sharp Coding <sharp.coding@gmail.com>",
   "license": "MIT",
+  "main": "index.js",
   "dependencies": {
     "axios": "^0.16.2",
     "bootstrap": "^3.3.7",
