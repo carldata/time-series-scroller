@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 import { IHpTimeSeriesChartState } from './state';
-import { calculations } from './calculations';
+import { hpTimeSeriesChartCalculations } from './calculations';
 import { IChartDimensions, IEventChartConfiguration, IChartTimeSeries } from './interfaces';
 import { IDateTimePoint } from './state/date-time-point';
 import { IChartZoomSettings } from './state/chart-zoom-settings';
@@ -39,7 +39,7 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
   };
 
   let chartTimeSeries: IChartTimeSeries[] = _.map(props.state.series, el => 
-    calculations.getFilteredTimeSeries(el, 
+    hpTimeSeriesChartCalculations.getFilteredTimeSeries(el, 
       props.state.windowDateFrom, 
       props.state.windowDateTo,
       props.state.chartZoomSettings,

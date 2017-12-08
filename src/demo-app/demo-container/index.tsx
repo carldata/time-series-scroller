@@ -1,3 +1,5 @@
+import { hpTimeSeriesChartCalculations } from '../../hp-time-series-chart/calculations';
+import { hpSliderHpTimeSeriesChartIntegration } from '../../hp-time-series-chart/hp-slider-integration';
 import 'bootstrap/dist/css/bootstrap.css';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
@@ -7,12 +9,11 @@ import { connect } from 'react-redux';
 import { Panel, ButtonGroup, Button, ListGroup, ListGroupItem, Grid, Form, Row, Col, FormGroup, ControlLabel, FormControl, HelpBlock  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
-import { calculations as c } from '../../hp-time-series-chart/calculations';
 import * as ui from '../../hp-time-series-chart/ui';
 import { EnumChartPointsSelectionMode, EnumZoomSelected } from '../../hp-time-series-chart/state/enums';
 import { IChartDimensions, IEventChartConfiguration }  from '../../hp-time-series-chart/interfaces';
-import { ICsvRawParseConfiguration, ICsvColumn, EnumCsvDataType, EnumCsvFileSource, ICsvDataLoadedActionResponse }  from '../../hp-time-series-chart/csv-loading/models';
-import { chartActionCreators } from '../../hp-time-series-chart/action-creators';
+import { ICsvRawParseConfiguration, ICsvColumn, EnumCsvDataType, ICsvDataLoadedContext }  from '../../hp-time-series-chart/csv-loading/models';
+import { hpTimeSeriesChartActionCreators } from '../../hp-time-series-chart/action-creators';
 import { HpSlider } from '../../hp-slider';
 import { IDomain, IHpSliderScreenDimensions, IHpSliderHandleValues } from '../../hp-slider/interfaces';
 import { EnumHandleType } from '../../hp-slider/enums';
@@ -29,7 +30,6 @@ export interface IGraphScreenState {
 }
 
 export interface IGraphScreenDispatchProps {
-  csvDataLoaded: (text: string, config: ICsvRawParseConfiguration) => ICsvDataLoadedActionResponse,
   setZoomWindowLevel: (level: EnumZoomSelected) => EnumZoomSelected,
   generateRandomData: (dates: Date[]) => void,
   setWindowDateFromTo: (dateFrom: Date, dateTo: Date) => void
@@ -70,7 +70,6 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
       columns: columns,
       newLineCharacter: '\n',
       delimiter: ",",
-      source: EnumCsvFileSource.LocalFileSystem,
       firstLineContainsHeaders: false
     };
     return result;
@@ -86,22 +85,8 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
     return stateMode == expectedMode ? "success" : "default";
   }
 
-  private calculateSliderHandleValues = (state: IHpTimeSeriesChartState): IHpSliderHandleValues<number> => {
-    return {
-      left: c.translateDateTimeToMinutesDomain(state, state.windowDateFrom), 
-      right: c.translateDateTimeToMinutesDomain(state, state.windowDateTo)
-    };
-  }
-
   private isZoomButtonDisabled = (zoomLimitationLevelButtonIsPresenting: EnumZoomSelected, currentZoomLimitationLevel: EnumZoomSelected): boolean => {
     return Math.abs(zoomLimitationLevelButtonIsPresenting - currentZoomLimitationLevel) > 1;
-  }
-
-  private parseCsvFiles = (files: File[]): void => {
-    let fileReader = new FileReader();
-    let file = _.first(files);
-    fileReader.addEventListener("loadend", (e: ProgressEvent) => this.props.csvDataLoaded(fileReader.result, this.getCsvConfig()));
-    fileReader.readAsText(file);
   }
 
   public render() {
@@ -205,23 +190,23 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
           <Col componentClass={ControlLabel} md={12}>
             <HpSlider 
               dimensions={{sliderWidthPx: 800, sliderHeightPx: 50, sliderHandleWidthThicknessPx: 10 }}
-              domain={{ domainMin: 0, domainMax: c.calculateDomainLengthMinutes(this.props.chartState) }}
-              handleValues={this.calculateSliderHandleValues(this.props.chartState)}
+              domain={{ domainMin: 0, domainMax: hpTimeSeriesChartCalculations.calculateDomainLengthMinutes(this.props.chartState) }}
+              handleValues={hpSliderHpTimeSeriesChartIntegration.calculateSliderHandleValues(this.props.chartState)}
               displayDragBar={true}
               handleMoved={(value: number | number[], type: EnumHandleType) => {
-                let handleValues = this.calculateSliderHandleValues(this.props.chartState);
-                let newDateFrom = c.translateUnixMinutesDomainToDateTime(this.props.chartState, handleValues.left);
-                let newDateTo = c.translateUnixMinutesDomainToDateTime(this.props.chartState, handleValues.right);
+                let handleValues = hpSliderHpTimeSeriesChartIntegration.calculateSliderHandleValues(this.props.chartState);
+                let newDateFrom = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.props.chartState, handleValues.left);
+                let newDateTo = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.props.chartState, handleValues.right);
                 switch (type) {
                   case EnumHandleType.Left:
-                    newDateFrom = c.translateUnixMinutesDomainToDateTime(this.props.chartState, _.isNumber(value) ? value : 0);
+                    newDateFrom = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.props.chartState, _.isNumber(value) ? value : 0);
                     break;
                   case EnumHandleType.Right:
-                    newDateTo = c.translateUnixMinutesDomainToDateTime(this.props.chartState, _.isNumber(value) ? value : 0);
+                    newDateTo = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.props.chartState, _.isNumber(value) ? value : 0);
                     break;
                   case EnumHandleType.DragBar:
-                    newDateFrom = c.translateUnixMinutesDomainToDateTime(this.props.chartState, value[0]);
-                    newDateTo = c.translateUnixMinutesDomainToDateTime(this.props.chartState, value[1]);
+                    newDateFrom = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.props.chartState, value[0]);
+                    newDateTo = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.props.chartState, value[1]);
                     break;
                 }
                 this.props.setWindowDateFromTo(newDateFrom, newDateTo);
@@ -244,10 +229,9 @@ const mapStateToProps = (state: IAppState): IGraphScreenProps => {
 
 const matchDispatchToProps = (dispatch: Dispatch<void>) => {
   return bindActionCreators({
-    csvDataLoaded: chartActionCreators.csvDataLoaded,
-    setZoomWindowLevel: chartActionCreators.setZoomWindowLevel,
-    generateRandomData: chartActionCreators.generateRandomData,
-    setWindowDateFromTo: chartActionCreators.setWindowDateFromTo
+    setZoomWindowLevel: hpTimeSeriesChartActionCreators.setZoomWindowLevel,
+    generateRandomData: hpTimeSeriesChartActionCreators.generateRandomData,
+    setWindowDateFromTo: hpTimeSeriesChartActionCreators.setWindowDateFromTo
   }, dispatch);
 }
 

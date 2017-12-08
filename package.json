@@ -1,6 +1,6 @@
 {
   "name": "time-series-scroller",
-  "version": "1.0.0",
+  "version": "0.5.1",
   "description": "Scrolling component for time series",
   "repository": {
     "type": "git"
@@ -12,7 +12,8 @@
   },
   "author": "Sharp Coding <sharp.coding@gmail.com>",
   "license": "MIT",
-  "main": "index.js",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "dependencies": {
     "axios": "^0.16.2",
     "bootstrap": "^3.3.7",

@@ -6,7 +6,6 @@ import { IChartZoomSettings } from './chart-zoom-settings';
 import { IEventChartConfiguration } from '../interfaces';
 
 export interface IHpTimeSeriesChartState {
-  isDataLoading: boolean;
   /**
    * In the scrolling chart - the moment of time user sees on X-axis coordinate equal 0
    */
