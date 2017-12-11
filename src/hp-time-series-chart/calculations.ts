@@ -250,7 +250,7 @@ const rebuildSampleCacheAdjustedToCurrentZoomLevel = (rFactorSampleCache: IDateT
   return result;
 }
 
-export const calculations = {
+export const hpTimeSeriesChartCalculations = {
   createResampledPointsCache: createResampledPointsCache,
   getFilteredTimeSeries: getFilteredChartTimeSeries,
   translateDateTimeToMinutesDomain: translateDateTimeToUnixMinutesDomain,

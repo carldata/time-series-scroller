@@ -1,7 +1,12 @@
+Documentation to https://github.com/carldata/time-series-scroller
+
 # time-series-scroller
 
-Compiling the component:
+Exposing as npm package:
 
+In src folder run:
 ```
-tsc --jsx react src/demo-app/index.tsx
+tsc --jsx react --listEmittedFiles --declaration --outDir build
 ```
+
+

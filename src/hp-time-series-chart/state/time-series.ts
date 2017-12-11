@@ -36,7 +36,7 @@ export interface ITimeSeries {
   /**
    * The declared density provided in data: DateTimePoint[] collection,
    * keep in mind it is just a declaration and real data can contain holes !
-   */ 
+   */
   secondsPerSample: number;
 
   /**

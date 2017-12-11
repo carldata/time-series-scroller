@@ -4,11 +4,6 @@ export enum EnumCsvDataType {
   Float
 }
 
-export enum EnumCsvFileSource {
-  Url,
-  LocalFileSystem
-}
-
 export interface ICsvColumn {
   type: EnumCsvDataType;
   /**
@@ -23,11 +18,6 @@ export interface ICsvColumn {
  * declared what columns should be loaded
  */
 export interface ICsvRawParseConfiguration {
-  source: EnumCsvFileSource;
-  /**
-   * If source == EnumFileSource.Url, the url CSV should be fetched from
-   */
-  url?: string;
   columns: ICsvColumn[];
   /**
    * What is the delimiter character of CSV data 
@@ -41,7 +31,7 @@ export interface ICsvRawParseConfiguration {
   firstLineContainsHeaders: boolean;
 }
 
-export interface ICsvDataLoadedActionResponse {
+export interface ICsvDataLoadedContext {
   /**
    * The whole CSV file contents i.e. the text as loaded from CSV file
    */

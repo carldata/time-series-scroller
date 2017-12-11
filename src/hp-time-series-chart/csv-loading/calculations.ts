@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
-import { ICsvDataLoadedActionResponse, EnumCsvDataType } from './models';
+import { ICsvDataLoadedContext, EnumCsvDataType } from './models';
 import { IDateTimePoint } from '../state/date-time-point';
 
 const debug = false;
 
-const extractDateTimePointsOutOfCsvFileContents = (response: ICsvDataLoadedActionResponse): IDateTimePoint[] => {
+const extractDateTimePoints = (response: ICsvDataLoadedContext): IDateTimePoint[] => {
   let result = new Array<IDateTimePoint>();  
   let lines = response.text.split(response.config.newLineCharacter)
   if (response.config.firstLineContainsHeaders)
@@ -64,6 +64,6 @@ const estimateSecondsPerSample = (array: IDateTimePoint[]): number => {
 }
 
 export const calculations = {
-  extractDateTimePointsOutOfCsvFileContents,
+  extractDateTimePoints,
   estimateSecondsPerSample
 }

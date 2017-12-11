@@ -1,40 +1,32 @@
 import * as _ from 'lodash';
-import { chartActionTypes } from './action-creators';
-import { reducers, auxFunctions } from './reducers';
+import { hpTimeSeriesChartActionTypes } from './action-creators';
+import { hpTimeSeriesChartReducers, hpTimeSeriesChartReducerAuxFunctions } from './reducers';
 
-interface IReducerActionTypeMapping {
+export interface IReducerActionTypeMapping {
   action: Function;
   name: string;
 }
 
-let mappings: Array<IReducerActionTypeMapping> = [
+const mappings: Array<IReducerActionTypeMapping> = [
   <IReducerActionTypeMapping>{
-    name: chartActionTypes.CSV_DATA_LOAD_INITIALIZE,
-    action: reducers.csvDataLoadInitialize
+    name: hpTimeSeriesChartActionTypes.GENERATE_RANDOM_DATA,
+    action: hpTimeSeriesChartReducers.generateRandomData
   },
   <IReducerActionTypeMapping>{
-    name: chartActionTypes.CSV_DATA_LOAD_FINALIZE,
-    action: reducers.csvDataLoadFinalize
+    name: hpTimeSeriesChartActionTypes.SET_CHART_POINTS_SELECTION_MODE,
+    action: hpTimeSeriesChartReducers.setChartPointsSelectionMode
   },
   <IReducerActionTypeMapping>{
-    name: chartActionTypes.GENERATE_RANDOM_DATA,
-    action: reducers.generateRandomData
+    name: hpTimeSeriesChartActionTypes.SET_WINDOW_DATE_FROM_TO,
+    action: hpTimeSeriesChartReducers.setWindowDateFromTo
   },
   <IReducerActionTypeMapping>{
-    name: chartActionTypes.SET_CHART_POINTS_SELECTION_MODE,
-    action: reducers.setChartPointsSelectionMode
+    name: hpTimeSeriesChartActionTypes.SET_WINDOW_WIDTH_MINUTES,
+    action: hpTimeSeriesChartReducers.setWindowWidthMinutes
   },
   <IReducerActionTypeMapping>{
-    name: chartActionTypes.SET_WINDOW_DATE_FROM_TO,
-    action: reducers.setWindowDateFromTo
-  },
-  <IReducerActionTypeMapping>{
-    name: chartActionTypes.SET_WINDOW_WIDTH_MINUTES,
-    action: reducers.setWindowWidthMinutes
-  },
-  <IReducerActionTypeMapping>{
-    name: chartActionTypes.SET_ZOOM,
-    action: reducers.setZoom
+    name: hpTimeSeriesChartActionTypes.SET_ZOOM,
+    action: hpTimeSeriesChartReducers.setZoom
   }
 ];
 
