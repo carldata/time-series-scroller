@@ -1,3 +1,4 @@
+import { HpTimeSeriesScroller } from '../../component';
 import { hpTimeSeriesChartCalculations } from '../../hp-time-series-chart/calculations';
 import { hpSliderHpTimeSeriesChartIntegration } from '../../hp-time-series-chart/hp-slider-integration';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -75,8 +76,6 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
     return result;
   }
 
-  private dropZone: any;
-
   private getGraphPointsSelectionButtonStyle = (stateMode: EnumChartPointsSelectionMode, expectedMode: EnumChartPointsSelectionMode): string => {
     return stateMode == expectedMode ? "success" : "default";
   }
@@ -152,10 +151,10 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
           </Row>
           <Row>
             <Col componentClass={ControlLabel} md={12}>
-              <HpTimeSeriesChart
-                eventChartConfiguration={this.eventChartConfiguration}
+              <HpTimeSeriesScroller
                 chartDimensions={this.chartDimensions}
-                state={this.props.chartState} />
+                state={this.props.chartState}
+              />
             </Col>
           </Row>
           <Row>
@@ -184,36 +183,6 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                 </Button>
               </ButtonGroup>
             </Col>
-          </Row>
-          <Row>
-          <Row>
-          <Col componentClass={ControlLabel} md={12}>
-            <HpSlider 
-              dimensions={{sliderWidthPx: 800, sliderHeightPx: 50, sliderHandleWidthThicknessPx: 10 }}
-              domain={{ domainMin: 0, domainMax: hpTimeSeriesChartCalculations.calculateDomainLengthMinutes(this.props.chartState) }}
-              handleValues={hpSliderHpTimeSeriesChartIntegration.calculateSliderHandleValues(this.props.chartState)}
-              displayDragBar={true}
-              handleMoved={(value: number | number[], type: EnumHandleType) => {
-                let handleValues = hpSliderHpTimeSeriesChartIntegration.calculateSliderHandleValues(this.props.chartState);
-                let newDateFrom = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.props.chartState, handleValues.left);
-                let newDateTo = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.props.chartState, handleValues.right);
-                switch (type) {
-                  case EnumHandleType.Left:
-                    newDateFrom = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.props.chartState, _.isNumber(value) ? value : 0);
-                    break;
-                  case EnumHandleType.Right:
-                    newDateTo = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.props.chartState, _.isNumber(value) ? value : 0);
-                    break;
-                  case EnumHandleType.DragBar:
-                    newDateFrom = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.props.chartState, value[0]);
-                    newDateTo = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.props.chartState, value[1]);
-                    break;
-                }
-                this.props.setWindowDateFromTo(newDateFrom, newDateTo);
-              }}
-            />
-          </Col>
-        </Row>
           </Row>
         </Grid>
       </div>

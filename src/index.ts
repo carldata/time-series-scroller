@@ -1,3 +1,4 @@
+import { HpTimeSeriesScroller, IHpTimeSeriesScrollerProps } from './component';
 import { EnumCsvDataType } from './hp-time-series-chart/csv-loading/models';
 import { csvLoadingAuxiliary } from './hp-time-series-chart/csv-loading/auxilary';
 import { ITimeSeries } from './hp-time-series-chart/state/time-series';
@@ -12,9 +13,10 @@ import { HpSlider, IHpSliderProps, IHpSliderState } from './hp-slider';
 import { hpSliderHpTimeSeriesChartIntegration } from './hp-time-series-chart/hp-slider-integration';
 
 export {
-  HpTimeSeriesChart, 
+  HpTimeSeriesScroller,
+  IHpTimeSeriesScrollerProps,
   IHpTimeSeriesChartProps,
-  IHpTimeSeriesChartState, 
+  IHpTimeSeriesChartState,
   hpTimeSeriesChartActionCreators,
   hpTimeSeriesChartActionTypes,
   hpTimeSeriesChartReducerAuxFunctions,
@@ -24,9 +26,7 @@ export {
   IHpSliderState,
   hpSliderHpTimeSeriesChartIntegration,
   hpTimeSeriesChartCalculations,
-  EnumHandleType,
   IDateTimePoint,
-  ITimeSeries,
   csvLoadingAuxiliary,
   EnumCsvDataType
 }
