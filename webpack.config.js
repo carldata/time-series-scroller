@@ -1,6 +1,7 @@
 const path = require("path");
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var config = {
   /*
@@ -28,7 +29,8 @@ var config = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin()
+    new HtmlWebpackPlugin(),
+    new CopyWebpackPlugin([{ from: './src/demo-app/10k.csv' }], { copyUnmodified: true })
   ],
   module: {
     /*

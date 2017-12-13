@@ -1,6 +1,6 @@
 import { HpTimeSeriesScroller, IHpTimeSeriesScrollerProps } from './component';
 import { EnumCsvDataType } from './hp-time-series-chart/csv-loading/models';
-import { csvLoadingAuxiliary } from './hp-time-series-chart/csv-loading/auxilary';
+import { csvLoadingAuxiliary } from './hp-time-series-chart/csv-loading/auxiliary';
 import { ITimeSeries } from './hp-time-series-chart/state/time-series';
 import { IDateTimePoint } from './hp-time-series-chart/state/date-time-point';
 import { EnumHandleType } from './hp-slider/enums';

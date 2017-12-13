@@ -1,3 +1,4 @@
+import { hpTimeSeriesChartCsvLoadingActionCreators } from '../hp-time-series-chart/csv-loading/action-creators';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import thunk from 'redux-thunk';
@@ -16,8 +17,6 @@ const combinedReducers = combineReducers({
 const composeEnhancers = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose;
 const store: Store<any> = createStore(combinedReducers, composeEnhancers(), applyMiddleware(thunk));
 
-console.log(store);
-
 ReactDOM.render(
   <Provider store={store}>
     <div>
@@ -26,3 +25,5 @@ ReactDOM.render(
   </Provider>,
   document.body.appendChild(document.createElement('div'))
 );
+
+store.dispatch(hpTimeSeriesChartCsvLoadingActionCreators.loadCsv("10k.csv"));

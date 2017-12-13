@@ -35,7 +35,6 @@ export const buildInitialState = ():IHpTimeSeriesChartState => {
     yMinValue: 0,
     yMaxValue: 0
   };
-  console.log('buildInitialState', result);
   return result;
 }
 
@@ -102,7 +101,6 @@ export const setFrameDatesByZoomLevel = (settings: IChartZoomSettings, points: D
 export const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo] = action.payload;
   let points: Array<IDateTimePoint> = randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
-  console.log(points, dateRangeDateFrom, dateRangeDateTo);
   return <IHpTimeSeriesChartState> {
     series: _.concat([], <ITimeSeries>{
       color: "steelblue",
