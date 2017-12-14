@@ -1,3 +1,4 @@
+import * as dateFns from 'date-fns';
 import { EnumHandleType } from './hp-slider/enums';
 import { hpSliderHpTimeSeriesChartIntegration } from './hp-time-series-chart/hp-slider-integration';
 import { hpTimeSeriesChartCalculations } from './hp-time-series-chart/calculations';
@@ -40,7 +41,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
         />
         <br />
         <HpSlider
-          domain={{ domainMin: 0, domainMax: hpTimeSeriesChartCalculations.calculateDomainLengthMinutes(this.state) }}
+          domain={{ domainMin: 0, domainMax: hpTimeSeriesChartCalculations.calculateDomainLengthSeconds(this.state) }}
           handleValues={hpSliderHpTimeSeriesChartIntegration.calculateSliderHandleValues(this.state)}
           dimensions={{
             sliderHandleWidthThicknessPx: 15,
@@ -49,21 +50,25 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
           }}
           displayDragBar={true}
           handleMoved={(value: number | number[], type: EnumHandleType) => {
+            let debug = true;
             let handleValues = hpSliderHpTimeSeriesChartIntegration.calculateSliderHandleValues(this.state);
-            let newDateFrom = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.state, handleValues.left);
-            let newDateTo = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.state, handleValues.right);
+            let newDateFrom = hpTimeSeriesChartCalculations.translateUnixSecondsDomainToDateTime(this.state, handleValues.left);
+            let newDateTo = hpTimeSeriesChartCalculations.translateUnixSecondsDomainToDateTime(this.state, handleValues.right);
             switch (type) {
               case EnumHandleType.Left:
-                newDateFrom = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.state, _.isNumber(value) ? value : 0);
+                newDateFrom = hpTimeSeriesChartCalculations.translateUnixSecondsDomainToDateTime(this.state, _.isNumber(value) ? value : 0);
                 break;
               case EnumHandleType.Right:
-                newDateTo = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.state, _.isNumber(value) ? value : 0);
+                newDateTo = hpTimeSeriesChartCalculations.translateUnixSecondsDomainToDateTime(this.state, _.isNumber(value) ? value : 0);
                 break;
               case EnumHandleType.DragBar:
-                newDateFrom = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.state, value[0]);
-                newDateTo = hpTimeSeriesChartCalculations.translateUnixMinutesDomainToDateTime(this.state, value[1]);
+                newDateFrom = hpTimeSeriesChartCalculations.translateUnixSecondsDomainToDateTime(this.state, value[0]);
+                newDateTo = hpTimeSeriesChartCalculations.translateUnixSecondsDomainToDateTime(this.state, value[1]);
                 break;
             }
+            debug ? console.log(`handleValues: [${handleValues.left}, ${handleValues.right}], `+
+              `newDateFrom: ${dateFns.format(newDateFrom, "YYYY-MM-DD HH:mm:ss")}, ` +
+              `newDateTo: ${dateFns.format(newDateTo, "YYYY-MM-DD HH:mm:ss")}`) : null;
             _.isFunction(this.props.setWindowDateFromTo) ?
               this.props.setWindowDateFromTo(newDateFrom, newDateTo) :
               this.setState({

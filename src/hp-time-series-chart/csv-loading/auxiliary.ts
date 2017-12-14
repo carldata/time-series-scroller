@@ -21,7 +21,7 @@ export const csvLoadingAuxiliary = {
     let timeSeries: ITimeSeries = <ITimeSeries>{
       color: "steelblue",
       name: `csv_loaded_series_${state.series.length+1}`,
-      applyResampling: true,
+      applyResampling: false,
       points: points,
       from: new Date(points[0].date.getTime()),
       to: new Date(points[points.length-1].date.getTime()),

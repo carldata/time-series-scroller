@@ -182,49 +182,49 @@ const getUnixTimeStampLimitationsFromTo = (chartZoomSettings: IChartZoomSettings
  * Calculates the difference - in minutes - between the datetime 
  * of the last point visible in window and the first point available in window
  */
-const translateDateTimeToUnixMinutesDomain = (state: IHpTimeSeriesChartState, date: Date): number => {
+const translateDateTimeToUnixSecondsDomain = (state: IHpTimeSeriesChartState, date: Date): number => {
   var result: number;
   switch (state.chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.NoZoom:
-      result = dateFns.differenceInMinutes(date, state.dateRangeDateFrom);
+      result = dateFns.differenceInSeconds(date, state.dateRangeDateFrom);
       break;
     case EnumZoomSelected.ZoomLevel1:
-      result = dateFns.differenceInMinutes(date, state.chartZoomSettings.zoomLevel1FramePointsFrom);
+      result = dateFns.differenceInSeconds(date, state.chartZoomSettings.zoomLevel1FramePointsFrom);
       break;
     case EnumZoomSelected.ZoomLevel2:
-      result = dateFns.differenceInMinutes(date, state.chartZoomSettings.zoomLevel2FramePointsFrom);
+      result = dateFns.differenceInSeconds(date, state.chartZoomSettings.zoomLevel2FramePointsFrom);
       break;
   }
   return result;
 }
 
-const calculateDomainLengthMinutes = (state: IHpTimeSeriesChartState): number => {
+const calculateDomainLengthSeconds = (state: IHpTimeSeriesChartState): number => {
   var result: number;
   switch (state.chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.NoZoom:
-      result = translateDateTimeToUnixMinutesDomain(state, state.dateRangeDateTo);
+      result = translateDateTimeToUnixSecondsDomain(state, state.dateRangeDateTo);
       break;
     case EnumZoomSelected.ZoomLevel1:
-      result = translateDateTimeToUnixMinutesDomain(state, state.chartZoomSettings.zoomLevel1FramePointsTo);
+      result = translateDateTimeToUnixSecondsDomain(state, state.chartZoomSettings.zoomLevel1FramePointsTo);
       break;
     case EnumZoomSelected.ZoomLevel2:
-      result = translateDateTimeToUnixMinutesDomain(state, state.chartZoomSettings.zoomLevel2FramePointsTo);
+      result = translateDateTimeToUnixSecondsDomain(state, state.chartZoomSettings.zoomLevel2FramePointsTo);
       break;
   }
   return result;
 }
 
-const translateMinutesDomainToDateTime = (state: IHpTimeSeriesChartState, minutes: number): Date => {
+const translateSecondsDomainToDateTime = (state: IHpTimeSeriesChartState, seconds: number): Date => {
   var result: Date;
   switch (state.chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.NoZoom:
-      result = dateFns.addMinutes(state.dateRangeDateFrom, minutes)
+      result = dateFns.addSeconds(state.dateRangeDateFrom, seconds)
       break;
     case EnumZoomSelected.ZoomLevel1:
-      result = dateFns.addMinutes(state.chartZoomSettings.zoomLevel1FramePointsFrom, minutes)
+      result = dateFns.addSeconds(state.chartZoomSettings.zoomLevel1FramePointsFrom, seconds)
       break;
     case EnumZoomSelected.ZoomLevel2:
-      result = dateFns.addMinutes(state.chartZoomSettings.zoomLevel2FramePointsFrom, minutes)
+      result = dateFns.addSeconds(state.chartZoomSettings.zoomLevel2FramePointsFrom, seconds)
       break;
   }
   return result;
@@ -253,8 +253,8 @@ const rebuildSampleCacheAdjustedToCurrentZoomLevel = (rFactorSampleCache: IDateT
 export const hpTimeSeriesChartCalculations = {
   createResampledPointsCache: createResampledPointsCache,
   getFilteredTimeSeries: getFilteredChartTimeSeries,
-  translateDateTimeToMinutesDomain: translateDateTimeToUnixMinutesDomain,
-  calculateDomainLengthMinutes: calculateDomainLengthMinutes,
-  translateUnixMinutesDomainToDateTime: translateMinutesDomainToDateTime,
+  translateDateTimeToSecondsDomain: translateDateTimeToUnixSecondsDomain,
+  calculateDomainLengthSeconds: calculateDomainLengthSeconds,
+  translateUnixSecondsDomainToDateTime: translateSecondsDomainToDateTime,
   rebuildSampleCacheAdjustedToCurrentZoomLevel: rebuildSampleCacheAdjustedToCurrentZoomLevel
 }

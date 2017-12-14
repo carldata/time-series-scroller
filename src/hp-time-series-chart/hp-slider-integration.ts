@@ -4,8 +4,8 @@ import { IHpTimeSeriesChartState } from './state';
 
 const calculateSliderHandleValues = (state: IHpTimeSeriesChartState): IHpSliderHandleValues<number> => {
   return {
-    left: hpTimeSeriesChartCalculations.translateDateTimeToMinutesDomain(state, state.windowDateFrom), 
-    right: hpTimeSeriesChartCalculations.translateDateTimeToMinutesDomain(state, state.windowDateTo)
+    left: hpTimeSeriesChartCalculations.translateDateTimeToSecondsDomain(state, state.windowDateFrom), 
+    right: hpTimeSeriesChartCalculations.translateDateTimeToSecondsDomain(state, state.windowDateTo)
   };
 }
 

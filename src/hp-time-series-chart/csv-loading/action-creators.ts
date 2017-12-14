@@ -8,7 +8,7 @@ export const hpTimeSeriesCsvLoadingChartActionTypes = {
 
 export const hpTimeSeriesChartCsvLoadingActionCreators = {
   loadCsv: (url: string) => (dispatch: Dispatch<{}>) => {
-    axios.get("10k.csv").then((response: AxiosResponse) => {
+    axios.get(url).then((response: AxiosResponse) => {
       dispatch({
         type: hpTimeSeriesCsvLoadingChartActionTypes.LOADING_CSV_DATA_SUCCEEDED,
         payload: response.data
