@@ -39,6 +39,10 @@ export interface IGraphScreenDispatchProps {
 class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScreenDispatchProps, IGraphScreenState> {
   constructor(props: IGraphScreenProps & IGraphScreenDispatchProps) {
     super(props);
+    this.state = {
+      windowDateFrom: props.chartState.windowDateFrom,
+      windowDateTo: props.chartState.windowDateTo
+    };
   }
 
   private chartDimensions: IChartDimensions = {
@@ -78,14 +82,6 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
 
   private getGraphPointsSelectionButtonStyle = (stateMode: EnumChartPointsSelectionMode, expectedMode: EnumChartPointsSelectionMode): string => {
     return stateMode == expectedMode ? "success" : "default";
-  }
-
-  private getZoomButtonStyle = (stateMode: EnumZoomSelected, expectedMode: EnumZoomSelected): string => {
-    return stateMode == expectedMode ? "success" : "default";
-  }
-
-  private isZoomButtonDisabled = (zoomLimitationLevelButtonIsPresenting: EnumZoomSelected, currentZoomLimitationLevel: EnumZoomSelected): boolean => {
-    return Math.abs(zoomLimitationLevelButtonIsPresenting - currentZoomLimitationLevel) > 1;
   }
 
   public render() {
@@ -154,37 +150,14 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
               <HpTimeSeriesScroller
                 chartDimensions={this.chartDimensions}
                 state={this.props.chartState}
+                zoomWindowLevelSet={(level, from, to) => {
+                  this.props.setWindowDateFromTo(from, to);
+                  this.props.setZoomWindowLevel(level);
+                }}
               />
             </Col>
           </Row>
-          <Row>
-            <Col componentClass={ControlLabel} md={12}>
-              <ButtonGroup>
-                <Button 
-                  disabled={this.isZoomButtonDisabled(EnumZoomSelected.NoZoom, this.props.chartState.chartZoomSettings.zoomSelected)} 
-                  bsSize="xs" 
-                  onClick={() => this.props.setZoomWindowLevel(EnumZoomSelected.NoZoom) } 
-                  bsStyle={this.getZoomButtonStyle(this.props.chartState.chartZoomSettings.zoomSelected, EnumZoomSelected.NoZoom)}>
-                  View All
-                </Button>
-                <Button 
-                  disabled={this.isZoomButtonDisabled(EnumZoomSelected.ZoomLevel1, this.props.chartState.chartZoomSettings.zoomSelected)}
-                  bsSize="xs" 
-                  onClick={() => { this.props.setZoomWindowLevel(EnumZoomSelected.ZoomLevel1) }} 
-                  bsStyle={this.getZoomButtonStyle(this.props.chartState.chartZoomSettings.zoomSelected, EnumZoomSelected.ZoomLevel1)}>
-                  {ui.getZoomLevelButtonCaption(EnumZoomSelected.ZoomLevel1, this.props.chartState)}
-                </Button>
-                <Button 
-                  disabled={this.isZoomButtonDisabled(EnumZoomSelected.ZoomLevel2, this.props.chartState.chartZoomSettings.zoomSelected)}
-                  bsSize="xs" 
-                  onClick={() => this.props.setZoomWindowLevel(EnumZoomSelected.ZoomLevel2) } 
-                  bsStyle={this.getZoomButtonStyle(this.props.chartState.chartZoomSettings.zoomSelected, EnumZoomSelected.ZoomLevel2)}>
-                  {ui.getZoomLevelButtonCaption(EnumZoomSelected.ZoomLevel2, this.props.chartState)}
-                </Button>
-              </ButtonGroup>
-            </Col>
-          </Row>
-        </Grid>
+         </Grid>
       </div>
     );
   }

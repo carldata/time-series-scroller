@@ -123,6 +123,22 @@ const createResampledPointsCache = (allSamples: IDateTimePoint[]): IDateTimePoin
 }
 
 /**
+ * Custom filter function that adds additional preceding and succeeding samples 
+ * (necessary for time series that are not distributed uniformly)
+ */
+const filter = (series: IDateTimePoint[], unixFrom: number, unixTo: number): IDateTimePoint[] => {
+  if (series.length <= 1)
+    return series;
+  let result = _.filter(series, el => el.unix >= unixFrom && el.unix <= unixTo);
+  let preceding = _.last(_.filter(series, el => el.unix < unixFrom));
+  let succeeding = _.first(_.filter(series, el => el.unix > unixTo));
+  return _.concat(
+    _.isObject(preceding) ? [preceding] : [], 
+    result, 
+    _.isObject(succeeding) ? [succeeding] : []);
+}
+
+/**
  * Converts ITimeSeries object to IChartTimeSeries object.
  * ITimeSeries is as model-adopted representation of time series.
  * IChartTimeSeries is chart-adopted representation of time series, 
@@ -146,17 +162,17 @@ const getFilteredChartTimeSeries = (series: ITimeSeries, from: Date, to: Date, c
   if (series.applyResampling && _.isObject(rFactorCacheElement)) {
     switch (chartZoomSettings.zoomSelected) {
       case EnumZoomSelected.NoZoom:
-        result.points = _.filter(rFactorCacheElement.noZoomSamples, el => el.unix >= unixFrom && el.unix <= unixTo);
+        result.points = filter(rFactorCacheElement.noZoomSamples, unixFrom, unixTo);
         debug ? console.log('[Cache] rFactorExact', rFactorExact, 'rFactorApproximation', result.rFactor, 'source', rFactorCacheElement.noZoomSamples.length, 'result', result.points.length) : null;
         break;
       case EnumZoomSelected.ZoomLevel1:
       case EnumZoomSelected.ZoomLevel2:
-        result.points = _.filter(rFactorCacheElement.zoomedSamples, el => el.unix >= unixFrom && el.unix <= unixTo);
+        result.points = filter(rFactorCacheElement.zoomedSamples, unixFrom, unixTo);
         debug ? console.log('[Cache] rFactorExact', rFactorExact, 'rFactorApproximation', result.rFactor, 'source', rFactorCacheElement.zoomedSamples.length, 'result', result.points.length) : null;
         break;
     }
   } else {
-    result.points = _.filter(series.points, el => el.unix >= unixFrom && el.unix <= unixTo);
+    result.points = filter(series.points, unixFrom, unixTo);
     debug ? console.log('[NoCache] rFactorExact', rFactorExact, 'rFactorApproximation', result.rFactor, 'source', series.points.length, 'result', result.points.length) : null;
   }
   result.horizontalSampleDistancePx = getHorizontalSampleDistancePx(result.points, canvasWidthPx)
