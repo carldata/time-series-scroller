@@ -19,7 +19,7 @@ import { ITimeSeries } from './state/time-series';
 const SAMPLE_VALUE_MAX = 150;
 const SECONDS_PER_SAMPLE = 60;
 
-export const buildInitialState = ():IHpTimeSeriesChartState => {
+const buildInitialState = ():IHpTimeSeriesChartState => {
   let currentDate = new Date();
   let result: IHpTimeSeriesChartState = <IHpTimeSeriesChartState>{
     chartZoomSettings: <IChartZoomSettings>{
@@ -38,7 +38,7 @@ export const buildInitialState = ():IHpTimeSeriesChartState => {
   return result;
 }
 
-export const randomDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IDateTimePoint[] => {
+const randomDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IDateTimePoint[] => {
   let referenceDate = new Date(dateRangeDateFrom.getTime());
   let result = [];
   let currentValue = _.random(50, 100);
@@ -67,11 +67,11 @@ export const randomDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: D
   return result;
 };
 
-export const cameToThisZoomLevelByZoomingIn = (currentMode: EnumZoomSelected, newMode: EnumZoomSelected) => {
+const cameToThisZoomLevelByZoomingIn = (currentMode: EnumZoomSelected, newMode: EnumZoomSelected) => {
   return newMode > currentMode;
 }
 
-export const getFrameDatesByZoomLevel = (settings: IChartZoomSettings): Date[] => {
+const getFrameDatesByZoomLevel = (settings: IChartZoomSettings): Date[] => {
   switch (settings.zoomSelected) {
     case EnumZoomSelected.ZoomLevel1:
       return [new Date(settings.zoomLevel1FramePointsFrom.getTime()), new Date(settings.zoomLevel1FramePointsTo.getTime())];
@@ -80,7 +80,7 @@ export const getFrameDatesByZoomLevel = (settings: IChartZoomSettings): Date[] =
   }
 }
 
-export const setFrameDatesByZoomLevel = (settings: IChartZoomSettings, points: Date[]): IChartZoomSettings  => {
+const setFrameDatesByZoomLevel = (settings: IChartZoomSettings, points: Date[]): IChartZoomSettings  => {
   let [pointFrom, pointTo] = points;
   switch (settings.zoomSelected) {
     case EnumZoomSelected.ZoomLevel1:
@@ -98,7 +98,7 @@ export const setFrameDatesByZoomLevel = (settings: IChartZoomSettings, points: D
 /**
  * Builds (initial) chart state with several outer settings
  */
-export const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
+const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo] = action.payload;
   let points: Array<IDateTimePoint> = randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
   return <IHpTimeSeriesChartState> {
@@ -108,7 +108,7 @@ export const generateRandomData = (state: IHpTimeSeriesChartState, action: Actio
       to: new Date(dateRangeDateTo.getTime()),
       name: "random series",
       points: points,
-      rFactorSampleCache: c.createResampledPointsCache(points),
+      rFactorSampleCache: c.createResampledPointsCache(points, 800),
       secondsPerSample: SECONDS_PER_SAMPLE,
       yMinValue: _.min(_.map(points, el => el.value)),
       yMaxValue: _.max(_.map(points, el => el.value))
@@ -130,7 +130,7 @@ export const generateRandomData = (state: IHpTimeSeriesChartState, action: Actio
   }
 }
 
-export const setEvents = (series: ITimeSeries, action: Action<collections.Dictionary<number, boolean>>): ITimeSeries => {  
+const setEvents = (series: ITimeSeries, action: Action<collections.Dictionary<number, boolean>>): ITimeSeries => {  
   let unixDatesContainingEvents = action.payload;
   let points: IDateTimePoint[] = [];
   _.each(series.points, el => {
@@ -144,7 +144,7 @@ export const setEvents = (series: ITimeSeries, action: Action<collections.Dictio
   });
 }
 
-export const setWindowDateFromTo = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
+const setWindowDateFromTo = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateFrom, dateTo] = action.payload;
   if (dateFns.isBefore(dateFrom, state.dateRangeDateFrom)) {
     console.log(`rejecting - ${dateFrom} is before date range min value ${state.dateRangeDateFrom}`);
@@ -160,19 +160,20 @@ export const setWindowDateFromTo = (state: IHpTimeSeriesChartState, action: Acti
   });
 }
 
-export const setWindowWidthMinutes = (state: IHpTimeSeriesChartState, action: Action<number>): IHpTimeSeriesChartState => {
+const setWindowWidthMinutes = (state: IHpTimeSeriesChartState, action: Action<number>): IHpTimeSeriesChartState => {
   return _.extend({}, state, {
     dateFromToMinimalWidthMinutes: action.payload
   });
 }
 
-export const setChartPointsSelectionMode = (state: IHpTimeSeriesChartState, action: Action<EnumChartPointsSelectionMode>): IHpTimeSeriesChartState => {
+const setChartPointsSelectionMode = (state: IHpTimeSeriesChartState, action: Action<EnumChartPointsSelectionMode>): IHpTimeSeriesChartState => {
   return _.extend({}, state, {
     graphPointsSelectionMode: action.payload
   });
 }
 
-export const setZoom = (state: IHpTimeSeriesChartState, action: Action<EnumZoomSelected>): IHpTimeSeriesChartState => {
+const setZoom = (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelected, number]>): IHpTimeSeriesChartState => {
+  let [zoom, widthPx] = action.payload;
   /**
    * Auxiliary function rebuilding rFactorSampleCache in all the series belonging to state
    */
@@ -180,7 +181,7 @@ export const setZoom = (state: IHpTimeSeriesChartState, action: Action<EnumZoomS
     let result = [];
     _.each(state.series, el => {
       result.push(_.extend({}, el, <ITimeSeries>{
-        rFactorSampleCache: c.rebuildSampleCacheAdjustedToCurrentZoomLevel(el.rFactorSampleCache, chartZoomSettings)
+        rFactorSampleCache: c.rebuildSampleCacheAdjustedToCurrentZoomLevel(el.rFactorSampleCache, chartZoomSettings, widthPx)
       }));
     });
     return result;
@@ -190,7 +191,7 @@ export const setZoom = (state: IHpTimeSeriesChartState, action: Action<EnumZoomS
   let chartZoomSettings = <IChartZoomSettings> _.extend({}, state.chartZoomSettings, {
     zoomSelected: action.payload
   });
-  switch (action.payload) {
+  switch (zoom) {
     case EnumZoomSelected.NoZoom:
       result = _.extend({}, state, {
         chartZoomSettings: chartZoomSettings,
@@ -198,7 +199,7 @@ export const setZoom = (state: IHpTimeSeriesChartState, action: Action<EnumZoomS
       });
       break;
     case EnumZoomSelected.ZoomLevel1:
-      if (cameToThisZoomLevelByZoomingIn(state.chartZoomSettings.zoomSelected, action.payload)) {
+      if (cameToThisZoomLevelByZoomingIn(state.chartZoomSettings.zoomSelected, zoom)) {
         chartZoomSettings = _.extend({}, chartZoomSettings, <IChartZoomSettings>{
           zoomLevel1FramePointsFrom: new Date(state.windowDateFrom.getTime()),
           zoomLevel1FramePointsTo: new Date(state.windowDateTo.getTime())
@@ -217,7 +218,7 @@ export const setZoom = (state: IHpTimeSeriesChartState, action: Action<EnumZoomS
       }
       break;
     case EnumZoomSelected.ZoomLevel2:
-      if (cameToThisZoomLevelByZoomingIn(state.chartZoomSettings.zoomSelected, action.payload)) {
+      if (cameToThisZoomLevelByZoomingIn(state.chartZoomSettings.zoomSelected, zoom)) {
         chartZoomSettings = _.extend({}, chartZoomSettings, <IChartZoomSettings>{
           zoomLevel2FramePointsFrom: new Date(state.windowDateFrom.getTime()),
           zoomLevel2FramePointsTo: new Date(state.windowDateTo.getTime())

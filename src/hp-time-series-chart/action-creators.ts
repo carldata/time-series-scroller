@@ -11,6 +11,7 @@ import { EnumChartPointsSelectionMode, EnumZoomSelected } from './state/enums';
 import { ICsvRawParseConfiguration, ICsvDataLoadedContext } from './csv-loading/models';
 
 export const hpTimeSeriesChartActionTypes = {
+  SET_CHART_WIDTH: 'SET_CHART_WIDTH',
   GENERATE_RANDOM_DATA: 'GENERATE_RANDOM_DATA',
   SET_EVENTS: 'SET_EVENTS',
   SET_WINDOW_DATE_FROM_TO: 'SET_WINDOW_DATE_FROM_TO',
@@ -32,6 +33,10 @@ export const hpTimeSeriesChartActionCreators = {
     hpTimeSeriesChartActionTypes.GENERATE_RANDOM_DATA,
     (dates: Date[]) => dates
   ),
+  setChartWidth: createAction<number, number>(
+    hpTimeSeriesChartActionTypes.SET_CHART_WIDTH,
+    n => n
+  ),
   setEvents: createAction<collections.Dictionary<number, boolean>, number[]>(
     hpTimeSeriesChartActionTypes.SET_EVENTS,
     (unixDatesContainingEvents: number[]) => {
@@ -52,9 +57,9 @@ export const hpTimeSeriesChartActionCreators = {
     hpTimeSeriesChartActionTypes.SET_CHART_POINTS_SELECTION_MODE,
     (v: EnumChartPointsSelectionMode) => v
   ),
-  setZoomWindowLevel: createAction<EnumZoomSelected, EnumZoomSelected>(
+  setZoomWindowLevel: createAction<[EnumZoomSelected, number], EnumZoomSelected, number>(
     hpTimeSeriesChartActionTypes.SET_ZOOM,
-    (v: EnumZoomSelected) => v
+    (zoom: EnumZoomSelected, widthPx: number) => [zoom, widthPx]
   ),
   scrollToThePreviousFrame: createAction<void>(
     hpTimeSeriesChartActionTypes.SCROLL_TO_THE_PREVIOUS_FRAME,

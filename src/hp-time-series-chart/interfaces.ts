@@ -16,7 +16,7 @@ export interface IChartTimeSeries {
    */
   name: string;
   /**
-   * The famous resample factor
+   * The resample factor
    */
   rFactor: number;
 

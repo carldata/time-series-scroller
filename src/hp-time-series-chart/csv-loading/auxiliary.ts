@@ -14,18 +14,18 @@ export const csvLoadingAuxiliary = {
   /**
    * Returns a new, updated IChartState and ITimeSeries that was created and added to IChartState
    */
-  csvDataLoaded: (state: IHpTimeSeriesChartState, context: ICsvDataLoadedContext): [IHpTimeSeriesChartState, ITimeSeries] => {
+  csvDataLoaded: (state: IHpTimeSeriesChartState, widthPx: number, context: ICsvDataLoadedContext): [IHpTimeSeriesChartState, ITimeSeries] => {
     let points: Array<IDateTimePoint> = csvCalculations.extractDateTimePoints(context);
     if (points.length <= 1)
       return [state, null];
     let timeSeries: ITimeSeries = <ITimeSeries>{
       color: "steelblue",
       name: `csv_loaded_series_${state.series.length+1}`,
-      applyResampling: false,
+      applyResampling: true,
       points: points,
       from: new Date(points[0].date.getTime()),
       to: new Date(points[points.length-1].date.getTime()),
-      rFactorSampleCache: chartCalculations.createResampledPointsCache(points),
+      rFactorSampleCache: chartCalculations.createResampledPointsCache(points, widthPx),
       secondsPerSample: csvCalculations.estimateSecondsPerSample(points),
       yMinValue: _.min(_.map(points, el => el.value)),
       yMaxValue: _.max(_.map(points, el => el.value)),

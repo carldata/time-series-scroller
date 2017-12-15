@@ -1,14 +1,40 @@
+import { ITimeSeriesBucket } from './time-series-bucket';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
-import { IChartTimeSeries, IZoomCacheElementDescription, IPluginFunctions } from './interfaces';
-import { IDateTimePointSeriesCache } from './state/date-time-point-series-cache';
-import { ITimeSeries } from './state/time-series';
-import { IDateTimePoint } from './state/date-time-point';
-import { IChartZoomSettings } from './state/chart-zoom-settings';
-import { EnumZoomSelected } from './state/enums';
-import { IHpTimeSeriesChartState } from './state';
+import { IChartTimeSeries, IZoomCacheElementDescription, IPluginFunctions } from '../interfaces';
+import { IDateTimePointSeriesCache } from '../state/date-time-point-series-cache';
+import { ITimeSeries } from '../state/time-series';
+import { IDateTimePoint } from '../state/date-time-point';
+import { IChartZoomSettings } from '../state/chart-zoom-settings';
+import { EnumZoomSelected } from '../state/enums';
+import { IHpTimeSeriesChartState } from '../state';
 
-const debug = false;
+const debug = true;
+
+const getTimeSeriesBuckets = (data: IDateTimePoint[], numberOfBuckets: number): ITimeSeriesBucket[] => {
+  if (data.length == 0)
+    return [];
+  if (data.length == 1)
+    return [<ITimeSeriesBucket>{
+      unixFrom: _.first(data).unix,
+      unixTo: _.first(data).unix,
+      samples: [_.first(data)]
+    }];
+  let bucketLengthUnix = (_.last(data).unix - _.first(data).unix) / numberOfBuckets;
+  let buckets: ITimeSeriesBucket[] = [];
+  for (let i=0; i < numberOfBuckets; i++) {
+    buckets.push(<ITimeSeriesBucket> {
+      unixFrom: _.first(data).unix + i * bucketLengthUnix,
+      unixTo: _.first(data).unix + (i+1)*bucketLengthUnix,
+      samples: []
+    });
+  }
+  for (let el of data) {
+    let bucketsMatch = _.filter(buckets, b => el.unix >= b.unixFrom && el.unix <= b.unixTo);
+    _.each(bucketsMatch, b => b.samples.push(el));
+  }
+  return buckets;
+}
 
 /**
  * This is the variable that holds default implementation of functions
@@ -16,27 +42,22 @@ const debug = false;
  * In other words a developer can provide its own implementation of these functions. 
  */
 const pluginFunctions = {
-  getDataResampled: (data: IDateTimePoint[], rFactor: number): IDateTimePoint[]  => {
-    let resampledSum = 0;
+  getDataResampled: (data: IDateTimePoint[], numberOfBuckets: number): IDateTimePoint[]  => {
     let result: IDateTimePoint[] = [];
-    let resampledTemporaryCache: number[] = [];
-    let detectedEventInResampleFactorChunk: boolean = false;
-    for (let i=0; i < data.length; i++) {
-      resampledTemporaryCache.push(data[i].value);
-      detectedEventInResampleFactorChunk = data[i].event || detectedEventInResampleFactorChunk;
-      if (i % rFactor == 0) {
+    let buckets = getTimeSeriesBuckets(data, numberOfBuckets);
+    for (const bucket of buckets) {
+      if (bucket.samples.length > 0) {
         result.push(<IDateTimePoint>{
-          date: new Date(data[i].date.getTime()),
-          unix: data[i].date.getTime(),
-          value: _.sum(resampledTemporaryCache)/ rFactor,
-          envelopeValueMin: _.min(resampledTemporaryCache),
-          envelopeValueMax: _.max(resampledTemporaryCache),
-          event: detectedEventInResampleFactorChunk
-        });
-        resampledTemporaryCache = [];
-        detectedEventInResampleFactorChunk = false;
+          date: new Date(bucket.unixFrom),
+          unix: bucket.unixFrom,
+          value: _.sum(_.map(bucket.samples, s => s.value)) / bucket.samples.length,
+          envelopeValueMin: _.min(_.map(bucket.samples, s => s.value)),
+          envelopeValueMax: _.max(_.map(bucket.samples, s => s.value)),
+          event: false
+        })
       }
     }
+    console.log(buckets);
     return result;
   }
 }
@@ -104,7 +125,7 @@ const resampleFactorApproximation = (rFactor: number) => {
 /**
  * Must called after all samples were loaded from source and created 
  */
-const createResampledPointsCache = (allSamples: IDateTimePoint[]): IDateTimePointSeriesCache[] => {
+const createResampledPointsCache = (allSamples: IDateTimePoint[], widthPx: number): IDateTimePointSeriesCache[] => {
   var result = new Array<IDateTimePointSeriesCache>();
   debug ? console.log("building rFactor cache...") : null;
   _.each(rFactorCacheDescription, el => {
@@ -113,7 +134,7 @@ const createResampledPointsCache = (allSamples: IDateTimePoint[]): IDateTimePoin
       rFactor: el.rFactorMin,
       resampled: el.resampled,
       zoomedSamples: [], //leaving for now... until someone clicks on zoom level other than EnumZoomSelected.NoZoom
-      noZoomSamples: el.resampled ? pluginFunctions.getDataResampled(allSamples, el.rFactorMin) : allSamples,
+      noZoomSamples: el.resampled ? pluginFunctions.getDataResampled(allSamples, widthPx) : allSamples,
     }
     debug ? console.log(`rFactor: ${item.rFactor}, length: ${item.noZoomSamples.length}`) : null;
     result.push(item);
@@ -246,7 +267,7 @@ const translateSecondsDomainToDateTime = (state: IHpTimeSeriesChartState, second
   return result;
 }
 
-const rebuildSampleCacheAdjustedToCurrentZoomLevel = (rFactorSampleCache: IDateTimePointSeriesCache[], chartZoomSettings: IChartZoomSettings):IDateTimePointSeriesCache[] => {
+const rebuildSampleCacheAdjustedToCurrentZoomLevel = (rFactorSampleCache: IDateTimePointSeriesCache[], chartZoomSettings: IChartZoomSettings, widthPx: number):IDateTimePointSeriesCache[] => {
   var result = new Array<IDateTimePointSeriesCache>();  
   var limitations = getUnixTimeStampLimitationsFromTo(chartZoomSettings);
   _.each(rFactorSampleCache, el => {
@@ -267,6 +288,7 @@ const rebuildSampleCacheAdjustedToCurrentZoomLevel = (rFactorSampleCache: IDateT
 }
 
 export const hpTimeSeriesChartCalculations = {
+  getTimeSeriesBuckets: getTimeSeriesBuckets,
   createResampledPointsCache: createResampledPointsCache,
   getFilteredTimeSeries: getFilteredChartTimeSeries,
   translateDateTimeToSecondsDomain: translateDateTimeToUnixSecondsDomain,

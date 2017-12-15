@@ -31,7 +31,7 @@ export interface IGraphScreenState {
 }
 
 export interface IGraphScreenDispatchProps {
-  setZoomWindowLevel: (level: EnumZoomSelected) => EnumZoomSelected,
+  setZoomWindowLevel: (level: EnumZoomSelected, widthPx: number) => EnumZoomSelected,
   generateRandomData: (dates: Date[]) => void,
   setWindowDateFromTo: (dateFrom: Date, dateTo: Date) => void
 }
@@ -39,10 +39,6 @@ export interface IGraphScreenDispatchProps {
 class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScreenDispatchProps, IGraphScreenState> {
   constructor(props: IGraphScreenProps & IGraphScreenDispatchProps) {
     super(props);
-    this.state = {
-      windowDateFrom: props.chartState.windowDateFrom,
-      windowDateTo: props.chartState.windowDateTo
-    };
   }
 
   private chartDimensions: IChartDimensions = {
@@ -152,7 +148,7 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                 state={this.props.chartState}
                 zoomWindowLevelSet={(level, from, to) => {
                   this.props.setWindowDateFromTo(from, to);
-                  this.props.setZoomWindowLevel(level);
+                  this.props.setZoomWindowLevel(level, this.chartDimensions.canvasWidth);
                 }}
               />
             </Col>

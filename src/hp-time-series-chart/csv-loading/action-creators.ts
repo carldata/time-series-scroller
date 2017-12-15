@@ -7,11 +7,11 @@ export const hpTimeSeriesCsvLoadingChartActionTypes = {
 };
 
 export const hpTimeSeriesChartCsvLoadingActionCreators = {
-  loadCsv: (url: string) => (dispatch: Dispatch<{}>) => {
+  loadCsv: (widthPx: number, url: string) => (dispatch: Dispatch<{}>) => {
     axios.get(url).then((response: AxiosResponse) => {
       dispatch({
         type: hpTimeSeriesCsvLoadingChartActionTypes.LOADING_CSV_DATA_SUCCEEDED,
-        payload: response.data
+        payload: [widthPx, response.data]
       });
     });
   }

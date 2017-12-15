@@ -18,8 +18,7 @@ export interface IHpTimeSeriesScrollerProps {
   displayZoomLevelButtons?: boolean;
 }
 
-export interface IHpTimeSeriesScrollerState extends IHpTimeSeriesChartState {
-}
+export interface IHpTimeSeriesScrollerState extends IHpTimeSeriesChartState { }
 
 export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerProps, IHpTimeSeriesScrollerState> {
   constructor(props: IHpTimeSeriesScrollerProps) {

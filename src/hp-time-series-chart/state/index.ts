@@ -32,7 +32,6 @@ export interface IHpTimeSeriesChartState {
    * Maximum y-value we can find in all the series of chart
    */
   yMaxValue: number;
-
   graphPointsSelectionMode: EnumChartPointsSelectionMode;
   chartZoomSettings: IChartZoomSettings;
   series: ITimeSeries[];
