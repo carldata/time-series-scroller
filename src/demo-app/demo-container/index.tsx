@@ -11,7 +11,7 @@ import { Panel, ButtonGroup, Button, ListGroup, ListGroupItem, Grid, Form, Row, 
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import * as ui from '../../hp-time-series-chart/ui';
-import { EnumChartPointsSelectionMode, EnumZoomSelected } from '../../hp-time-series-chart/state/enums';
+import { EnumZoomSelected } from '../../hp-time-series-chart/state/enums';
 import { IChartDimensions, IEventChartConfiguration }  from '../../hp-time-series-chart/interfaces';
 import { ICsvRawParseConfiguration, ICsvColumn, EnumCsvDataType, ICsvDataLoadedContext }  from '../../hp-time-series-chart/csv-loading/models';
 import { hpTimeSeriesChartActionCreators } from '../../hp-time-series-chart/action-creators';
@@ -76,10 +76,6 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
     return result;
   }
 
-  private getGraphPointsSelectionButtonStyle = (stateMode: EnumChartPointsSelectionMode, expectedMode: EnumChartPointsSelectionMode): string => {
-    return stateMode == expectedMode ? "success" : "default";
-  }
-
   public render() {
     return (
       <div>
@@ -101,10 +97,12 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
               <ControlLabel>{dateFns.format(this.props.chartState.dateRangeDateTo, "YYYY-MM-DD HH:mm")}</ControlLabel>
             </Col>
             <Col componentClass={ControlLabel} md={2}>
-              Total number of series loaded:
+              Total number of series/samples:
             </Col>
             <Col md={2}>
-              <ControlLabel>{this.props.chartState.series.length}</ControlLabel>
+              <ControlLabel>
+                {this.props.chartState.series.length}/{_.flatMap(this.props.chartState.series, s => s.points).length}
+              </ControlLabel>
             </Col>
           </Row>
           <Row>
@@ -134,7 +132,10 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                   bsSize="xs" 
                   onClick={() => {
                     let date = new Date();
-                    this.props.generateRandomData([date, dateFns.addHours(date, 6), date, dateFns.addHours(date, 6)]);
+                    this.props.generateRandomData([date, 
+                                                   dateFns.addMonths(date, 2*12), 
+                                                   date, 
+                                                   dateFns.addMonths(date, 2*12)]);
                   }}>
                   Load random data
                 </Button>

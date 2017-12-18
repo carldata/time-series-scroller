@@ -16,8 +16,6 @@ const extractDateTimePoints = (response: ICsvDataLoadedContext): IDateTimePoint[
       date: new Date(),
       unix: 0,
       value: 0,
-      envelopeValueMin: 0,
-      envelopeValueMax: 0,
       event: false
     };
     let columnValues = line.split(response.config.delimiter);
@@ -41,8 +39,6 @@ const extractDateTimePoints = (response: ICsvDataLoadedContext): IDateTimePoint[
           let parsed = parseFloat(stringValue);
           if (!isNaN(parsed)) {
             sample.value = parsed;
-            sample.envelopeValueMin = parsed;
-            sample.envelopeValueMax = parsed;
           }
           else {
             console.log(`Failed for EnumCsvDataType.Float with ${stringValue}`);
@@ -57,13 +53,6 @@ const extractDateTimePoints = (response: ICsvDataLoadedContext): IDateTimePoint[
   return result;
 }
 
-const estimateSecondsPerSample = (array: IDateTimePoint[]): number => {
-  if (array.length <= 1)
-    return 1;
-  return dateFns.differenceInSeconds(_.last(array).date, _.first(array).date) / (array.length-1);
-}
-
 export const calculations = {
-  extractDateTimePoints,
-  estimateSecondsPerSample
+  extractDateTimePoints
 }

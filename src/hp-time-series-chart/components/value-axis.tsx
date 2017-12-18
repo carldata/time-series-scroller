@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 import { IChartDimensions } from '../interfaces';
-import { EnumChartPointsSelectionMode } from '../state/enums';
 
 export interface IValueAxisProps {
   chartDimensions: IChartDimensions;  

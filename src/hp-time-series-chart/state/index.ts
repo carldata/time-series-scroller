@@ -1,7 +1,5 @@
 import { IDateTimePoint } from './date-time-point';
 import { ITimeSeries } from './time-series';
-import { IDateTimePointSeriesCache } from './date-time-point-series-cache';
-import { EnumChartPointsSelectionMode } from './enums';
 import { IChartZoomSettings } from './chart-zoom-settings';
 import { IEventChartConfiguration } from '../interfaces';
 
@@ -27,12 +25,12 @@ export interface IHpTimeSeriesChartState {
   /**
    * Minimum y-value we can find in all the series of chart
    */
-  yMinValue: number;
+  yMin: number;
   /**
    * Maximum y-value we can find in all the series of chart
    */
-  yMaxValue: number;
-  graphPointsSelectionMode: EnumChartPointsSelectionMode;
+  yMax: number;
+
   chartZoomSettings: IChartZoomSettings;
   series: ITimeSeries[];
   chartMarkerConfiguration?: IEventChartConfiguration;

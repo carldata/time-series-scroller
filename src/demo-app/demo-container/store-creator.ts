@@ -6,15 +6,15 @@ import { Action, handleActions } from "redux-actions";
 import { hpTimeSeriesChartReducers, hpTimeSeriesChartReducerAuxFunctions } from "../../hp-time-series-chart/reducers";
 import { IHpTimeSeriesChartState } from "../../hp-time-series-chart/state";
 import { EnumCsvDataType, ICsvDataLoadedContext } from '../../hp-time-series-chart/csv-loading/models';
-import { EnumChartPointsSelectionMode, EnumZoomSelected } from "../../hp-time-series-chart/state/enums";
+import { EnumZoomSelected } from "../../hp-time-series-chart/state/enums";
 
 export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
   [hpTimeSeriesChartActionTypes.GENERATE_RANDOM_DATA]: (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
     return hpTimeSeriesChartReducers.generateRandomData(state, action)
   },
-  [hpTimeSeriesCsvLoadingChartActionTypes.LOADING_CSV_DATA_SUCCEEDED]: (state: IHpTimeSeriesChartState, action: Action<[number, string]>): IHpTimeSeriesChartState => {
-    let [widthPx, csvSerialized] = action.payload;
-    let [newState, timeSeries] = csvLoadingAuxiliary.csvDataLoaded(state, widthPx, {
+  [hpTimeSeriesCsvLoadingChartActionTypes.LOADING_CSV_DATA_SUCCEEDED]: (state: IHpTimeSeriesChartState, action: Action<string>): IHpTimeSeriesChartState => {
+    let csvSerialized = action.payload;
+    let [newState, timeSeries] = csvLoadingAuxiliary.csvDataLoaded(state, {
       config: {
         columns: [{ display: true, type: EnumCsvDataType.DateTime }, { display: true, type: EnumCsvDataType.Float }],
         delimiter: ",",
@@ -30,9 +30,6 @@ export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
   },
   [hpTimeSeriesChartActionTypes.SET_WINDOW_WIDTH_MINUTES]: (state: IHpTimeSeriesChartState, action: Action<number>): IHpTimeSeriesChartState => {
     return hpTimeSeriesChartReducers.setWindowWidthMinutes(state, action);
-  },
-  [hpTimeSeriesChartActionTypes.SET_CHART_POINTS_SELECTION_MODE]: (state: IHpTimeSeriesChartState, action: Action<EnumChartPointsSelectionMode>): IHpTimeSeriesChartState => {
-    return hpTimeSeriesChartReducers.setChartPointsSelectionMode(state, action);
   },
   [hpTimeSeriesChartActionTypes.SET_ZOOM]: (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelected, number]>): IHpTimeSeriesChartState => {
     return hpTimeSeriesChartReducers.setZoom(state, action);

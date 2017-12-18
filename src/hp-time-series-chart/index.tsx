@@ -1,3 +1,5 @@
+import * as dateFns from 'date-fns';
+import { ITimeSeriesBucket } from './calculations/time-series-bucket';
 import * as React from 'react';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
@@ -21,33 +23,29 @@ export interface IHpTimeSeriesChartProps {
 }
 
 export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
-  /**
-   * Auxiliary functions 
-   */  
-  let getXScale = () => {
+  const getXScale = () => {
     return d3.scaleTime()
       .domain([props.state.windowDateFrom, props.state.windowDateTo])
       .range([props.chartDimensions.timeSeriesChartPaddingLeft, 
         props.chartDimensions.canvasWidth - props.chartDimensions.timeSeriesChartPaddingLeft - props.chartDimensions.timeSeriesChartPaddingRight]);
   };
   
-  let getYScale = () => {
+  const getYScale = () => {
     return d3.scaleLinear()
-      .domain([props.state.yMinValue, props.state.yMaxValue])
+      .domain([props.state.yMin, props.state.yMax])
       .range([props.chartDimensions.canvasHeight - props.chartDimensions.timeSeriesChartPaddingTop - props.chartDimensions.timeSeriesChartPaddingBottom, 
         props.chartDimensions.timeSeriesChartPaddingTop]);
   };
 
-  let chartTimeSeries: IChartTimeSeries[] = _.map(props.state.series, el => 
-    hpTimeSeriesChartCalculations.getFilteredTimeSeries(el, 
-      props.state.windowDateFrom, 
-      props.state.windowDateTo,
-      props.state.chartZoomSettings,
-      props.chartDimensions.canvasWidth));
+  let chartTimeSeries: IChartTimeSeries[] = _.map(props.state.series, 
+    ts => hpTimeSeriesChartCalculations.getTimeSeriesChartBuckets(ts,
+                                                                  props.state.windowDateFrom, 
+                                                                  props.state.windowDateTo,
+                                                                  props.chartDimensions.canvasWidth));
 
   let xScale = getXScale();
   let yScale = getYScale();
-
+  
   return (
     <svg 
       width={props.chartDimensions.canvasWidth} 
@@ -56,7 +54,6 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
         xScale={xScale} 
         yScale={yScale}
         chartTimeSeries={chartTimeSeries}
-        graphPointsSelectionMode={props.state.graphPointsSelectionMode} 
         chartDimensions={props.chartDimensions} 
       />
       <Events
@@ -69,4 +66,5 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
       <ValueAxis yScale={yScale} chartDimensions={props.chartDimensions} />
     </svg>
   );
+  
 }

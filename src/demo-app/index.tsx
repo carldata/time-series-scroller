@@ -26,4 +26,4 @@ ReactDOM.render(
   document.body.appendChild(document.createElement('div'))
 );
 
-store.dispatch(hpTimeSeriesChartCsvLoadingActionCreators.loadCsv(800, "10k.csv"));
+store.dispatch(hpTimeSeriesChartCsvLoadingActionCreators.loadCsv("10k.csv"));

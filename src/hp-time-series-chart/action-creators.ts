@@ -7,7 +7,7 @@ import { createAction, Action } from 'redux-actions';
 import { Dispatch } from 'redux';
 import * as collections from 'typescript-collections';
 import { Dictionary } from 'typescript-collections';
-import { EnumChartPointsSelectionMode, EnumZoomSelected } from './state/enums';
+import { EnumZoomSelected } from './state/enums';
 import { ICsvRawParseConfiguration, ICsvDataLoadedContext } from './csv-loading/models';
 
 export const hpTimeSeriesChartActionTypes = {
@@ -16,7 +16,6 @@ export const hpTimeSeriesChartActionTypes = {
   SET_EVENTS: 'SET_EVENTS',
   SET_WINDOW_DATE_FROM_TO: 'SET_WINDOW_DATE_FROM_TO',
   SET_WINDOW_WIDTH_MINUTES: 'SET_WINDOW_WIDTH_MINUTES',
-  SET_CHART_POINTS_SELECTION_MODE: 'SET_CHART_POINTS_SELECTION_MODE',
   SET_ZOOM: 'SET_ZOOM',
   SCROLL_TO_THE_NEXT_FRAME: 'SCROLL_TO_THE_NEXT_FRAME',
   SCROLL_TO_THE_PREVIOUS_FRAME: 'SCROLL_TO_THE_PREVIOUS_FRAME'
@@ -52,10 +51,6 @@ export const hpTimeSeriesChartActionCreators = {
   setWindowWidthMinutes: createAction<number, number>(
     hpTimeSeriesChartActionTypes.SET_WINDOW_WIDTH_MINUTES,
     (v: number) => v
-  ),
-  setGraphPointsSelectionMode: createAction<EnumChartPointsSelectionMode, EnumChartPointsSelectionMode>(
-    hpTimeSeriesChartActionTypes.SET_CHART_POINTS_SELECTION_MODE,
-    (v: EnumChartPointsSelectionMode) => v
   ),
   setZoomWindowLevel: createAction<[EnumZoomSelected, number], EnumZoomSelected, number>(
     hpTimeSeriesChartActionTypes.SET_ZOOM,
