@@ -10,6 +10,6 @@ export interface ITimeSeriesBucket {
 
 export interface IGetTimeSeriesBucketsResult {
   buckets: ITimeSeriesBucket[];
-  preceding: ITimeSeriesBucket;
-  succeeding: ITimeSeriesBucket;
+  shadowPreceding: ITimeSeriesBucket;
+  shadowSucceeding: ITimeSeriesBucket;
 }

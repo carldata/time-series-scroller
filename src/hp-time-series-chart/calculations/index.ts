@@ -19,7 +19,7 @@ const constructBucket = (allData: IDateTimePoint[],
                          referenceBucket: ITimeSeriesBucket, 
                          delta: number, 
                          bucketLengthUnix: number,
-                         boundaries: { firstSample: number, lastSample: number }): ITimeSeriesBucket => {
+                         boundaries: { firstSampleUnix: number, lastSampleUnix: number }): ITimeSeriesBucket => {
   let result =  <ITimeSeriesBucket> {
     unixFrom: referenceBucket.unixFrom + delta * bucketLengthUnix,
     unixTo: referenceBucket.unixFrom + (delta+1) * bucketLengthUnix,
@@ -37,21 +37,20 @@ const getNonemptyBucket = (allData: IDateTimePoint[],
                            browseDirection: EnumBrowseDirection, 
                            bucketLengthUnix: number): ITimeSeriesBucket => {
   let boundaries = {
-    firstSample: _.first(allData).unix, 
-    lastSample: _.last(allData).unix
+    firstSampleUnix: _.first(allData).unix, 
+    lastSampleUnix: _.last(allData).unix
   };
   let delta = (browseDirection == EnumBrowseDirection.Backward) ? -1 : 0;
   let referenceBucket = constructBucket(allData, 
                                         browseDirection == EnumBrowseDirection.Backward ? _.first(buckets) : _.last(buckets),
                                         delta,
                                         bucketLengthUnix,
-                                        boundaries)
-  
-  while (referenceBucket.unixTo >= boundaries.firstSample && 
-         referenceBucket.unixFrom <= boundaries.lastSample &&
+                                        boundaries);
+  while (referenceBucket.unixTo >= boundaries.firstSampleUnix && 
+         referenceBucket.unixFrom <= boundaries.lastSampleUnix &&
          !_.isNumber(referenceBucket.min)) 
   {
-    delta = delta + (EnumBrowseDirection.Backward ? -1 : +1);
+    delta = delta + (browseDirection == EnumBrowseDirection.Backward ? -1 : +1);
     referenceBucket = constructBucket(allData, 
                                       browseDirection == EnumBrowseDirection.Backward ? _.first(buckets) : _.last(buckets),
                                       delta,
@@ -74,8 +73,8 @@ const getTimeSeriesBuckets = (allData: IDateTimePoint[], numberOfBuckets: number
   if (data.length == 0)
     return {
       buckets: [],
-      preceding: null,
-      succeeding: null
+      shadowPreceding: null,
+      shadowSucceeding: null
     };
   if (data.length == 1)
     return {
@@ -86,14 +85,14 @@ const getTimeSeriesBuckets = (allData: IDateTimePoint[], numberOfBuckets: number
         min: _.first(data).value,
         max: _.first(data).value,
       }],
-      preceding: null,
-      succeeding: null
+      shadowPreceding: null,
+      shadowSucceeding: null
     };
-  const bucketLengthUnix = (_.last(data).unix - _.first(data).unix) / numberOfBuckets;
+  const bucketLengthUnix = (filterTo - filterFrom) / numberOfBuckets;
   const buckets =_.times<ITimeSeriesBucket>(numberOfBuckets, (n) => <ITimeSeriesBucket>{ 
-    unixFrom: _.first(data).unix + n*bucketLengthUnix,
-    unixTo: _.first(data).unix + (n+1)*bucketLengthUnix,
-    date: new Date(_.first(data).unix + n*bucketLengthUnix),
+    unixFrom: filterFrom + n*bucketLengthUnix,
+    unixTo: filterFrom + (n+1)*bucketLengthUnix,
+    date: new Date(filterFrom + n*bucketLengthUnix),
     min: undefined,
     max: undefined
   });
@@ -114,12 +113,8 @@ const getTimeSeriesBuckets = (allData: IDateTimePoint[], numberOfBuckets: number
   const lastBucket = referenceBucket;
   let result = {
     buckets: buckets,
-    preceding: firstBucket.unixFrom <= filterFrom ? 
-      null :
-      getNonemptyBucket(allData, buckets, EnumBrowseDirection.Backward, bucketLengthUnix),
-    succeeding: lastBucket.unixTo >= filterTo ?
-      null :
-      getNonemptyBucket(allData, buckets, EnumBrowseDirection.Forward, bucketLengthUnix)
+    shadowPreceding: firstBucket.unixFrom <= filterFrom ? null : getNonemptyBucket(allData, buckets, EnumBrowseDirection.Backward, bucketLengthUnix),
+    shadowSucceeding: lastBucket.unixTo >= filterTo ? null : getNonemptyBucket(allData, buckets, EnumBrowseDirection.Forward, bucketLengthUnix)
   };
   return result;
 }
@@ -152,8 +147,8 @@ const getTimeSeriesChartBuckets = (series: ITimeSeries,
     name: series.name,
     color: series.color,
     buckets: buckets,
-    precedingBucket: getTimeSeriesBucketsResult.preceding,
-    succeedingBucket: getTimeSeriesBucketsResult.succeeding
+    precedingBucket: getTimeSeriesBucketsResult.shadowPreceding,
+    succeedingBucket: getTimeSeriesBucketsResult.shadowSucceeding
   };
 }
 
