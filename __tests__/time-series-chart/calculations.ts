@@ -1,4 +1,3 @@
-// import { getTimeSeriesBuckets } from '../../src/hp-time-series-chart/calculations';
 import { hpTimeSeriesChartCalculations } from '../../src/hp-time-series-chart/calculations';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
@@ -30,13 +29,13 @@ describe("time-series-chart calculations test", () => {
     let distribution = [1, 2, 5, 10, 15, 30, 60][_.random(0, 6)];
     let numberOfBuckets = _.random(100, 2000);
     let series = evenSeries(hours, distribution);
-    let buckets = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(series, numberOfBuckets);
+    let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(series, numberOfBuckets, );
     console.log(`Running with hours: ${hours}, distribution: ${distribution}, numberOfBuckets: ${numberOfBuckets}`);
-    expect(buckets.length).toBe(numberOfBuckets);
+    expect(result.buckets.length).toBe(numberOfBuckets);
   });
 
   it('not-evenly distributed time series is placed into buckets properly', () => {
-    let buckets = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(unevenSeries, 4);
-    expect(buckets.length).toBe(4);
+    let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(unevenSeries, 4);
+    expect(result.buckets.length).toBe(4);
   });
 });

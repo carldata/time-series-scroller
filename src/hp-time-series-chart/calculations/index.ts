@@ -1,4 +1,3 @@
-import { ITimeSeriesBucket } from './time-series-bucket';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { IChartTimeSeries } from '../interfaces';
@@ -7,20 +6,89 @@ import { IDateTimePoint } from '../state/date-time-point';
 import { IChartZoomSettings } from '../state/chart-zoom-settings';
 import { EnumZoomSelected } from '../state/enums';
 import { IHpTimeSeriesChartState } from '../state';
+import { IGetTimeSeriesBucketsResult, ITimeSeriesBucket } from './interaces';
 
 const debug = true;
 
-const getTimeSeriesBuckets = (data: IDateTimePoint[], numberOfBuckets: number): ITimeSeriesBucket[] => {
+enum EnumBrowseDirection {
+  Backward,
+  Forward
+}
+
+const constructBucket = (allData: IDateTimePoint[],
+                         referenceBucket: ITimeSeriesBucket, 
+                         delta: number, 
+                         bucketLengthUnix: number,
+                         boundaries: { firstSample: number, lastSample: number }): ITimeSeriesBucket => {
+  let result =  <ITimeSeriesBucket> {
+    unixFrom: referenceBucket.unixFrom + delta * bucketLengthUnix,
+    unixTo: referenceBucket.unixFrom + (delta+1) * bucketLengthUnix,
+  }
+  let sampleValues = _.map(_.filter(allData, (el: IDateTimePoint) => el.unix >= result.unixFrom && el.unix <= result.unixTo), 
+                           (el: IDateTimePoint) => el.value);
+  result.min = _.min(sampleValues);
+  result.max = _.min(sampleValues);
+  result.date = new Date(result.unixFrom);
+  return result;
+}
+
+const getNonemptyBucket = (allData: IDateTimePoint[], 
+                           buckets: ITimeSeriesBucket[], 
+                           browseDirection: EnumBrowseDirection, 
+                           bucketLengthUnix: number): ITimeSeriesBucket => {
+  let boundaries = {
+    firstSample: _.first(allData).unix, 
+    lastSample: _.last(allData).unix
+  };
+  let delta = (browseDirection == EnumBrowseDirection.Backward) ? -1 : 0;
+  let referenceBucket = constructBucket(allData, 
+                                        browseDirection == EnumBrowseDirection.Backward ? _.first(buckets) : _.last(buckets),
+                                        delta,
+                                        bucketLengthUnix,
+                                        boundaries)
+  
+  while (referenceBucket.unixTo >= boundaries.firstSample && 
+         referenceBucket.unixFrom <= boundaries.lastSample &&
+         !_.isNumber(referenceBucket.min)) 
+  {
+    delta = delta + (EnumBrowseDirection.Backward ? -1 : +1);
+    referenceBucket = constructBucket(allData, 
+                                      browseDirection == EnumBrowseDirection.Backward ? _.first(buckets) : _.last(buckets),
+                                      delta,
+                                      bucketLengthUnix,
+                                      boundaries);
+  }
+  return _.isNumber(referenceBucket.min) ? referenceBucket : null;
+}
+
+const getTimeSeriesBuckets = (allData: IDateTimePoint[], numberOfBuckets: number, filterFrom?: number, filterTo?: number): IGetTimeSeriesBucketsResult => {
+  let data = allData;
+  if (_.isNumber(filterFrom)) 
+    data = _.filter(data, (el: IDateTimePoint) => el.unix >= filterFrom);
+  else
+    filterFrom = _.first(allData).unix;
+  if (_.isNumber(filterTo)) 
+    data = _.filter(data, (el: IDateTimePoint) => el.unix <= filterTo);
+  else
+    filterTo = _.last(allData).unix;
   if (data.length == 0)
-    return [];
+    return {
+      buckets: [],
+      preceding: null,
+      succeeding: null
+    };
   if (data.length == 1)
-    return [<ITimeSeriesBucket>{
-      unixFrom: _.first(data).unix,
-      unixTo: _.first(data).unix,
-      date: _.first(data).date,
-      min: _.first(data).value,
-      max: _.first(data).value,
-    }];
+    return {
+      buckets: [<ITimeSeriesBucket>{
+        unixFrom: _.first(data).unix,
+        unixTo: _.first(data).unix,
+        date: _.first(data).date,
+        min: _.first(data).value,
+        max: _.first(data).value,
+      }],
+      preceding: null,
+      succeeding: null
+    };
   const bucketLengthUnix = (_.last(data).unix - _.first(data).unix) / numberOfBuckets;
   const buckets =_.times<ITimeSeriesBucket>(numberOfBuckets, (n) => <ITimeSeriesBucket>{ 
     unixFrom: _.first(data).unix + n*bucketLengthUnix,
@@ -33,6 +101,7 @@ const getTimeSeriesBuckets = (data: IDateTimePoint[], numberOfBuckets: number): 
   let currentBucket = _.find(buckets, (b: ITimeSeriesBucket) => _.inRange(_.first(data).unix, b.unixFrom, b.unixTo)); 
   if (_.isUndefined(currentBucket))
     return;
+  const firstBucket = currentBucket;
   for (let el of data) {
     currentBucket.max = (_.isUndefined(currentBucket.max) || el.value > currentBucket.max) ? el.value : currentBucket.max; 
     currentBucket.min = (_.isUndefined(currentBucket.min) || el.value < currentBucket.min) ? el.value : currentBucket.min; 
@@ -41,7 +110,17 @@ const getTimeSeriesBuckets = (data: IDateTimePoint[], numberOfBuckets: number): 
       currentBucket = buckets[bucketIndex];
     }
   }
-  return buckets;
+  const lastBucket = currentBucket;
+  let result = {
+    buckets: buckets,
+    preceding: firstBucket.unixFrom <= filterFrom ? 
+      null :
+      getNonemptyBucket(allData, buckets, EnumBrowseDirection.Backward, bucketLengthUnix),
+    succeeding: lastBucket.unixTo >= filterTo ?
+      null :
+      getNonemptyBucket(allData, buckets, EnumBrowseDirection.Forward, bucketLengthUnix)
+  };
+  return result;
 }
 
 /**
@@ -51,22 +130,6 @@ const getTimeSeriesBuckets = (data: IDateTimePoint[], numberOfBuckets: number): 
  */
 const getHorizontalSampleDistancePx = (series: any[], widthPx: number) => {
   return series.length > 1 ? (widthPx / (series.length-1)) : widthPx;
-}
-
-/**
- * Custom filter function that adds additional preceding and succeeding samples 
- * (necessary for time series that are not distributed uniformly)
- */
-const filter = (series: IDateTimePoint[], unixFrom: number, unixTo: number): IDateTimePoint[] => {
-  if (series.length <= 1)
-    return series;
-  let result = _.filter(series, el => el.unix >= unixFrom && el.unix <= unixTo);
-  let preceding = _.last(_.filter(series, el => el.unix < unixFrom));
-  let succeeding = _.first(_.filter(series, el => el.unix > unixTo));
-  return _.concat(
-    _.isObject(preceding) ? [preceding] : [], 
-    result, 
-    _.isObject(succeeding) ? [succeeding] : []);
 }
 
 /**
@@ -81,15 +144,14 @@ const getTimeSeriesChartBuckets = (series: ITimeSeries,
                                    numberOfBuckets: number): IChartTimeSeries => {  
   let unixFrom = from.getTime();
   let unixTo = to.getTime();
-  let dateFromToFiltered = _.filter(series.points, (p: IDateTimePoint)  => p.unix >= unixFrom && p.unix <= unixTo);
-  let buckets = _.filter(getTimeSeriesBuckets(dateFromToFiltered, numberOfBuckets),
-    (b: ITimeSeriesBucket) => _.isNumber(b.min));
+  let getTimeSeriesBucketsResult = getTimeSeriesBuckets(series.points, numberOfBuckets, unixFrom, unixTo);
+  let buckets = _.filter(getTimeSeriesBucketsResult.buckets, (b: ITimeSeriesBucket) => _.isNumber(b.min));
   return {
     name: series.name,
     color: series.color,
     buckets: buckets,
-    lefthandBucket: null,
-    righthandBucket: null
+    precedingBucket: getTimeSeriesBucketsResult.preceding,
+    succeedingBucket: getTimeSeriesBucketsResult.succeeding
   };
 }
 

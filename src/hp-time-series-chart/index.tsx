@@ -1,5 +1,4 @@
 import * as dateFns from 'date-fns';
-import { ITimeSeriesBucket } from './calculations/time-series-bucket';
 import * as React from 'react';
 import * as d3 from 'd3';
 import * as _ from 'lodash';

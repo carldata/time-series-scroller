@@ -1,4 +1,4 @@
-import { ITimeSeriesBucket } from '../calculations/time-series-bucket';
+import { ITimeSeriesBucket } from '../calculations/interaces';
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
@@ -51,8 +51,11 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
       })
       .y0(function(d: ITimeSeriesBucket) { return self.props.yScale(d.min); })
       .y1(function(d: ITimeSeriesBucket) { return self.props.yScale(d.max); });
-
-    return area(ts.buckets);
+    
+    let buckets = _.concat(_.isObject(ts.precedingBucket) ? [ts.precedingBucket] : [], 
+                           ts.buckets,
+                           _.isObject(ts.succeedingBucket) ? [ts.succeedingBucket] : []);
+    return area(buckets);
   }
 
   renderPaths() {

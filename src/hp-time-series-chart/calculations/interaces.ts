@@ -7,3 +7,9 @@ export interface ITimeSeriesBucket {
   min: number;
   max: number;
 }
+
+export interface IGetTimeSeriesBucketsResult {
+  buckets: ITimeSeriesBucket[];
+  preceding: ITimeSeriesBucket;
+  succeeding: ITimeSeriesBucket;
+}
