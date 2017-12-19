@@ -70,6 +70,26 @@ const randomDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): I
   return result;
 };
 
+const hourIsEvenDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IDateTimePoint[] => {
+  let referenceDate = new Date(dateRangeDateFrom.getTime());
+  let result = [];
+  let iterationIndex = 0;
+  while (dateFns.isBefore(referenceDate, dateRangeDateTo)) {
+    result.push(<IDateTimePoint>{ 
+      date: new Date(referenceDate.getTime()), 
+      unix: referenceDate.getTime(), 
+      value: dateFns.getHours(referenceDate.getTime()) % 2 ? 1 : 0
+    });
+    referenceDate = dateFns.addSeconds(referenceDate, SECONDS_PER_SAMPLE);
+    iterationIndex++;
+    if (iterationIndex % 50000 == 0) {
+      console.log(`Generated for ${dateFns.format(referenceDate, "YYYY-MM-DD HH:mm")}`);
+    }
+  }
+  return result;
+};
+
+
 const cameToThisZoomLevelByZoomingIn = (currentMode: EnumZoomSelected, newMode: EnumZoomSelected) => {
   return newMode > currentMode;
 }
@@ -213,7 +233,8 @@ const setZoom = (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelecte
 
 export const hpTimeSeriesChartReducerAuxFunctions = {
   buildInitialState,
-  setEvents
+  setEvents,
+  hourIsEvenDateTimePoints
 }
 
 export const hpTimeSeriesChartReducers = {

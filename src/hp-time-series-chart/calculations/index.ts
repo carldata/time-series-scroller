@@ -98,19 +98,20 @@ const getTimeSeriesBuckets = (allData: IDateTimePoint[], numberOfBuckets: number
     max: undefined
   });
   let bucketIndex = 0;
-  let currentBucket = _.find(buckets, (b: ITimeSeriesBucket) => _.inRange(_.first(data).unix, b.unixFrom, b.unixTo)); 
-  if (_.isUndefined(currentBucket))
-    return;
-  const firstBucket = currentBucket;
+  let firstBucket = undefined;
+  let referenceBucket = null;
   for (let el of data) {
-    currentBucket.max = (_.isUndefined(currentBucket.max) || el.value > currentBucket.max) ? el.value : currentBucket.max; 
-    currentBucket.min = (_.isUndefined(currentBucket.min) || el.value < currentBucket.min) ? el.value : currentBucket.min; 
-    if ((el.unix >= currentBucket.unixFrom) && (bucketIndex < buckets.length-1)) {
+    while (el.unix > buckets[bucketIndex].unixTo)
       bucketIndex++;
-      currentBucket = buckets[bucketIndex];
-    }
+    referenceBucket = buckets[bucketIndex];
+    if (_.isUndefined(firstBucket))
+      firstBucket = referenceBucket;
+    referenceBucket.min = (_.isUndefined(referenceBucket.min) || el.value < referenceBucket.min) ? el.value : referenceBucket.min; 
+    referenceBucket.max = (_.isUndefined(referenceBucket.max) || el.value > referenceBucket.max) ? el.value : referenceBucket.max; 
+    if (bucketIndex >= buckets.length)
+      break;
   }
-  const lastBucket = currentBucket;
+  const lastBucket = referenceBucket;
   let result = {
     buckets: buckets,
     preceding: firstBucket.unixFrom <= filterFrom ? 
@@ -145,6 +146,7 @@ const getTimeSeriesChartBuckets = (series: ITimeSeries,
   let unixFrom = from.getTime();
   let unixTo = to.getTime();
   let getTimeSeriesBucketsResult = getTimeSeriesBuckets(series.points, numberOfBuckets, unixFrom, unixTo);
+  console.log(JSON.stringify(getTimeSeriesBucketsResult));
   let buckets = _.filter(getTimeSeriesBucketsResult.buckets, (b: ITimeSeriesBucket) => _.isNumber(b.min));
   return {
     name: series.name,
@@ -191,7 +193,7 @@ const calculateDomainLengthSeconds = (state: IHpTimeSeriesChartState): number =>
   return result;
 }
 
-const translateSecondsDomainToDateTime = (state: IHpTimeSeriesChartState, seconds: number): Date => {
+const translateUnixSecondsDomainToDateTime = (state: IHpTimeSeriesChartState, seconds: number): Date => {
   var result: Date;
   switch (state.chartZoomSettings.zoomSelected) {
     case EnumZoomSelected.NoZoom:
@@ -208,9 +210,9 @@ const translateSecondsDomainToDateTime = (state: IHpTimeSeriesChartState, second
 }
 
 export const hpTimeSeriesChartCalculations = {
-  getTimeSeriesBuckets: getTimeSeriesBuckets,
-  getTimeSeriesChartBuckets: getTimeSeriesChartBuckets,
-  translateDateTimeToSecondsDomain: translateDateTimeToUnixSecondsDomain,
-  calculateDomainLengthSeconds: calculateDomainLengthSeconds,
-  translateUnixSecondsDomainToDateTime: translateSecondsDomainToDateTime,
+  getTimeSeriesBuckets,
+  getTimeSeriesChartBuckets,
+  translateDateTimeToUnixSecondsDomain,
+  translateUnixSecondsDomainToDateTime,
+  calculateDomainLengthSeconds,
 }

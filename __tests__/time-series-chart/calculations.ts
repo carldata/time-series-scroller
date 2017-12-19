@@ -1,3 +1,4 @@
+import { hpTimeSeriesChartReducerAuxFunctions } from '../../src/hp-time-series-chart/reducers';
 import { hpTimeSeriesChartCalculations } from '../../src/hp-time-series-chart/calculations';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
@@ -29,7 +30,7 @@ describe("time-series-chart calculations test", () => {
     let distribution = [1, 2, 5, 10, 15, 30, 60][_.random(0, 6)];
     let numberOfBuckets = _.random(100, 2000);
     let series = evenSeries(hours, distribution);
-    let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(series, numberOfBuckets, );
+    let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(series, numberOfBuckets);
     console.log(`Running with hours: ${hours}, distribution: ${distribution}, numberOfBuckets: ${numberOfBuckets}`);
     expect(result.buckets.length).toBe(numberOfBuckets);
   });
@@ -37,5 +38,24 @@ describe("time-series-chart calculations test", () => {
   it('not-evenly distributed time series is placed into buckets properly', () => {
     let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(unevenSeries, 4);
     expect(result.buckets.length).toBe(4);
+  });
+
+  it('buckets are fed with proper data', () => {
+    let minutes = _.random(6*60, 12*60);
+    const startDate = new Date(2016, 0, 1);
+    const series = hpTimeSeriesChartReducerAuxFunctions.hourIsEvenDateTimePoints(startDate, dateFns.addMinutes(startDate, minutes));
+    let numberOfBuckets = _.random(5, 20);
+    let division = _.random(3, 12);
+    let buckets = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(series, 
+                                                                     numberOfBuckets,
+                                                                     dateFns.addMinutes(startDate, minutes/division).getTime(), 
+                                                                     dateFns.addMinutes(startDate, division*minutes/(division+1)).getTime());
+    console.log(`Running with minutes: ${minutes}, numberOfBuckets: ${numberOfBuckets}, division: ${division}`);
+    _.each(buckets.buckets, b => {
+      if (dateFns.getHours(b.unixFrom) == dateFns.getHours(b.unixTo)) {
+        expect(b.min).toEqual(b.max);
+        _.isNumber(b.min) ? expect(b.min).toEqual((dateFns.getHours(b.unixFrom) % 2 ? 1 : 0)) : null;
+      }
+    });
   });
 });
