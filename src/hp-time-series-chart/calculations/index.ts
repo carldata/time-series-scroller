@@ -6,7 +6,7 @@ import { IDateTimePoint } from '../state/date-time-point';
 import { IChartZoomSettings } from '../state/chart-zoom-settings';
 import { EnumZoomSelected } from '../state/enums';
 import { IHpTimeSeriesChartState } from '../state';
-import { IGetTimeSeriesBucketsResult, ITimeSeriesBucket } from './interaces';
+import { IGetTimeSeriesBucketsResult, ITimeSeriesBucket } from './interfaces';
 
 const debug = true;
 

@@ -1,4 +1,4 @@
-import { ITimeSeriesBucket } from './calculations/interaces';
+import { ITimeSeriesBucket } from './calculations/interfaces';
 import { IDateTimePoint } from './state/date-time-point';
 import { EnumZoomSelected } from './state/enums';
 
@@ -34,10 +34,6 @@ export interface IChartDimensions {
 export interface IGetDataResampledFunction {
   (data: IDateTimePoint[], rFactor: number): IDateTimePoint[];
 }
-
-// export interface IPluginFunctions {
-//   getDataResampled?: IGetDataResampledFunction;  
-// }
 
 /**
  * If active, represents a shape of evert rectangle drawn 

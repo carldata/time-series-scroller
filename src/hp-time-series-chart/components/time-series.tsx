@@ -1,4 +1,4 @@
-import { ITimeSeriesBucket } from '../calculations/interaces';
+import { ITimeSeriesBucket } from '../calculations/interfaces';
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as d3 from 'd3';

@@ -13,8 +13,8 @@
   },
   "author": "Sharp Coding <sharp.coding@gmail.com>",
   "license": "MIT",
-  "main": "./build/index.js",
-  "types": "./build/index.d.ts",
+  "main": "./build/src/index.js",
+  "types": "./build/src/index.d.ts",
   "jest": {
     "moduleFileExtensions": [
       "ts",

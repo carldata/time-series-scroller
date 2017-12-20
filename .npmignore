@@ -2,6 +2,9 @@
 node_modules
 src
 .gitignore
-README.md
+.npmignore
 tsconfig.json
 webpack.config.json
+__tests__
+build\__tests__
+jest-preprocessor.js
