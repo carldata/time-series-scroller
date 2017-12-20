@@ -141,7 +141,6 @@ const getTimeSeriesChartBuckets = (series: ITimeSeries,
   let unixFrom = from.getTime();
   let unixTo = to.getTime();
   let getTimeSeriesBucketsResult = getTimeSeriesBuckets(series.points, numberOfBuckets, unixFrom, unixTo);
-  console.log(JSON.stringify(getTimeSeriesBucketsResult));
   let buckets = _.filter(getTimeSeriesBucketsResult.buckets, (b: ITimeSeriesBucket) => _.isNumber(b.min));
   return {
     name: series.name,
