@@ -32,7 +32,7 @@ describe("time-series-chart calculations test", () => {
     let series = regularSeries(hours, distribution);
     let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(series, numberOfBuckets);
     console.log(`Running with hours: ${hours}, distribution: ${distribution}, numberOfBuckets: ${numberOfBuckets}`);
-    expect(result.buckets.length).toBe(numberOfBuckets);
+    expect(result.buckets.length).toBe(series.length >= numberOfBuckets ? numberOfBuckets : series.length);
   });
 
   it('not-evenly distributed time series is placed into buckets properly', () => {
@@ -63,12 +63,14 @@ describe("time-series-chart calculations test", () => {
     let from = dateFns.addMinutes(new Date(2016, 0, 15), 25).getTime();
     let to = dateFns.addMinutes(new Date(2016, 0, 15), 35).getTime();
     let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(notEvenlyDistributedSeries, 5, from, to);
+    console.log(JSON.stringify(notEvenlyDistributedSeries));
+    console.log(JSON.stringify(result));
     expect(result.buckets.length).toBe(5);
-    expect(result.buckets[0].unixFrom).toBe(1452813900000);
-    expect(result.buckets[0].unixTo).toBe(1452814020000);
-    expect(result.buckets[0].min).toBe(undefined);  
-    expect(result.buckets[1].min).toBe(undefined);  
-    expect(result.buckets[2].min).not.toBe(undefined);  
+    for (let bucket of result.buckets) {
+      expect(bucket.min).not.toBe(undefined);
+      expect(bucket.max).not.toBe(undefined); 
+      expect(bucket.unixFrom).toEqual(bucket.unixTo);
+    }
   });
 
   it('transforming not-evenly distributed series to buckets returns shadow buckets correctly under specific filter conditions', () => {

@@ -51,10 +51,10 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
       })
       .y0(function(d: ITimeSeriesBucket) { return self.props.yScale(d.min); })
       .y1(function(d: ITimeSeriesBucket) { return self.props.yScale(d.max); });
-    
-    let buckets = _.concat(_.isObject(ts.precedingBucket) ? [ts.precedingBucket] : [], 
+
+    let buckets = _.concat(_.isObject(ts.shadowPrecedingBucket) ? [ts.shadowPrecedingBucket] : [], 
                            ts.buckets,
-                           _.isObject(ts.succeedingBucket) ? [ts.succeedingBucket] : []);
+                           _.isObject(ts.shadowSucceedingBucket) ? [ts.shadowSucceedingBucket] : []);
     return area(buckets);
   }
 

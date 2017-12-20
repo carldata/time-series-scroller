@@ -16,107 +16,127 @@ enum EnumBrowseDirection {
 }
 
 const constructBucket = (allData: IDateTimePoint[],
-                         referenceBucket: ITimeSeriesBucket, 
-                         delta: number, 
-                         bucketLengthUnix: number,
-                         boundaries: { firstSampleUnix: number, lastSampleUnix: number }): ITimeSeriesBucket => {
-  let result =  <ITimeSeriesBucket> {
+  referenceBucket: ITimeSeriesBucket,
+  delta: number,
+  bucketLengthUnix: number): ITimeSeriesBucket => {
+  let result = <ITimeSeriesBucket>{
     unixFrom: referenceBucket.unixFrom + delta * bucketLengthUnix,
-    unixTo: referenceBucket.unixFrom + (delta+1) * bucketLengthUnix,
+    unixTo: referenceBucket.unixFrom + (delta + 1) * bucketLengthUnix,
   }
-  let sampleValues = _.map(_.filter(allData, (el: IDateTimePoint) => el.unix >= result.unixFrom && el.unix <= result.unixTo), 
-                           (el: IDateTimePoint) => el.value);
+  let sampleValues = _.map(_.filter(allData, (el: IDateTimePoint) => el.unix >= result.unixFrom && el.unix <= result.unixTo),
+    (el: IDateTimePoint) => el.value);
   result.min = _.min(sampleValues);
   result.max = _.min(sampleValues);
   result.date = new Date(result.unixFrom);
   return result;
 }
 
-const getNonemptyBucket = (allData: IDateTimePoint[], 
-                           buckets: ITimeSeriesBucket[], 
-                           browseDirection: EnumBrowseDirection, 
-                           bucketLengthUnix: number): ITimeSeriesBucket => {
+const getNonemptyBucket = (allData: IDateTimePoint[],
+                           buckets: ITimeSeriesBucket[],
+                           browseDirection: EnumBrowseDirection,
+                           bucketLengthUnix: number,
+                           filterFrom?: number, 
+                           filterTo?: number): ITimeSeriesBucket => 
+{
   let boundaries = {
-    firstSampleUnix: _.first(allData).unix, 
+    firstSampleUnix: _.first(allData).unix,
     lastSampleUnix: _.last(allData).unix
   };
   let delta = (browseDirection == EnumBrowseDirection.Backward) ? -1 : 0;
-  let referenceBucket = constructBucket(allData, 
-                                        browseDirection == EnumBrowseDirection.Backward ? _.first(buckets) : _.last(buckets),
-                                        delta,
-                                        bucketLengthUnix,
-                                        boundaries);
-  while (referenceBucket.unixTo >= boundaries.firstSampleUnix && 
-         referenceBucket.unixFrom <= boundaries.lastSampleUnix &&
-         !_.isNumber(referenceBucket.min)) 
-  {
+  let referenceBucket = constructBucket(allData,
+    browseDirection == EnumBrowseDirection.Backward ? _.first(buckets) : _.last(buckets),
+    delta,
+    bucketLengthUnix);
+  while (referenceBucket.unixTo >= boundaries.firstSampleUnix &&
+    referenceBucket.unixFrom <= boundaries.lastSampleUnix &&
+    !_.isNumber(referenceBucket.min)) {
     delta = delta + (browseDirection == EnumBrowseDirection.Backward ? -1 : +1);
-    referenceBucket = constructBucket(allData, 
-                                      browseDirection == EnumBrowseDirection.Backward ? _.first(buckets) : _.last(buckets),
-                                      delta,
-                                      bucketLengthUnix,
-                                      boundaries);
+    referenceBucket = constructBucket(allData,
+      browseDirection == EnumBrowseDirection.Backward ? _.first(buckets) : _.last(buckets),
+      delta,
+      bucketLengthUnix);
   }
   return _.isNumber(referenceBucket.min) ? referenceBucket : null;
 }
 
+const getBucketOutside = (allData: IDateTimePoint[], browseDirection: EnumBrowseDirection, filterFrom: number, filterTo: number): ITimeSeriesBucket => {
+  let sample = browseDirection == EnumBrowseDirection.Backward ? 
+    _.last(_.filter(allData, (el: IDateTimePoint) => el.unix <= filterFrom)) :
+    _.first(_.filter(allData, (el: IDateTimePoint) => el.unix >= filterTo));
+  return <ITimeSeriesBucket> {
+    date: _.isObject(sample) ? sample.date : (browseDirection == EnumBrowseDirection.Backward ? new Date(filterFrom) : new Date(filterTo)),
+    min: _.isObject(sample) ? sample.value : undefined,
+    max: _.isObject(sample) ? sample.value : undefined,
+    unixFrom: browseDirection == EnumBrowseDirection.Backward ? filterFrom : filterTo,
+    unixTo: browseDirection == EnumBrowseDirection.Backward ? filterFrom : filterTo
+  }
+}
+
 const getTimeSeriesBuckets = (allData: IDateTimePoint[], numberOfBuckets: number, filterFrom?: number, filterTo?: number): IGetTimeSeriesBucketsResult => {
-  let data = allData;
-  if (_.isNumber(filterFrom)) 
-    data = _.filter(data, (el: IDateTimePoint) => el.unix >= filterFrom);
+  let filteredData = allData;
+  if (_.isNumber(filterFrom))
+    filteredData = _.filter(filteredData, (el: IDateTimePoint) => el.unix >= filterFrom);
   else
     filterFrom = _.first(allData).unix;
-  if (_.isNumber(filterTo)) 
-    data = _.filter(data, (el: IDateTimePoint) => el.unix <= filterTo);
+  if (_.isNumber(filterTo))
+    filteredData = _.filter(filteredData, (el: IDateTimePoint) => el.unix <= filterTo);
   else
     filterTo = _.last(allData).unix;
-  if (data.length == 0)
+  if (filteredData.length == 0)
     return {
       buckets: [],
       shadowPreceding: null,
       shadowSucceeding: null
     };
-  if (data.length == 1)
+  if (filteredData.length == 1)
     return {
       buckets: [<ITimeSeriesBucket>{
-        unixFrom: _.first(data).unix,
-        unixTo: _.first(data).unix,
-        date: _.first(data).date,
-        min: _.first(data).value,
-        max: _.first(data).value,
+        unixFrom: _.first(filteredData).unix,
+        unixTo: _.first(filteredData).unix,
+        date: _.first(filteredData).date,
+        min: _.first(filteredData).value,
+        max: _.first(filteredData).value,
       }],
       shadowPreceding: null,
       shadowSucceeding: null
     };
-  const bucketLengthUnix = (filterTo - filterFrom) / numberOfBuckets;
-  const buckets =_.times<ITimeSeriesBucket>(numberOfBuckets, (n) => <ITimeSeriesBucket>{ 
-    unixFrom: filterFrom + n*bucketLengthUnix,
-    unixTo: filterFrom + (n+1)*bucketLengthUnix,
-    date: new Date(filterFrom + n*bucketLengthUnix),
-    min: undefined,
-    max: undefined
-  });
-  let bucketIndex = 0;
-  let firstBucket = undefined;
-  let referenceBucket = null;
-  for (let el of data) {
-    while (el.unix > buckets[bucketIndex].unixTo)
-      bucketIndex++;
-    referenceBucket = buckets[bucketIndex];
-    if (_.isUndefined(firstBucket))
-      firstBucket = referenceBucket;
-    referenceBucket.min = (_.isUndefined(referenceBucket.min) || el.value < referenceBucket.min) ? el.value : referenceBucket.min; 
-    referenceBucket.max = (_.isUndefined(referenceBucket.max) || el.value > referenceBucket.max) ? el.value : referenceBucket.max; 
-    if (bucketIndex >= buckets.length)
-      break;
+  let buckets: ITimeSeriesBucket[] = [];
+  let bucketLengthUnix = 0;
+  bucketLengthUnix = (filterTo - filterFrom) / numberOfBuckets;
+  if (filteredData.length <= numberOfBuckets) {
+    buckets = _.map(filteredData, el => <ITimeSeriesBucket> {
+      date: new Date(el.date.getTime()),
+      min: el.value,
+      max: el.value,
+      unixFrom: el.date.getTime(),
+      unixTo: el.date.getTime()
+    });
   }
-  const lastBucket = referenceBucket;
-  let result = {
+  else {
+    buckets = _.times<ITimeSeriesBucket>(numberOfBuckets, (n) => <ITimeSeriesBucket>{
+      unixFrom: filterFrom + n * bucketLengthUnix,
+      unixTo: filterFrom + (n + 1) * bucketLengthUnix,
+      date: new Date(filterFrom + n * bucketLengthUnix),
+      min: undefined,
+      max: undefined
+    });
+    let bucketIndex = 0;
+    let referenceBucket = null;
+    for (let el of filteredData) {
+      while (el.unix > buckets[bucketIndex].unixTo)
+        bucketIndex++;
+      referenceBucket = buckets[bucketIndex];
+      referenceBucket.min = (_.isUndefined(referenceBucket.min) || el.value < referenceBucket.min) ? el.value : referenceBucket.min;
+      referenceBucket.max = (_.isUndefined(referenceBucket.max) || el.value > referenceBucket.max) ? el.value : referenceBucket.max;
+      if (bucketIndex >= buckets.length)
+        break;
+    }
+  }
+  return {
     buckets: buckets,
-    shadowPreceding: firstBucket.unixFrom <= filterFrom ? null : getNonemptyBucket(allData, buckets, EnumBrowseDirection.Backward, bucketLengthUnix),
-    shadowSucceeding: lastBucket.unixTo >= filterTo ? null : getNonemptyBucket(allData, buckets, EnumBrowseDirection.Forward, bucketLengthUnix)
+    shadowPreceding: buckets.length > 0 && _.first(buckets).unixFrom <= filterFrom ? null : getBucketOutside(allData, EnumBrowseDirection.Backward, filterFrom, filterTo),
+    shadowSucceeding: buckets.length > 0 && _.last(buckets).unixTo >= filterTo ? null : getBucketOutside(allData, EnumBrowseDirection.Forward, filterFrom, filterTo)
   };
-  return result;
 }
 
 /**
@@ -125,7 +145,7 @@ const getTimeSeriesBuckets = (allData: IDateTimePoint[], numberOfBuckets: number
  * in <0, 1> range.
  */
 const getHorizontalSampleDistancePx = (series: any[], widthPx: number) => {
-  return series.length > 1 ? (widthPx / (series.length-1)) : widthPx;
+  return series.length > 1 ? (widthPx / (series.length - 1)) : widthPx;
 }
 
 /**
@@ -135,9 +155,9 @@ const getHorizontalSampleDistancePx = (series: any[], widthPx: number) => {
  * it has NOT such things like cache objects or the full timing of points.
  */
 const getTimeSeriesChartBuckets = (series: ITimeSeries,
-                                   from: Date, 
-                                   to: Date, 
-                                   numberOfBuckets: number): IChartTimeSeries => {  
+  from: Date,
+  to: Date,
+  numberOfBuckets: number): IChartTimeSeries => {
   let unixFrom = from.getTime();
   let unixTo = to.getTime();
   let getTimeSeriesBucketsResult = getTimeSeriesBuckets(series.points, numberOfBuckets, unixFrom, unixTo);
@@ -146,8 +166,8 @@ const getTimeSeriesChartBuckets = (series: ITimeSeries,
     name: series.name,
     color: series.color,
     buckets: buckets,
-    precedingBucket: getTimeSeriesBucketsResult.shadowPreceding,
-    succeedingBucket: getTimeSeriesBucketsResult.shadowSucceeding
+    shadowPrecedingBucket: getTimeSeriesBucketsResult.shadowPreceding,
+    shadowSucceedingBucket: getTimeSeriesBucketsResult.shadowSucceeding
   };
 }
 

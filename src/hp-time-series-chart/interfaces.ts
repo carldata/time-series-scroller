@@ -12,8 +12,8 @@ export interface IChartTimeSeries {
   name: string;
   color: string;
   buckets: ITimeSeriesBucket[];
-  precedingBucket: ITimeSeriesBucket;
-  succeedingBucket: ITimeSeriesBucket;
+  shadowPrecedingBucket: ITimeSeriesBucket;
+  shadowSucceedingBucket: ITimeSeriesBucket;
 }
 
 /**
