@@ -37,28 +37,20 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
   private transformBucketsToAreaTimeSeries(buckets: ITimeSeriesBucket[]): IAreaTimePoint[] {
     let result: IAreaTimePoint[] = [];
     _.each(buckets, (b: ITimeSeriesBucket) => {
-      if (_.isUndefined(b.leftBoundY))
-        return;
-      result.push({
-        x: new Date(b.unixFrom),
-        y0: b.leftBoundY,
-        y1: b.leftBoundY
-      });
-      if ((b.leftBoundY != b.maxY) || (b.leftBoundY != b.maxY)) {
-        result.push({
-          x: new Date(b.unixFrom + (b.unixTo-b.unixFrom)/2),
-          y0: b.minY,
-          y1: b.maxY
-        });
-      };
-      result.push({
-        x: new Date(b.unixTo),
-        y0: b.rightBoundY,
-        y1: b.rightBoundY
-      });
+      switch (b.numberOfSamples) {
+        case 1:
+          result.push({ x: b.date, y0: b.minY, y1: b.minY });
+          break;
+        case 2:
+          result.push({ x: new Date(b.unixFrom), y0: b.leftboundY, y1: b.leftboundY });
+          result.push({ x: new Date(b.unixTo), y0: b.rightboundY, y1: b.rightboundY });
+          break;
+        default:
+          result.push({ x: new Date(b.unixFrom), y0: b.leftboundY, y1: b.leftboundY });
+          result.push({ x: b.date, y0: b.minY, y1: b.maxY });
+          result.push({ x: new Date(b.unixTo), y0: b.rightboundY, y1: b.rightboundY });
+      }
     });
-    console.log('IAreaTimePoint[]');
-    console.log(JSON.stringify(result));
     return result;
   }
   
@@ -90,7 +82,7 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
                            ts.buckets.buckets,
                            _.isObject(ts.buckets.shadowSucceeding) ? [ts.buckets.shadowSucceeding] : []);
 
-    return area(this.transformBucketsToAreaTimeSeries(ts.buckets.buckets));
+    return area(this.transformBucketsToAreaTimeSeries(buckets));
   }
 
   renderPaths() {

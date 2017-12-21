@@ -4,8 +4,9 @@ export interface ITimeSeriesBucket {
   unixFrom: number;
   unixTo: number;
   date: Date;
-  leftBoundY: number;
-  rightBoundY: number;
+  numberOfSamples: number;
+  leftboundY: number;
+  rightboundY: number;
   minY: number;
   maxY: number;
 }
