@@ -11,7 +11,7 @@ export interface ITimeSeriesBucket {
   maxY: number;
 }
 
-export interface ITimeSeriesBucketsOnScreen {
+export interface IChartTimeSeriesBuckets {
   buckets: ITimeSeriesBucket[];
   /**
    * Shadow bucket represents samples not visible on chart, 

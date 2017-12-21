@@ -6,7 +6,7 @@ import { IDateTimePoint } from '../state/date-time-point';
 import { IChartZoomSettings } from '../state/chart-zoom-settings';
 import { EnumZoomSelected } from '../state/enums';
 import { IHpTimeSeriesChartState } from '../state';
-import { ITimeSeriesBucketsOnScreen, ITimeSeriesBucket } from './interfaces';
+import { IChartTimeSeriesBuckets, ITimeSeriesBucket } from './interfaces';
 
 const debug = true;
 
@@ -83,7 +83,7 @@ const getBucketOutside = (allData: IDateTimePoint[],
 const getTimeSeriesBuckets = (allData: IDateTimePoint[], 
                               numberOfBuckets: number,
                               filterFrom?: number,
-                              filterTo?: number): ITimeSeriesBucketsOnScreen => 
+                              filterTo?: number): IChartTimeSeriesBuckets => 
 {
   let filteredData = allData;
   if (_.isNumber(filterFrom))
