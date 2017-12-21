@@ -19,7 +19,13 @@ export interface ITimeSeriesProps {
   chartDimensions: IChartDimensions;
 }
 
-export interface ITimeSeriesState {
+interface ITimeSeriesState {
+}
+
+interface IAreaTimePoint {
+  x: Date;
+  y0: number;
+  y1: number;
 }
 
 export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesState> {
@@ -27,35 +33,64 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
     super(props);
     this.state = {}
   }
-  
-  getSvgPath(chartTimeSeries: IChartTimeSeries): string {
-    var self = this;
 
-    var line = d3.line()
+  private transformBucketsToAreaTimeSeries(buckets: ITimeSeriesBucket[]): IAreaTimePoint[] {
+    let result: IAreaTimePoint[] = [];
+    _.each(buckets, (b: ITimeSeriesBucket) => {
+      if (_.isUndefined(b.leftBoundY))
+        return;
+      result.push({
+        x: new Date(b.unixFrom),
+        y0: b.leftBoundY,
+        y1: b.leftBoundY
+      });
+      if ((b.leftBoundY != b.maxY) || (b.leftBoundY != b.maxY)) {
+        result.push({
+          x: new Date(b.unixFrom + (b.unixTo-b.unixFrom)/2),
+          y0: b.minY,
+          y1: b.maxY
+        });
+      };
+      result.push({
+        x: new Date(b.unixTo),
+        y0: b.rightBoundY,
+        y1: b.rightBoundY
+      });
+    });
+    console.log('IAreaTimePoint[]');
+    console.log(JSON.stringify(result));
+    return result;
+  }
+  
+  private getSvgPath(chartTimeSeries: IChartTimeSeries): string {
+    let self = this;
+
+    let line = d3.line()
       .x(function(d: ITimeSeriesBucket) { 
         return self.props.xScale(d.date); 
       })
       .y(function(d: ITimeSeriesBucket) { 
-        return self.props.yScale(d.min); 
+        return self.props.yScale(d.minY); 
       });
 
     return line(chartTimeSeries.buckets);
   }
 
-  getSvgAreaPath(ts: IChartTimeSeries): string {
-    var self = this;
+  private getSvgAreaPath(ts: IChartTimeSeries): string {
+    let self = this;
 
-    var area = d3.area()
-      .x(function(d: ITimeSeriesBucket) { 
-        return self.props.xScale(d.date); 
+    let area = d3.area()
+      .x(function(d: IAreaTimePoint) { 
+        return self.props.xScale(d.x); 
       })
-      .y0(function(d: ITimeSeriesBucket) { return self.props.yScale(d.min); })
-      .y1(function(d: ITimeSeriesBucket) { return self.props.yScale(d.max); });
+      .y0(function(d: IAreaTimePoint) { return self.props.yScale(d.y0); })
+      .y1(function(d: IAreaTimePoint) { return self.props.yScale(d.y1); });
 
-    let buckets = _.concat(_.isObject(ts.shadowPrecedingBucket) ? [ts.shadowPrecedingBucket] : [], 
-                           ts.buckets,
-                           _.isObject(ts.shadowSucceedingBucket) ? [ts.shadowSucceedingBucket] : []);
-    return area(buckets);
+    let buckets = _.concat(_.isObject(ts.buckets.shadowPreceding) ? [ts.buckets.shadowPreceding] : [], 
+                           ts.buckets.buckets,
+                           _.isObject(ts.buckets.shadowSucceeding) ? [ts.buckets.shadowSucceeding] : []);
+
+    return area(this.transformBucketsToAreaTimeSeries(ts.buckets.buckets));
   }
 
   renderPaths() {

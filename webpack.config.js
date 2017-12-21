@@ -30,7 +30,7 @@ var config = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin(),
-    new CopyWebpackPlugin([{ from: './src/demo-app/discrepancies.csv' }], { copyUnmodified: true })
+    new CopyWebpackPlugin([{ from: './src/demo-app/csv', dot: true }], { copyUnmodified: true })
   ],
   module: {
     /*

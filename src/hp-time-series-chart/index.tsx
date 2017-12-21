@@ -1,3 +1,4 @@
+import { Dots } from './components/dots';
 import * as dateFns from 'date-fns';
 import * as React from 'react';
 import * as d3 from 'd3';
@@ -36,15 +37,18 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
         props.chartDimensions.timeSeriesChartPaddingTop]);
   };
 
+  const getFilteredPoints = () => {
+    return _.filter(_.first(props.state.series).points, 
+      (p: IDateTimePoint) => _.inRange(p.unix, props.state.windowDateFrom.getTime(), props.state.windowDateTo.getTime()));
+  }
+
   let chartTimeSeries: IChartTimeSeries[] = _.map(props.state.series, 
     ts => hpTimeSeriesChartCalculations.getTimeSeriesChartBuckets(ts,
                                                                   props.state.windowDateFrom, 
                                                                   props.state.windowDateTo,
                                                                   props.chartDimensions.canvasWidth));
-
   let xScale = getXScale();
   let yScale = getYScale();
-  
   return (
     <svg 
       width={props.chartDimensions.canvasWidth} 

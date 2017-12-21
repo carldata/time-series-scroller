@@ -1,4 +1,4 @@
-import { ITimeSeriesBucket } from './calculations/interfaces';
+import { ITimeSeriesBucket, ITimeSeriesBucketsOnScreen } from './calculations/interfaces';
 import { IDateTimePoint } from './state/date-time-point';
 import { EnumZoomSelected } from './state/enums';
 
@@ -11,9 +11,7 @@ export interface IChartTimeSeries {
    */
   name: string;
   color: string;
-  buckets: ITimeSeriesBucket[];
-  shadowPrecedingBucket: ITimeSeriesBucket;
-  shadowSucceedingBucket: ITimeSeriesBucket;
+  buckets: ITimeSeriesBucketsOnScreen;
 }
 
 /**

@@ -4,12 +4,22 @@ export interface ITimeSeriesBucket {
   unixFrom: number;
   unixTo: number;
   date: Date;
-  min: number;
-  max: number;
+  leftBoundY: number;
+  rightBoundY: number;
+  minY: number;
+  maxY: number;
 }
 
-export interface IGetTimeSeriesBucketsResult {
+export interface ITimeSeriesBucketsOnScreen {
   buckets: ITimeSeriesBucket[];
+  /**
+   * Shadow bucket represents samples not visible on chart, 
+   * yet in some cases we want to have this point visualized
+   */
   shadowPreceding: ITimeSeriesBucket;
+  /**
+   * Shadow bucket represents samples not visible on chart, 
+   * yet in some cases we want to have this point visualized
+   */
   shadowSucceeding: ITimeSeriesBucket;
 }
