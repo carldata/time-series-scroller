@@ -32,12 +32,13 @@ describe("time-series-chart calculations test", () => {
     let series = regularSeries(hours, distribution);
     let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(series, numberOfBuckets);
     console.log(`Running with hours: ${hours}, distribution: ${distribution}, numberOfBuckets: ${numberOfBuckets}`);
-    expect(result.buckets.length).toBe(numberOfBuckets);
+    expect(result.buckets.length).toBeGreaterThan(0);
+    expect(result.buckets.length).toBeLessThanOrEqual(numberOfBuckets);
   });
 
-  it('not-evenly distributed time series is placed into buckets properly', () => {
+  it('time series is transformed to no empty buckets', () => {
     let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(notEvenlyDistributedSeries, 4);
-    expect(result.buckets.length).toBe(4);
+    expect(result.buckets.length).toBe(3);
   });
 
   it('buckets are fed with proper data', () => {
@@ -53,31 +54,41 @@ describe("time-series-chart calculations test", () => {
     console.log(`Running with minutes: ${minutes}, numberOfBuckets: ${numberOfBuckets}, division: ${division}`);
     _.each(buckets.buckets, b => {
       if (dateFns.getHours(b.unixFrom) == dateFns.getHours(b.unixTo)) {
-        expect(b.min).toEqual(b.max);
-        _.isNumber(b.min) ? expect(b.min).toEqual((dateFns.getHours(b.unixFrom) % 2 ? 1 : 0)) : null;
+        expect(b.minY).toEqual(b.maxY);
+        _.isNumber(b.minY) ? expect(b.minY).toEqual((dateFns.getHours(b.unixFrom) % 2 ? 1 : 0)) : null;
       }
     });
   });
 
-  it('transforming not-evenly distributed series to buckets returns empty buckets under specific filter conditions', () => {
+  it('not-evenly distributed series gets transformed to buckets under specific filter conditions - test A', () => {
     let from = dateFns.addMinutes(new Date(2016, 0, 15), 25).getTime();
     let to = dateFns.addMinutes(new Date(2016, 0, 15), 35).getTime();
     let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(notEvenlyDistributedSeries, 5, from, to);
-    expect(result.buckets.length).toBe(5);
-    expect(result.buckets[0].unixFrom).toBe(1452813900000);
-    expect(result.buckets[0].unixTo).toBe(1452814020000);
-    expect(result.buckets[0].min).toBe(undefined);  
-    expect(result.buckets[1].min).toBe(undefined);  
-    expect(result.buckets[2].min).not.toBe(undefined);  
+    expect(result.buckets.length).toBe(2);
+    expect(_.sumBy(result.buckets, b => b.numberOfSamples)).toBe(5);
+    for (let bucket of result.buckets) {
+      expect(bucket.minY).not.toBe(undefined);
+      expect(bucket.maxY).not.toBe(undefined); 
+      expect(bucket.leftboundY).not.toBe(undefined); 
+      expect(bucket.rightboundY).not.toBe(undefined); 
+    }
   });
 
-  it('transforming not-evenly distributed series to buckets returns shadow buckets correctly under specific filter conditions', () => {
+  it('not-evenly distributed series gets transformed to buckets under specific filter conditions - test B', () => {
     let from = dateFns.addMinutes(new Date(2016, 0, 15), 25).getTime();
     let to = dateFns.addMinutes(new Date(2016, 0, 15), 35).getTime();
     let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(notEvenlyDistributedSeries, 5, from, to);
-    expect(result.shadowPreceding.unixFrom).toBe(1452813060000);
-    expect(result.shadowPreceding.unixTo).toBe(1452813180000);
-    expect(result.shadowPreceding.min).not.toBe(undefined);
+    expect(result.shadowPreceding.unixFrom).toBe(1452813900000);
+    expect(result.shadowPreceding.unixTo).toBe(1452813900000);
+    expect(result.shadowPreceding.minY).not.toBe(undefined);
     expect(result.shadowSucceeding).toBe(null);
+  });
+
+  it('not-evenly distributed series has no buckets but shadow buckets get found', () => {
+    let from = dateFns.addMinutes(new Date(2016, 0, 15), 15).getTime();
+    let to = dateFns.addMinutes(new Date(2016, 0, 15), 28).getTime();
+    let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(notEvenlyDistributedSeries, 5, from, to);
+    expect(result.shadowPreceding).not.toBe(null);
+    expect(result.shadowSucceeding).not.toBe(null);
   });
 });
