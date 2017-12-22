@@ -1,12 +1,14 @@
+import { hpTimeSeriesChartCalculations } from '../calculations';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { ICsvDataLoadedContext, EnumCsvDataType } from './models';
 import { IDateTimePoint } from '../state/date-time-point';
+import { ITimeSeries } from '../state/time-series';
 
 const debug = false;
 
 const extractDateTimePoints = (response: ICsvDataLoadedContext): IDateTimePoint[] => {
-  let result = new Array<IDateTimePoint>();  
+  let result = new Array<IDateTimePoint>();
   let lines = response.text.split(response.config.newLineCharacter)
   if (response.config.firstLineContainsHeaders)
     lines = _.drop(lines, 1);
@@ -21,9 +23,9 @@ const extractDateTimePoints = (response: ICsvDataLoadedContext): IDateTimePoint[
     let columnValues = line.split(response.config.delimiter);
     let columnValuesConversionsSucceeded = true;
     _.each(response.config.columns, column => {
-      if (!column.display) 
+      if (!column.display)
         return;
-      let stringValue =  columnValues[_.indexOf(response.config.columns, column)];
+      let stringValue = columnValues[_.indexOf(response.config.columns, column)];
       switch (column.type) {
         case EnumCsvDataType.DateTime:
           let date = dateFns.parse(stringValue);
@@ -49,10 +51,10 @@ const extractDateTimePoints = (response: ICsvDataLoadedContext): IDateTimePoint[
     });
     if (columnValuesConversionsSucceeded)
       result.push(sample);
-  });  
+  });
   return result;
 }
 
-export const calculations = {
+export const csvLoadingCalculations = {
   extractDateTimePoints
 }

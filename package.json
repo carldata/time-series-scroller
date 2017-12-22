@@ -50,6 +50,7 @@
     "typescript-collections": "^1.2.5"
   },
   "devDependencies": {
+    "@types/es6-shim": "^0.31.35",
     "@types/jest": "^21.1.8",
     "@types/lodash": "^4.14.74",
     "@types/react": "^15.0.26",

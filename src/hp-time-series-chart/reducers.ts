@@ -15,6 +15,7 @@ import { IChartZoomSettings } from './state/chart-zoom-settings';
 import { IDateTimePoint } from './state/date-time-point';
 import { EnumZoomSelected } from './state/enums';
 import { ITimeSeries } from './state/time-series';
+import { hpTimeSeriesChartCalculations } from '../index';
 
 const SAMPLE_VALUE_MAX = 150;
 const SECONDS_PER_SAMPLE = 60;
@@ -29,6 +30,7 @@ const buildInitialState = ():IHpTimeSeriesChartState => {
       name: "red",
       color: "red",
       points: [],
+      unixToIndexMap: new Map(),
       from: currentDate,
       to: currentDate,
     }],
@@ -130,7 +132,8 @@ const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[
       from: new Date(dateRangeDateFrom.getTime()),
       to: new Date(dateRangeDateTo.getTime()),
       name: "random series",
-      points: points
+      points: points,
+      unixToIndexMap: hpTimeSeriesChartCalculations.createUnixToIndexMap(points)
     }],
     chartZoomSettings: {
       zoomSelected: EnumZoomSelected.NoZoom,

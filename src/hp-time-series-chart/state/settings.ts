@@ -1,0 +1,1 @@
+export const UNIX_TO_INDEX_MAP_PRECISION = 10000;

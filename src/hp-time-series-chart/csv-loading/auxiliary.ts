@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { handleActions, Action } from 'redux-actions';
-import { hpTimeSeriesChartCalculations as chartCalculations } from '../calculations';
+import { hpTimeSeriesChartCalculations } from '../calculations';
 import { IEventChartConfiguration } from '../interfaces';
-import { calculations as csvCalculations } from './calculations';
+import { csvLoadingCalculations as csvCalculations } from './calculations';
 import { ICsvDataLoadedContext } from './models';
 import { IHpTimeSeriesChartState } from '../state/index';
 import { IDateTimePoint } from '../state/date-time-point';
@@ -17,12 +17,14 @@ export const csvLoadingAuxiliary = {
     let points: Array<IDateTimePoint> = csvCalculations.extractDateTimePoints(context);
     if (points.length <= 1)
       return [state, null];
+    
     let timeSeries: ITimeSeries = <ITimeSeries>{
       color: "steelblue",
       name: `csv_loaded_series_${state.series.length+1}`,
       points: points,
       from: new Date(points[0].date.getTime()),
-      to: new Date(points[points.length-1].date.getTime())
+      to: new Date(points[points.length-1].date.getTime()),
+      unixToIndexMap: hpTimeSeriesChartCalculations.createUnixToIndexMap(points)
     }
 
     let chartState = _.extend({}, state, <IHpTimeSeriesChartState> {
