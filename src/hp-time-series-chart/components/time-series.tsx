@@ -19,7 +19,7 @@ export interface ITimeSeriesProps {
   chartDimensions: IChartDimensions;
 }
 
-interface ITimeSeriesState {
+export interface ITimeSeriesState {
 }
 
 interface IAreaTimePoint {
