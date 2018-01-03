@@ -1,5 +1,7 @@
 .git
-node_modules
-src
+__tests__
+node_modules/
+src/
 webpack.config.json
 jest-preprocessor.js
+tsconfig.json
