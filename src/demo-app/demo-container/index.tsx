@@ -1,3 +1,4 @@
+import { hpTimeSeriesChartCsvLoadingActionCreators } from '../../hp-time-series-chart/csv-loading/action-creators';
 import { HpTimeSeriesScroller } from '../../component';
 import { hpTimeSeriesChartCalculations } from '../../hp-time-series-chart/calculations';
 import { hpSliderHpTimeSeriesChartIntegration } from '../../hp-time-series-chart/hp-slider-integration';
@@ -33,6 +34,7 @@ export interface IGraphScreenState {
 export interface IGraphScreenDispatchProps {
   setZoomWindowLevel: (level: EnumZoomSelected, widthPx: number) => EnumZoomSelected,
   generateRandomData: (dates: Date[]) => void,
+  loadCsv: (url: string) => void,
   setWindowDateFromTo: (dateFrom: Date, dateTo: Date) => void
 }
 
@@ -130,6 +132,21 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
               <ButtonGroup>
                 <Button 
                   bsSize="xs" 
+                  onClick={() => this.props.loadCsv("2M.csv")}>
+                  Load 2M
+                </Button>
+                <Button 
+                  bsSize="xs" 
+                  onClick={() => this.props.loadCsv("15M.csv")}>
+                  Load 15M
+                </Button>
+                <Button 
+                  bsSize="xs" 
+                  onClick={() => this.props.loadCsv("35M.csv")}>
+                  Load 35M
+                </Button>
+                <Button 
+                  bsSize="xs" 
                   onClick={() => {
                     let date = new Date();
                     this.props.generateRandomData([date, 
@@ -137,7 +154,7 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                                                    date, 
                                                    dateFns.addMonths(date, 2*12)]);
                   }}>
-                  Load random data
+                  Generate 2y random data
                 </Button>
               </ButtonGroup>
             </Col>
@@ -169,6 +186,7 @@ const mapStateToProps = (state: IAppState): IGraphScreenProps => {
 const matchDispatchToProps = (dispatch: Dispatch<void>) => {
   return bindActionCreators({
     setZoomWindowLevel: hpTimeSeriesChartActionCreators.setZoomWindowLevel,
+    loadCsv: hpTimeSeriesChartCsvLoadingActionCreators.loadCsv,
     generateRandomData: hpTimeSeriesChartActionCreators.generateRandomData,
     setWindowDateFromTo: hpTimeSeriesChartActionCreators.setWindowDateFromTo
   }, dispatch);
