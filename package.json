@@ -1,6 +1,6 @@
 {
   "name": "time-series-scroller",
-  "version": "0.5.13",
+  "version": "0.5.14",
   "description": "Scrolling component for time series",
   "repository": {
     "type": "git"
