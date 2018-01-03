@@ -1,6 +1,5 @@
 .git
 node_modules
 src
-tsconfig.json
 webpack.config.json
 jest-preprocessor.js
