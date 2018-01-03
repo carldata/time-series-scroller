@@ -1,8 +1,6 @@
 .git
 node_modules
 src
-.gitignore
-.npmignore
 tsconfig.json
 webpack.config.json
 __tests__
