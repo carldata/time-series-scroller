@@ -14,7 +14,7 @@ import { withRouter } from 'react-router';
 import * as ui from '../../hp-time-series-chart/ui';
 import { EnumZoomSelected } from '../../hp-time-series-chart/state/enums';
 import { IChartDimensions, IEventChartConfiguration }  from '../../hp-time-series-chart/interfaces';
-import { ICsvRawParseConfiguration, ICsvColumn, EnumCsvDataType, ICsvDataLoadedContext }  from '../../hp-time-series-chart/csv-loading/models';
+import { ICsvColumn, EnumCsvDataType, ICsvDataLoadedContext }  from '../../hp-time-series-chart/csv-loading/models';
 import { hpTimeSeriesChartActionCreators } from '../../hp-time-series-chart/action-creators';
 import { HpSlider } from '../../hp-slider';
 import { IDomain, IHpSliderScreenDimensions, IHpSliderHandleValues } from '../../hp-slider/interfaces';
@@ -56,27 +56,6 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
     fillColor: "red",
     heightPx: 30
   };
-
-  private getCsvConfig = ():ICsvRawParseConfiguration => {
-    let columns: ICsvColumn[] = [{
-        type: EnumCsvDataType.DateTime,
-        display: true
-      }, {
-        type: EnumCsvDataType.Float,
-        display: true
-      }, {
-        type: EnumCsvDataType.Float,
-        display: false
-      }
-    ];
-    let result: ICsvRawParseConfiguration = {
-      columns: columns,
-      newLineCharacter: '\n',
-      delimiter: ",",
-      firstLineContainsHeaders: false
-    };
-    return result;
-  }
 
   public render() {
     return (
@@ -139,6 +118,21 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                   bsSize="xs" 
                   onClick={() => this.props.loadCsv("250k.csv")}>
                   Load 250k
+                </Button>
+                <Button 
+                  bsSize="xs" 
+                  onClick={() => this.props.loadCsv("1M.csv")}>
+                  Load 1M
+                </Button>
+                <Button 
+                  bsSize="xs" 
+                  onClick={() => this.props.loadCsv("2M.csv")}>
+                  Load 2M
+                </Button>
+                <Button 
+                  bsSize="xs" 
+                  onClick={() => this.props.loadCsv("10M.csv")}>
+                  Load 10M
                 </Button>
                 <Button 
                   bsSize="xs" 

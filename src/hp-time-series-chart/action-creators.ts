@@ -8,7 +8,7 @@ import { Dispatch } from 'redux';
 import * as collections from 'typescript-collections';
 import { Dictionary } from 'typescript-collections';
 import { EnumZoomSelected } from './state/enums';
-import { ICsvRawParseConfiguration, ICsvDataLoadedContext } from './csv-loading/models';
+import { ICsvDataLoadedContext } from './csv-loading/models';
 
 export const hpTimeSeriesChartActionTypes = {
   SET_CHART_WIDTH: 'SET_CHART_WIDTH',

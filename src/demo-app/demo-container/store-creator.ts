@@ -12,10 +12,14 @@ export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
   [hpTimeSeriesChartActionTypes.GENERATE_RANDOM_DATA]: (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
     return hpTimeSeriesChartReducers.generateRandomData(state, action)
   },
-  [hpTimeSeriesCsvLoadingChartActionTypes.LOADING_CSV_DATA_SUCCEEDED]: (state: IHpTimeSeriesChartState, action: Action<Array<any>>): IHpTimeSeriesChartState => {
-    let [newState, timeSeries] = csvLoadingAuxiliary.csvDataLoaded(state, action.payload);
-    return _.extend({}, state, newState);
+  [hpTimeSeriesCsvLoadingChartActionTypes.RECEIVED_CSV_DATA_CHUNK]: (state: IHpTimeSeriesChartState, action: Action<Array<any>>): IHpTimeSeriesChartState => {
+    let [newState, timeSeries] = csvLoadingAuxiliary.receivedCsvDataChunk(state, action.payload);
+    return _.extend({}, newState);
   },
+  // [hpTimeSeriesCsvLoadingChartActionTypes.LOADING_CSV_DATA_SUCCEEDED]: (state: IHpTimeSeriesChartState, action: Action<Array<any>>): IHpTimeSeriesChartState => {
+  //   let [newState, timeSeries] = csvLoadingAuxiliary.csvDataLoaded(state, action.payload);
+  //   return _.extend({}, state, newState);
+  // },
   [hpTimeSeriesChartActionTypes.SET_WINDOW_DATE_FROM_TO]: (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
     return hpTimeSeriesChartReducers.setWindowDateFromTo(state, action);
   },
