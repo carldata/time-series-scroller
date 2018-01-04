@@ -35,6 +35,6 @@ export interface ICsvDataLoadedContext {
   /**
    * The whole CSV file contents i.e. the text as loaded from CSV file
    */
-  text: string;  
+  file: File;
   config: ICsvRawParseConfiguration;
 }

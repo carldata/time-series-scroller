@@ -132,18 +132,13 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
               <ButtonGroup>
                 <Button 
                   bsSize="xs" 
-                  onClick={() => this.props.loadCsv("2M.csv")}>
-                  Load 2M
+                  onClick={() => this.props.loadCsv("50k.csv")}>
+                  Load 50k
                 </Button>
                 <Button 
                   bsSize="xs" 
-                  onClick={() => this.props.loadCsv("15M.csv")}>
-                  Load 15M
-                </Button>
-                <Button 
-                  bsSize="xs" 
-                  onClick={() => this.props.loadCsv("35M.csv")}>
-                  Load 35M
+                  onClick={() => this.props.loadCsv("250k.csv")}>
+                  Load 250k
                 </Button>
                 <Button 
                   bsSize="xs" 
@@ -154,7 +149,7 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                                                    date, 
                                                    dateFns.addMonths(date, 2*12)]);
                   }}>
-                  Generate 2y random data
+                  Generate 1M
                 </Button>
               </ButtonGroup>
             </Col>

@@ -13,8 +13,8 @@ export const csvLoadingAuxiliary = {
   /**
    * Returns a new, updated IChartState and ITimeSeries that was created and added to IChartState
    */
-  csvDataLoaded: (state: IHpTimeSeriesChartState, context: ICsvDataLoadedContext): [IHpTimeSeriesChartState, ITimeSeries] => {
-    let points: Array<IDateTimePoint> = csvCalculations.extractDateTimePoints(context);
+  csvDataLoaded: (state: IHpTimeSeriesChartState, csvRows: Array<any>): [IHpTimeSeriesChartState, ITimeSeries] => {
+    let points: Array<IDateTimePoint> = csvCalculations.extractDateTimePoints(csvRows);
     if (points.length <= 1)
       return [state, null];
     
