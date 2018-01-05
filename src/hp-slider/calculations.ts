@@ -1,11 +1,12 @@
 import { IDomain, IHpSliderScreenDimensions } from './interfaces';
 import { EnumHandleType } from './enums';
+import * as _ from 'lodash';
 
 let translateValueToHandleLeftPositionPx = (domain: IDomain<number>, dimensions: IHpSliderScreenDimensions, type: EnumHandleType, value: number): number => {
-  let result = (value / (domain.domainMax - domain.domainMin)) * dimensions.sliderWidthPx;
+  let result = (value / domain.domainMax - domain.domainMin) * dimensions.sliderWidthPx;
   if (type == EnumHandleType.Right)
     result -= dimensions.sliderHandleWidthThicknessPx;
-  return result;  
+  return _.isNaN(result) ? 0 : result;
 }
 
 /**
@@ -16,7 +17,9 @@ let expressLengthPxInDomain = (domain: IDomain<number>, dimensions: IHpSliderScr
 }
 
 let expressDomainLengthInPx = (domain: IDomain<number>, dimensions: IHpSliderScreenDimensions, length: number): number => {
-  return (length / (domain.domainMax - domain.domainMin) * dimensions.sliderWidthPx);
+  return _.reduce([(length / (domain.domainMax - domain.domainMin) * dimensions.sliderWidthPx)], 
+                  (sum, el) => _.isNaN(el) ? 0 : el, 
+                  0);
 }
 
 export let calculations = {

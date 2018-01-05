@@ -6,12 +6,15 @@ import * as _ from 'lodash';
 import { Parser, ParseResult } from 'papaparse';
 
 export const hpTimeSeriesCsvLoadingChartActionTypes = {
+  STARTED_LOADING_CSV: 'STARTED_LOADING_CSV',
   RECEIVED_CSV_DATA_CHUNK: 'RECEIVED_CSV_DATA_CHUNK',
-  LOADING_CSV_DATA_SUCCEEDED: 'LOADING_CSV_DATA_SUCCEEDED'
 };
 
 export const hpTimeSeriesChartCsvLoadingActionCreators = {
   loadCsv: (url: string) => (dispatch: Dispatch<{}>) => {
+    dispatch({
+      type: hpTimeSeriesCsvLoadingChartActionTypes.STARTED_LOADING_CSV
+    });
     Papa.parse(url, {
       download: true,
       worker: true,

@@ -10,6 +10,36 @@ import { IDateTimePoint } from '../state/date-time-point';
 import { ITimeSeries } from '../state/time-series';
 
 export const csvLoadingAuxiliary = {
+    /**
+   * Returns a new, updated IChartState and ITimeSeries that was created and added to IChartState
+   */
+  startedLoadingCsvData: (state: IHpTimeSeriesChartState): IHpTimeSeriesChartState => {
+    let timeSeries: ITimeSeries = <ITimeSeries>{
+      color: "steelblue",
+      name: `csv_loaded_series_${state.series.length+1}`,
+      points: [],
+      from: new Date(),
+      to: new Date(),
+      unixToIndexMap: hpTimeSeriesChartCalculations.createUnixToIndexMap([])
+    }
+
+    let chartState = _.extend({}, state, <IHpTimeSeriesChartState> {
+      chartMarkerConfiguration: <IEventChartConfiguration> {
+        fillColor: "red",
+        heightPx: 2
+      },
+      series: [timeSeries]
+    });
+
+    chartState.dateRangeDateFrom = new Date();
+    chartState.dateRangeDateTo = new Date();
+    chartState.windowDateFrom = new Date();
+    chartState.windowDateTo = new Date();
+    chartState.yMin = 0;
+    chartState.yMax = 0;
+
+    return chartState;
+  },
   /**
    * Returns a new, updated IChartState and ITimeSeries that was created and added to IChartState
    */
@@ -38,41 +68,6 @@ export const csvLoadingAuxiliary = {
     chartState.dateRangeDateTo = new Date(timeSeries.to.getTime()); //_.max(_.map(chartState.series, el => el.to));
     chartState.windowDateFrom = new Date(timeSeries.from.getTime());// new Date(chartState.dateRangeDateFrom.getTime()),
     chartState.windowDateTo = new Date(timeSeries.to.getTime()); //new Date(chartState.dateRangeDateTo.getTime()) 
-    chartState.yMin = _.min(_.concat([0], _.map(timeSeries.points, el => el.value)));
-    chartState.yMax = _.max(_.map(timeSeries.points, el => el.value))
-
-    return [chartState, timeSeries];
-  },
-  
-  /**
-   * Returns a new, updated IChartState and ITimeSeries that was created and added to IChartState
-   */
-  csvDataLoaded: (state: IHpTimeSeriesChartState, csvRows: Array<any>): [IHpTimeSeriesChartState, ITimeSeries] => {
-    let points: Array<IDateTimePoint> = csvCalculations.extractDateTimePoints(csvRows);
-    if (points.length <= 1)
-      return [state, null];
-    
-    let timeSeries: ITimeSeries = <ITimeSeries>{
-      color: "steelblue",
-      name: `csv_loaded_series_${state.series.length+1}`,
-      points: points,
-      from: new Date(points[0].date.getTime()),
-      to: new Date(points[points.length-1].date.getTime()),
-      unixToIndexMap: hpTimeSeriesChartCalculations.createUnixToIndexMap(points)
-    }
-
-    let chartState = _.extend({}, state, <IHpTimeSeriesChartState> {
-      chartMarkerConfiguration: <IEventChartConfiguration> {
-        fillColor: "red",
-        heightPx: 2
-      },
-      series: [timeSeries]
-    });
-
-    chartState.dateRangeDateFrom = _.min(_.map(chartState.series, el => el.from));
-    chartState.dateRangeDateTo = _.max(_.map(chartState.series, el => el.to));
-    chartState.windowDateFrom = new Date(chartState.dateRangeDateFrom.getTime()),
-    chartState.windowDateTo = new Date(chartState.dateRangeDateTo.getTime()) 
     chartState.yMin = _.min(_.concat([0], _.map(timeSeries.points, el => el.value)));
     chartState.yMax = _.max(_.map(timeSeries.points, el => el.value))
 
