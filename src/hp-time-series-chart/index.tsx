@@ -20,7 +20,7 @@ export interface IHpTimeSeriesChartProps {
 export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
   const getXScale = () => {
     return d3.scaleTime()
-      .domain([props.state.windowDateFrom, props.state.windowDateTo])
+      .domain([props.state.windowUnixFrom, props.state.windowUnixTo])
       .range([props.chartDimensions.timeSeriesChartPaddingLeft, 
         props.chartDimensions.canvasWidth - props.chartDimensions.timeSeriesChartPaddingLeft - props.chartDimensions.timeSeriesChartPaddingRight]);
   };
@@ -34,13 +34,13 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
 
   const getFilteredPoints = () => {
     return _.filter(_.first(props.state.series).points, 
-      (p: IDateTimePoint) => _.inRange(p.unix, props.state.windowDateFrom.getTime(), props.state.windowDateTo.getTime()));
+      (p: IDateTimePoint) => _.inRange(p.unix, props.state.windowUnixFrom, props.state.windowUnixTo));
   }
 
   let chartTimeSeries: IChartTimeSeries[] = _.map(props.state.series, 
     ts => hpTimeSeriesChartCalculations.getTimeSeriesChartBuckets(ts,
-                                                                  props.state.windowDateFrom, 
-                                                                  props.state.windowDateTo,
+                                                                  props.state.windowUnixFrom, 
+                                                                  props.state.windowUnixTo,
                                                                   props.chartDimensions.canvasWidth));
   let xScale = getXScale();
   let yScale = getYScale();

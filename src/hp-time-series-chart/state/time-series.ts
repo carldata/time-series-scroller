@@ -20,13 +20,6 @@ export interface ITimeSeries {
    */
   unixToIndexMap: Map<number, number>;  
 
-  /**
-   * Equivalent of points[0].time
-   */
-  from: Date;
-
-  /**
-   * Equivalent of points[points.length-1].time
-   */
-  to: Date;
+  unixFrom: number;
+  unixTo: number;
 }

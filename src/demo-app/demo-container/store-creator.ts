@@ -19,12 +19,6 @@ export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
     let [newState, timeSeries] = csvLoadingAuxiliary.receivedCsvDataChunk(state, false, action.payload);
     return _.extend({}, state, newState);
   },
-  [hpTimeSeriesChartActionTypes.SET_WINDOW_DATE_FROM_TO]: (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
-    return hpTimeSeriesChartReducers.setWindowDateFromTo(state, action);
-  },
-  [hpTimeSeriesChartActionTypes.SET_WINDOW_WIDTH_MINUTES]: (state: IHpTimeSeriesChartState, action: Action<number>): IHpTimeSeriesChartState => {
-    return hpTimeSeriesChartReducers.setWindowWidthMinutes(state, action);
-  },
   [hpTimeSeriesChartActionTypes.SET_ZOOM]: (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelected, number]>): IHpTimeSeriesChartState => {
     return hpTimeSeriesChartReducers.setZoom(state, action);
   }

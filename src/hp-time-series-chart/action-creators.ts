@@ -14,7 +14,7 @@ export const hpTimeSeriesChartActionTypes = {
   SET_CHART_WIDTH: 'SET_CHART_WIDTH',
   GENERATE_RANDOM_DATA: 'GENERATE_RANDOM_DATA',
   SET_EVENTS: 'SET_EVENTS',
-  SET_WINDOW_DATE_FROM_TO: 'SET_WINDOW_DATE_FROM_TO',
+  SET_WINDOW_UNIX_FROM_TO: 'SET_WINDOW_UNIX_FROM_TO',
   SET_WINDOW_WIDTH_MINUTES: 'SET_WINDOW_WIDTH_MINUTES',
   SET_ZOOM: 'SET_ZOOM',
   SCROLL_TO_THE_NEXT_FRAME: 'SCROLL_TO_THE_NEXT_FRAME',
@@ -44,9 +44,9 @@ export const hpTimeSeriesChartActionCreators = {
       return result;
     }
   ), 
-  setWindowDateFromTo: createAction<Date[], Date, Date>(
-    hpTimeSeriesChartActionTypes.SET_WINDOW_DATE_FROM_TO,
-    (dateFrom: Date, dateTo: Date) => [dateFrom, dateTo]
+  setWindowUnixFromTo: createAction<number[], number, number>(
+    hpTimeSeriesChartActionTypes.SET_WINDOW_UNIX_FROM_TO,
+    (unixFrom: number, unixTo: number) => [unixFrom, unixTo]
   ),
   setWindowWidthMinutes: createAction<number, number>(
     hpTimeSeriesChartActionTypes.SET_WINDOW_WIDTH_MINUTES,

@@ -4,8 +4,8 @@ export interface IChartZoomSettings {
   zoomSelected: EnumZoomSelected;
   totalNumberOfFrames: number;
   currentFrameNumber: number;
-  zoomLevel1FramePointsFrom: Date;
-  zoomLevel1FramePointsTo: Date;
-  zoomLevel2FramePointsFrom: Date;
-  zoomLevel2FramePointsTo: Date;
+  zoomLevel1FramePointsUnixFrom: number;
+  zoomLevel1FramePointsUnixTo: number;
+  zoomLevel2FramePointsUnixFrom: number;
+  zoomLevel2FramePointsUnixTo: number;
 }

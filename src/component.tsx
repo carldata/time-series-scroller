@@ -1,7 +1,7 @@
+import { IDomain } from './hp-slider/interfaces';
 import { EnumZoomSelected } from './hp-time-series-chart/state/enums';
 import * as dateFns from 'date-fns';
 import { EnumHandleType } from './hp-slider/enums';
-import { hpSliderHpTimeSeriesChartIntegration } from './hp-time-series-chart/hp-slider-integration';
 import { hpTimeSeriesChartCalculations } from './hp-time-series-chart/calculations';
 import { IChartDimensions } from './hp-time-series-chart/interfaces';
 import { IHpTimeSeriesChartState } from './hp-time-series-chart/state';
@@ -14,7 +14,7 @@ import { ButtonGroup, Button } from 'react-bootstrap';
 export interface IHpTimeSeriesScrollerProps {
   state: IHpTimeSeriesChartState;
   chartDimensions: IChartDimensions;
-  zoomWindowLevelSet?: (zoomLevel: EnumZoomSelected, dateFrom: Date, dateTo: Date) => void;
+  zoomWindowLevelSet?: (zoomLevel: EnumZoomSelected, unixFrom: number, unixTo: number) => void;
   displayZoomLevelButtons?: boolean;
 }
 
@@ -29,6 +29,23 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
   componentWillReceiveProps(nextProps: Readonly<IHpTimeSeriesScrollerProps>, nextContext: any) {
     this.setState(_.extend({}, nextProps.state));
   }
+
+  private getDomain = (): IDomain<number> => {
+    switch (this.state.chartZoomSettings.zoomSelected) {
+      case EnumZoomSelected.NoZoom:
+        return { domainMin: this.state.dateRangeUnixFrom, domainMax: this.state.dateRangeUnixTo }
+      case EnumZoomSelected.ZoomLevel1:
+        return { 
+          domainMin: this.state.chartZoomSettings.zoomLevel1FramePointsUnixFrom, 
+          domainMax: this.state.chartZoomSettings.zoomLevel1FramePointsUnixTo 
+        }
+      case EnumZoomSelected.ZoomLevel2:
+        return { 
+          domainMin: this.state.chartZoomSettings.zoomLevel2FramePointsUnixFrom, 
+          domainMax: this.state.chartZoomSettings.zoomLevel2FramePointsUnixTo 
+        }
+    }
+  } 
 
   private getZoomButtonStyle = (stateMode: EnumZoomSelected, expectedMode: EnumZoomSelected): string => {
     return stateMode == expectedMode ? "success" : "default";
@@ -47,8 +64,8 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
         />
         <br />
         <HpSlider
-          domain={{ domainMin: 0, domainMax: hpTimeSeriesChartCalculations.calculateDomainLengthSeconds(this.state) }}
-          handleValues={hpSliderHpTimeSeriesChartIntegration.calculateSliderHandleValues(this.state)}
+          domain={this.getDomain()}
+          handleValues={{ left: this.state.windowUnixFrom, right: this.state.windowUnixTo }}
           dimensions={{
             sliderHandleWidthThicknessPx: 15,
             sliderHeightPx: 80,
@@ -56,24 +73,23 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
           }}
           displayDragBar={true}
           handleMoved={(value: number | number[], type: EnumHandleType) => {
-            let handleValues = hpSliderHpTimeSeriesChartIntegration.calculateSliderHandleValues(this.state);
-            let newDateFrom = hpTimeSeriesChartCalculations.translateUnixSecondsDomainToDateTime(this.state, handleValues.left);
-            let newDateTo = hpTimeSeriesChartCalculations.translateUnixSecondsDomainToDateTime(this.state, handleValues.right);
+            let newUnixFrom = this.state.windowUnixFrom;
+            let newUnixTo = this.state.windowUnixTo;
             switch (type) {
               case EnumHandleType.Left:
-                newDateFrom = hpTimeSeriesChartCalculations.translateUnixSecondsDomainToDateTime(this.state, _.isNumber(value) ? value : 0);
+                newUnixFrom = _.isNumber(value) ? value : 0;
                 break;
               case EnumHandleType.Right:
-                newDateTo = hpTimeSeriesChartCalculations.translateUnixSecondsDomainToDateTime(this.state, _.isNumber(value) ? value : 0);
+                newUnixTo = _.isNumber(value) ? value : 0;
                 break;
               case EnumHandleType.DragBar:
-                newDateFrom = hpTimeSeriesChartCalculations.translateUnixSecondsDomainToDateTime(this.state, value[0]);
-                newDateTo = hpTimeSeriesChartCalculations.translateUnixSecondsDomainToDateTime(this.state, value[1]);
+                newUnixFrom = _.isArray(value) ? value[0] : 0
+                newUnixTo = _.isArray(value) ? value[1] : 0
                 break;
             }
             this.setState({
-              windowDateFrom: newDateFrom,
-              windowDateTo: newDateTo
+              windowUnixFrom: newUnixFrom,
+              windowUnixTo: newUnixTo
             })
           }}
         />
@@ -84,7 +100,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
               type="button"
               disabled={this.isZoomButtonDisabled(EnumZoomSelected.NoZoom, this.state.chartZoomSettings.zoomSelected)} 
               bsSize="xs"
-              onMouseUp={(e) => this.props.zoomWindowLevelSet(EnumZoomSelected.NoZoom, this.state.windowDateFrom, this.state.windowDateTo) } 
+              onMouseUp={(e) => this.props.zoomWindowLevelSet(EnumZoomSelected.NoZoom, this.state.windowUnixFrom, this.state.windowUnixTo) } 
               bsStyle={this.getZoomButtonStyle(this.state.chartZoomSettings.zoomSelected, EnumZoomSelected.NoZoom)}>
               View All
             </Button>
@@ -92,7 +108,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
               type="button"
               disabled={this.isZoomButtonDisabled(EnumZoomSelected.ZoomLevel1, this.state.chartZoomSettings.zoomSelected)}
               bsSize="xs" 
-              onMouseUp={() => this.props.zoomWindowLevelSet(EnumZoomSelected.ZoomLevel1, this.state.windowDateFrom, this.state.windowDateTo) } 
+              onMouseUp={() => this.props.zoomWindowLevelSet(EnumZoomSelected.ZoomLevel1, this.state.windowUnixFrom, this.state.windowUnixTo) } 
               bsStyle={this.getZoomButtonStyle(this.state.chartZoomSettings.zoomSelected, EnumZoomSelected.ZoomLevel1)}>
               1
             </Button>
@@ -100,7 +116,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
               type="button"
               disabled={this.isZoomButtonDisabled(EnumZoomSelected.ZoomLevel2, this.state.chartZoomSettings.zoomSelected)}
               bsSize="xs" 
-              onMouseUp={() => this.props.zoomWindowLevelSet(EnumZoomSelected.ZoomLevel2, this.state.windowDateFrom, this.state.windowDateTo) } 
+              onMouseUp={() => this.props.zoomWindowLevelSet(EnumZoomSelected.ZoomLevel2, this.state.windowUnixFrom, this.state.windowUnixTo) } 
               bsStyle={this.getZoomButtonStyle(this.state.chartZoomSettings.zoomSelected, EnumZoomSelected.ZoomLevel2)}>
               2
             </Button>

@@ -107,84 +107,21 @@ const findIndexToBrowsePointsFrom = (allData: IDateTimePoint[],
 }
 
 /**
- * The theoretical distance between of two consecutive points in series provided as argument.
- * measured in pixels (in horizontal, x-scale). Note: this distance can be (and very often is)
- * in <0, 1> range.
- */
-const getHorizontalSampleDistancePx = (series: any[], widthPx: number) => {
-  return series.length > 1 ? (widthPx / (series.length - 1)) : widthPx;
-}
-
-/**
  * Converts ITimeSeries object to IChartTimeSeries object.
  * ITimeSeries is as model-adopted representation of time series.
  * ITimeSeriesChartBuckets is chart-adopted representation of time series, 
  * it has NOT such things like cache objects or the full timing of points.
  */
 const getTimeSeriesChartBuckets = (series: ITimeSeries,
-                                   from: Date,
-                                   to: Date,
+                                   unixFrom: number,
+                                   unixTo: number,
                                    numberOfBuckets: number): IChartTimeSeries => {
-  let unixFrom = from.getTime();
-  let unixTo = to.getTime();
   let buckets = getTimeSeriesBuckets(series.points, series.unixToIndexMap, numberOfBuckets, unixFrom, unixTo);
   return {
     name: series.name,
     color: series.color,
     buckets: buckets
   };
-}
-
-/**
- * Calculates the difference - in minutes - between the datetime 
- * of the last point visible in window and the first point available in window
- */
-const translateDateTimeToUnixSecondsDomain = (state: IHpTimeSeriesChartState, date: Date): number => {
-  var result: number;
-  switch (state.chartZoomSettings.zoomSelected) {
-    case EnumZoomSelected.NoZoom:
-      result = dateFns.differenceInSeconds(date, state.dateRangeDateFrom);
-      break;
-    case EnumZoomSelected.ZoomLevel1:
-      result = dateFns.differenceInSeconds(date, state.chartZoomSettings.zoomLevel1FramePointsFrom);
-      break;
-    case EnumZoomSelected.ZoomLevel2:
-      result = dateFns.differenceInSeconds(date, state.chartZoomSettings.zoomLevel2FramePointsFrom);
-      break;
-  }
-  return result;
-}
-
-const calculateDomainLengthSeconds = (state: IHpTimeSeriesChartState): number => {
-  var result: number;
-  switch (state.chartZoomSettings.zoomSelected) {
-    case EnumZoomSelected.NoZoom:
-      result = translateDateTimeToUnixSecondsDomain(state, state.dateRangeDateTo);
-      break;
-    case EnumZoomSelected.ZoomLevel1:
-      result = translateDateTimeToUnixSecondsDomain(state, state.chartZoomSettings.zoomLevel1FramePointsTo);
-      break;
-    case EnumZoomSelected.ZoomLevel2:
-      result = translateDateTimeToUnixSecondsDomain(state, state.chartZoomSettings.zoomLevel2FramePointsTo);
-      break;
-  }
-  return result;
-}
-
-const translateUnixSecondsDomainToDateTime = (state: IHpTimeSeriesChartState, seconds: number): Date => {
-  var result: Date;
-  switch (state.chartZoomSettings.zoomSelected) {
-    case EnumZoomSelected.NoZoom:
-      result = dateFns.addSeconds(state.dateRangeDateFrom, seconds)
-      break;
-    case EnumZoomSelected.ZoomLevel1:
-      result = dateFns.addSeconds(state.chartZoomSettings.zoomLevel1FramePointsFrom, seconds)
-      break;
-    case EnumZoomSelected.ZoomLevel2:
-      result = dateFns.addSeconds(state.chartZoomSettings.zoomLevel2FramePointsFrom, seconds)
-      break;
-  }
-  return result;
 }
 
 const findFirstIndexMeetingUnixFrom = (allPoints: IDateTimePoint[], unixFrom: number, lastIndex: number): number => {
@@ -215,8 +152,5 @@ export const hpTimeSeriesChartCalculations = {
   getTimeSeriesBuckets,
   getTimeSeriesChartBuckets,
   getBucketForTime,
-  translateDateTimeToUnixSecondsDomain,
-  translateUnixSecondsDomainToDateTime,
-  calculateDomainLengthSeconds,
   createUnixToIndexMap,
 }

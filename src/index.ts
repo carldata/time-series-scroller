@@ -10,7 +10,6 @@ import { hpTimeSeriesChartActionCreators, hpTimeSeriesChartActionTypes } from '.
 import { IHpTimeSeriesChartState } from './hp-time-series-chart/state';
 import { HpTimeSeriesChart, IHpTimeSeriesChartProps } from './hp-time-series-chart';
 import { HpSlider, IHpSliderProps, IHpSliderState } from './hp-slider';
-import { hpSliderHpTimeSeriesChartIntegration } from './hp-time-series-chart/hp-slider-integration';
 
 export {
   HpTimeSeriesScroller,
@@ -24,7 +23,6 @@ export {
   HpSlider,
   IHpSliderProps,
   IHpSliderState,
-  hpSliderHpTimeSeriesChartIntegration,
   hpTimeSeriesChartCalculations,
   IDateTimePoint,
   csvLoadingAuxiliary,

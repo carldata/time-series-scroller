@@ -17,8 +17,8 @@ export const csvLoadingAuxiliary = {
       color: "steelblue",
       name: `csv_loaded_series_${state.series.length+1}`,
       points: [],
-      from: new Date(),
-      to: new Date(),
+      unixFrom: 0,
+      unixTo: 100,
       unixToIndexMap: hpTimeSeriesChartCalculations.createUnixToIndexMap([])
     }
 
@@ -40,8 +40,10 @@ export const csvLoadingAuxiliary = {
       points: appendRows ? 
         (state.series.length == 0 ? points :  _.concat(state.series[0].points, points)) :
         points,
-      from: state.series.length == 0 ? new Date(points[0].date.getTime()) : state.series[0].from,
-      to: new Date(points[points.length-1].date.getTime())
+      unixFrom: appendRows ? 
+        (state.series.length == 0 ? _.first(points).unix : _.first(state.series).unixFrom) :
+        _.first(points).unix,
+      unixTo: _.last(points).unix
     }
 
     timeSeries.unixToIndexMap = hpTimeSeriesChartCalculations.createUnixToIndexMap(timeSeries.points);
@@ -50,12 +52,12 @@ export const csvLoadingAuxiliary = {
       series: [timeSeries]
     });
 
-    chartState.dateRangeDateFrom = new Date(timeSeries.from.getTime()); //_.min(_.map(chartState.series, el => el.from));
-    chartState.dateRangeDateTo = new Date(timeSeries.to.getTime()); //_.max(_.map(chartState.series, el => el.to));
-    chartState.windowDateFrom = new Date(timeSeries.from.getTime());// new Date(chartState.dateRangeDateFrom.getTime()),
-    chartState.windowDateTo = new Date(timeSeries.to.getTime()); //new Date(chartState.dateRangeDateTo.getTime()) 
+    chartState.dateRangeUnixFrom = timeSeries.unixFrom;
+    chartState.dateRangeUnixTo = timeSeries.unixTo;
+    chartState.windowUnixFrom = timeSeries.unixFrom;
+    chartState.windowUnixTo = timeSeries.unixTo;
     chartState.yMin = _.min(_.concat([0], _.map(timeSeries.points, el => el.value)));
-    chartState.yMax = _.max(_.map(timeSeries.points, el => el.value))
+    chartState.yMax = _.max(_.map(timeSeries.points, el => el.value));
 
     return [chartState, timeSeries];
   }

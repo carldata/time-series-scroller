@@ -1,7 +1,6 @@
 import { hpTimeSeriesChartCsvLoadingActionCreators } from '../../hp-time-series-chart/csv-loading/action-creators';
 import { HpTimeSeriesScroller } from '../../component';
 import { hpTimeSeriesChartCalculations } from '../../hp-time-series-chart/calculations';
-import { hpSliderHpTimeSeriesChartIntegration } from '../../hp-time-series-chart/hp-slider-integration';
 import 'bootstrap/dist/css/bootstrap.css';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
@@ -11,7 +10,6 @@ import { connect } from 'react-redux';
 import { Panel, ButtonGroup, Button, ListGroup, ListGroupItem, Grid, Form, Row, Col, FormGroup, ControlLabel, FormControl, HelpBlock  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
-import * as ui from '../../hp-time-series-chart/ui';
 import { EnumZoomSelected } from '../../hp-time-series-chart/state/enums';
 import { IChartDimensions }  from '../../hp-time-series-chart/interfaces';
 import { ICsvColumn, EnumCsvDataType, ICsvDataLoadedContext }  from '../../hp-time-series-chart/csv-loading/models';
@@ -35,7 +33,7 @@ export interface IGraphScreenDispatchProps {
   setZoomWindowLevel: (level: EnumZoomSelected, widthPx: number) => EnumZoomSelected,
   generateRandomData: (dates: Date[]) => void,
   loadCsv: (url: string) => void,
-  setWindowDateFromTo: (dateFrom: Date, dateTo: Date) => void
+  setWindowUnixFromTo: (unixFrom: number, unixTo: number) => void
 }
 
 class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScreenDispatchProps, IGraphScreenState> {
@@ -64,13 +62,13 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
               Samples from:
             </Col>
             <Col md={2}>
-              <ControlLabel>{dateFns.format(this.props.chartState.dateRangeDateFrom, "YYYY-MM-DD HH:mm")}</ControlLabel>
+              <ControlLabel>{dateFns.format(this.props.chartState.dateRangeUnixFrom, "YYYY-MM-DD HH:mm")}</ControlLabel>
             </Col>
             <Col componentClass={ControlLabel} md={2}>
               Samples to:
             </Col>
             <Col md={2}>
-              <ControlLabel>{dateFns.format(this.props.chartState.dateRangeDateTo, "YYYY-MM-DD HH:mm")}</ControlLabel>
+              <ControlLabel>{dateFns.format(this.props.chartState.dateRangeUnixTo, "YYYY-MM-DD HH:mm")}</ControlLabel>
             </Col>
             <Col componentClass={ControlLabel} md={2}>
               Total number of series/samples:
@@ -86,13 +84,13 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                 Window date from:
             </Col>
             <Col md={2}>
-              <ControlLabel>{dateFns.format(this.props.chartState.windowDateFrom, "YYYY-MM-DD HH:mm")}</ControlLabel>
+              <ControlLabel>{dateFns.format(this.props.chartState.windowUnixFrom, "YYYY-MM-DD HH:mm")}</ControlLabel>
             </Col>
             <Col componentClass={ControlLabel} md={2}>
               Window date to:
             </Col>
             <Col md={2}>
-              <ControlLabel>{dateFns.format(this.props.chartState.windowDateTo, "YYYY-MM-DD HH:mm")}</ControlLabel>
+              <ControlLabel>{dateFns.format(this.props.chartState.windowUnixTo, "YYYY-MM-DD HH:mm")}</ControlLabel>
             </Col>
             <Col componentClass={ControlLabel} md={2}>
               Min. window width:
@@ -148,8 +146,8 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
               <HpTimeSeriesScroller
                 chartDimensions={this.chartDimensions}
                 state={this.props.chartState}
-                zoomWindowLevelSet={(level, from, to) => {
-                  this.props.setWindowDateFromTo(from, to);
+                zoomWindowLevelSet={(level, unixFrom, unixTo) => {
+                  this.props.setWindowUnixFromTo(unixFrom, unixTo);
                   this.props.setZoomWindowLevel(level, this.chartDimensions.canvasWidth);
                 }}
               />
@@ -172,7 +170,7 @@ const matchDispatchToProps = (dispatch: Dispatch<void>) => {
     setZoomWindowLevel: hpTimeSeriesChartActionCreators.setZoomWindowLevel,
     loadCsv: hpTimeSeriesChartCsvLoadingActionCreators.loadCsv,
     generateRandomData: hpTimeSeriesChartActionCreators.generateRandomData,
-    setWindowDateFromTo: hpTimeSeriesChartActionCreators.setWindowDateFromTo
+    setWindowUnixFromTo: hpTimeSeriesChartActionCreators.setWindowUnixFromTo
   }, dispatch);
 }
 

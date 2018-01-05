@@ -3,7 +3,7 @@ import { EnumHandleType } from './enums';
 import * as _ from 'lodash';
 
 let translateValueToHandleLeftPositionPx = (domain: IDomain<number>, dimensions: IHpSliderScreenDimensions, type: EnumHandleType, value: number): number => {
-  let result = (value / domain.domainMax - domain.domainMin) * dimensions.sliderWidthPx;
+  let result = (value - domain.domainMin) / (domain.domainMax - domain.domainMin) * dimensions.sliderWidthPx;
   if (type == EnumHandleType.Right)
     result -= dimensions.sliderHandleWidthThicknessPx;
   return _.isNaN(result) ? 0 : result;

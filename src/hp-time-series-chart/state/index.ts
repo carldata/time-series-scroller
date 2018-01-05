@@ -6,20 +6,20 @@ export interface IHpTimeSeriesChartState {
   /**
    * In the scrolling chart - the moment of time user sees on X-axis coordinate equal 0
    */
-  windowDateFrom: Date,
+  windowUnixFrom: number,
   /**
    * In the scrolling chart - the moment of time user sees on X-axis coordinate equal to max/full canvas width
    */
-  windowDateTo: Date,
+  windowUnixTo: number,
 
   /**
    * The minimal date we can find in all the series of chart
    */
-  dateRangeDateFrom: Date;
+  dateRangeUnixFrom: number;
   /**
    * The maximal date we can find in all the series of chart
    */
-  dateRangeDateTo: Date;
+  dateRangeUnixTo: number;
 
   /**
    * Minimum y-value we can find in all the series of chart

@@ -2,8 +2,8 @@
  * Declares default reducer function implementations
  * that can be reused by a concrete screen reducer
  */
-import * as dateFns from 'date-fns';
 import * as _ from 'lodash';
+import * as dateFns from 'date-fns';
 import { Action } from 'redux-actions';
 import * as collections from 'typescript-collections';
 import { Dictionary } from 'typescript-collections';
@@ -31,14 +31,14 @@ const buildInitialState = ():IHpTimeSeriesChartState => {
       color: "red",
       points: [],
       unixToIndexMap: new Map(),
-      from: currentDate,
-      to: currentDate,
+      unixFrom: currentDate.getTime(),
+      unixTo: currentDate.getTime(),
     }],
-    dateRangeDateFrom: currentDate,
-    dateRangeDateTo: dateFns.addHours(currentDate, 6),
+    dateRangeUnixFrom: currentDate.getTime(),
+    dateRangeUnixTo: dateFns.addHours(currentDate, 6).getTime(),
     isDataLoading: false,
-    windowDateFrom: currentDate,
-    windowDateTo: dateFns.addHours(currentDate, 6),
+    windowUnixFrom: currentDate.getTime(),
+    windowUnixTo: dateFns.addHours(currentDate, 6).getTime(),
     yMin: 0,
     yMax: 0
   };
@@ -99,25 +99,10 @@ const cameToThisZoomLevelByZoomingIn = (currentMode: EnumZoomSelected, newMode: 
 const getFrameDatesByZoomLevel = (settings: IChartZoomSettings): Date[] => {
   switch (settings.zoomSelected) {
     case EnumZoomSelected.ZoomLevel1:
-      return [new Date(settings.zoomLevel1FramePointsFrom.getTime()), new Date(settings.zoomLevel1FramePointsTo.getTime())];
+      return [new Date(settings.zoomLevel1FramePointsUnixFrom), new Date(settings.zoomLevel1FramePointsUnixTo)];
     case EnumZoomSelected.ZoomLevel2:
-      return [new Date(settings.zoomLevel2FramePointsFrom.getTime()), new Date(settings.zoomLevel2FramePointsTo.getTime())];
+      return [new Date(settings.zoomLevel2FramePointsUnixFrom), new Date(settings.zoomLevel2FramePointsUnixTo)];
   }
-}
-
-const setFrameDatesByZoomLevel = (settings: IChartZoomSettings, points: Date[]): IChartZoomSettings  => {
-  let [pointFrom, pointTo] = points;
-  switch (settings.zoomSelected) {
-    case EnumZoomSelected.ZoomLevel1:
-      settings.zoomLevel1FramePointsFrom = new Date(pointFrom.getTime());
-      settings.zoomLevel1FramePointsTo = new Date(pointTo.getTime());
-      break; 
-    case EnumZoomSelected.ZoomLevel2:
-      settings.zoomLevel2FramePointsFrom = new Date(pointFrom.getTime());
-      settings.zoomLevel2FramePointsTo = new Date(pointTo.getTime());
-      break;
-  }
-  return settings;
 }
 
 /**
@@ -129,25 +114,25 @@ const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[
   return <IHpTimeSeriesChartState> {
     series: [<ITimeSeries>{
       color: "steelblue",
-      from: new Date(dateRangeDateFrom.getTime()),
-      to: new Date(dateRangeDateTo.getTime()),
+      unixFrom: dateRangeDateFrom.getTime(),
+      unixTo: dateRangeDateTo.getTime(),
       name: "random series",
       points: points,
       unixToIndexMap: hpTimeSeriesChartCalculations.createUnixToIndexMap(points)
     }],
     chartZoomSettings: {
       zoomSelected: EnumZoomSelected.NoZoom,
-      zoomLevel1FramePointsFrom: null,
-      zoomLevel1FramePointsTo: null,
-      zoomLevel2FramePointsFrom: null,
-      zoomLevel2FramePointsTo: null
+      zoomLevel1FramePointsUnixFrom: 0,
+      zoomLevel1FramePointsUnixTo: 0,
+      zoomLevel2FramePointsUnixFrom: 0,
+      zoomLevel2FramePointsUnixTo: 0
     },
     yMin: _.min(_.map(points, el => el.value)),
     yMax: _.max(_.map(points, el => el.value)),
-    windowDateFrom: new Date(windowDateFrom.getTime()),
-    windowDateTo: new Date(windowDateTo.getTime()),
-    dateRangeDateFrom: new Date(windowDateFrom.getTime()),
-    dateRangeDateTo: new Date(windowDateTo.getTime())
+    windowUnixFrom: windowDateFrom.getTime(),
+    windowUnixTo: windowDateTo.getTime(),
+    dateRangeUnixFrom: windowDateFrom.getTime(),
+    dateRangeUnixTo: windowDateTo.getTime()
   }
 }
 
@@ -165,28 +150,6 @@ const setEvents = (series: ITimeSeries, action: Action<collections.Dictionary<nu
   });
 }
 
-const setWindowDateFromTo = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
-  let [dateFrom, dateTo] = action.payload;
-  if (dateFns.isBefore(dateFrom, state.dateRangeDateFrom)) {
-    console.log(`rejecting - ${dateFrom} is before date range min value ${state.dateRangeDateFrom}`);
-    return state;
-  }
-  if (dateFns.isAfter(dateTo, state.dateRangeDateTo)) {
-    console.log(`rejecting - ${dateTo} is after date range max value ${state.dateRangeDateTo}`);
-    return state;
-  }
-  return _.extend({}, state, {
-    windowDateFrom: new Date(dateFrom.getTime()),
-    windowDateTo: new Date(dateTo.getTime())
-  });
-}
-
-const setWindowWidthMinutes = (state: IHpTimeSeriesChartState, action: Action<number>): IHpTimeSeriesChartState => {
-  return _.extend({}, state, {
-    dateFromToMinimalWidthMinutes: action.payload
-  });
-}
-
 const setZoom = (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelected, number]>): IHpTimeSeriesChartState => {
   let [zoom, widthPx] = action.payload;
   let result = <IHpTimeSeriesChartState>{};
@@ -196,15 +159,14 @@ const setZoom = (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelecte
   switch (zoom) {
     case EnumZoomSelected.NoZoom:
       result = _.extend({}, state, {
-        chartZoomSettings: chartZoomSettings,
-        dateFromToMinimalWidthMinutes: dateFns.differenceInMinutes(state.windowDateTo, state.windowDateFrom)
+        chartZoomSettings: chartZoomSettings
       });
       break;
     case EnumZoomSelected.ZoomLevel1:
       if (cameToThisZoomLevelByZoomingIn(state.chartZoomSettings.zoomSelected, zoom)) {
         chartZoomSettings = _.extend({}, chartZoomSettings, <IChartZoomSettings>{
-          zoomLevel1FramePointsFrom: new Date(state.windowDateFrom.getTime()),
-          zoomLevel1FramePointsTo: new Date(state.windowDateTo.getTime())
+          zoomLevel1FramePointsUnixFrom: state.windowUnixFrom,
+          zoomLevel1FramePointsUnixTo: state.windowUnixTo
         });
         result = _.extend({}, state, <IHpTimeSeriesChartState>{
           chartZoomSettings: chartZoomSettings
@@ -212,16 +174,16 @@ const setZoom = (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelecte
       } else {
         result = _.extend({}, state, <IHpTimeSeriesChartState>{
           chartZoomSettings: chartZoomSettings,
-          windowDateFrom: new Date(state.windowDateFrom.getTime()),
-          windowDateTo: new Date(state.windowDateTo.getTime())
+          windowUnixFrom: state.windowUnixFrom,
+          windowUnixTo: state.windowUnixTo
         });
       }
       break;
     case EnumZoomSelected.ZoomLevel2:
       if (cameToThisZoomLevelByZoomingIn(state.chartZoomSettings.zoomSelected, zoom)) {
         chartZoomSettings = _.extend({}, chartZoomSettings, <IChartZoomSettings>{
-          zoomLevel2FramePointsFrom: new Date(state.windowDateFrom.getTime()),
-          zoomLevel2FramePointsTo: new Date(state.windowDateTo.getTime())
+          zoomLevel2FramePointsUnixFrom: state.windowUnixFrom,
+          zoomLevel2FramePointsUnixTo: state.windowUnixTo
         });
         result = _.extend({}, state, {
           chartZoomSettings: chartZoomSettings
@@ -242,7 +204,5 @@ export const hpTimeSeriesChartReducerAuxFunctions = {
 
 export const hpTimeSeriesChartReducers = {
   generateRandomData,
-  setWindowDateFromTo,
-  setWindowWidthMinutes,
   setZoom,
 }
