@@ -27,7 +27,6 @@ const getBucketOutside = (allData: IDateTimePoint[],
     _.first(_.filter(allData, (el: IDateTimePoint) => el.unix >= filterTo));
   return _.isObject(sample) ?
     <ITimeSeriesBucket>{
-      date: sample.date,
       minY: sample.value,
       maxY: sample.value,
       leftboundY: sample.value,

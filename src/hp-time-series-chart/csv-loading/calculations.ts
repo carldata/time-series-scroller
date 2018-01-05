@@ -10,10 +10,8 @@ const debug = false;
 const extractDateTimePoints = (csvRows: Array<any>): IDateTimePoint[] => {
   let result: IDateTimePoint[] = [];
   for (let i=0; i < csvRows.length; i++) {
-    let date = dateFns.parse(csvRows[i].time);
     result.push({
-      date: date,
-      unix: dateFns.getTime(date),
+      unix: dateFns.getTime(dateFns.parse(csvRows[i].time)),
       value: parseFloat(csvRows[i].value),
       event: false
     });

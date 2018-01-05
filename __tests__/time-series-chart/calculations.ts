@@ -10,7 +10,6 @@ describe("time-series-chart calculations test", () => {
     let result: IDateTimePoint[] = [];
     for (const delta of deltas) {
       result.push({
-        date: dateFns.addMinutes(start, delta),
         value: _.random(-100, 100),
         unix: dateFns.addMinutes(start, delta).getTime(),
         event: false

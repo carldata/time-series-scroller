@@ -31,7 +31,7 @@ export class Dots extends React.Component<IDotsProps, IDotsState> {
   renderDots() {
     let rendered = [];
     _.each(this.props.points, p => {
-      rendered.push((<circle cx={this.props.xScale(p.date)} cy={this.props.yScale(p.value)} fill="red" r="1" />));
+      rendered.push((<circle cx={this.props.xScale(new Date(p.unix))} cy={this.props.yScale(p.value)} fill="red" r="1" />));
     });
     return rendered;
   }

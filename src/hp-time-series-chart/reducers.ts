@@ -52,7 +52,6 @@ const randomDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): I
   let iterationIndex = 0;
   while (dateFns.isBefore(referenceDate, dateRangeDateTo)) {
     result.push(<IDateTimePoint>{ 
-      date: new Date(referenceDate.getTime()), 
       unix: referenceDate.getTime(), 
       value: currentValue
     });
@@ -78,7 +77,6 @@ const hourIsEvenDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date
   let iterationIndex = 0;
   while (dateFns.isBefore(referenceDate, dateRangeDateTo)) {
     result.push(<IDateTimePoint>{ 
-      date: new Date(referenceDate.getTime()), 
       unix: referenceDate.getTime(), 
       value: dateFns.getHours(referenceDate.getTime()) % 2 ? 1 : 0
     });

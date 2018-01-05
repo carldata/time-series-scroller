@@ -3,8 +3,6 @@ export interface IDateTimePoint {
    * Real sample value
    */
   value: number;
-
-  date: Date;
   
   /**
    * The number of seconds since the Unix Epoch - effect of calling MomentJS unix() method on value
