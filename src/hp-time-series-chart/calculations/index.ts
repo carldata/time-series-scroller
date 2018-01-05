@@ -197,6 +197,8 @@ const findFirstIndexMeetingUnixFrom = (allPoints: IDateTimePoint[], unixFrom: nu
 
 const createUnixToIndexMap = (allPoints: IDateTimePoint[]): Map<number, number> => {
   let result: Map<number, number> = new Map();
+  if (allPoints.length == 0)
+    return result;
   let bucketLengthUnix = ((_.last(allPoints).unix - _.first(allPoints).unix) / UNIX_TO_INDEX_MAP_PRECISION);
   let firstUnixFrom = _.first(allPoints).unix;
   let indexOfElement = 0;

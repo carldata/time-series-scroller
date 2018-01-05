@@ -12,17 +12,11 @@ export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
   [hpTimeSeriesChartActionTypes.GENERATE_RANDOM_DATA]: (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
     return hpTimeSeriesChartReducers.generateRandomData(state, action)
   },
-  [hpTimeSeriesCsvLoadingChartActionTypes.LOADING_CSV_DATA_SUCCEEDED]: (state: IHpTimeSeriesChartState, action: Action<string>): IHpTimeSeriesChartState => {
-    let csvSerialized = action.payload;
-    let [newState, timeSeries] = csvLoadingAuxiliary.csvDataLoaded(state, {
-      config: {
-        columns: [{ display: true, type: EnumCsvDataType.DateTime }, { display: true, type: EnumCsvDataType.Float }],
-        delimiter: ",",
-        firstLineContainsHeaders: true,
-        newLineCharacter: "\n"
-      },
-      text: csvSerialized
-    });
+  [hpTimeSeriesCsvLoadingChartActionTypes.STARTED_LOADING_CSV]: (state: IHpTimeSeriesChartState): IHpTimeSeriesChartState => {
+    return _.extend({}, state, csvLoadingAuxiliary.startedLoadingCsvData(state));
+  },
+  [hpTimeSeriesCsvLoadingChartActionTypes.FINISHED_LOADING_CSV]: (state: IHpTimeSeriesChartState, action: Action<Array<any>>): IHpTimeSeriesChartState => {
+    let [newState, timeSeries] = csvLoadingAuxiliary.receivedCsvDataChunk(state, false, action.payload);
     return _.extend({}, state, newState);
   },
   [hpTimeSeriesChartActionTypes.SET_WINDOW_DATE_FROM_TO]: (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {

@@ -1,3 +1,4 @@
+import { hpTimeSeriesChartCsvLoadingActionCreators } from '../../hp-time-series-chart/csv-loading/action-creators';
 import { HpTimeSeriesScroller } from '../../component';
 import { hpTimeSeriesChartCalculations } from '../../hp-time-series-chart/calculations';
 import { hpSliderHpTimeSeriesChartIntegration } from '../../hp-time-series-chart/hp-slider-integration';
@@ -12,8 +13,8 @@ import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import * as ui from '../../hp-time-series-chart/ui';
 import { EnumZoomSelected } from '../../hp-time-series-chart/state/enums';
-import { IChartDimensions, IEventChartConfiguration }  from '../../hp-time-series-chart/interfaces';
-import { ICsvRawParseConfiguration, ICsvColumn, EnumCsvDataType, ICsvDataLoadedContext }  from '../../hp-time-series-chart/csv-loading/models';
+import { IChartDimensions }  from '../../hp-time-series-chart/interfaces';
+import { ICsvColumn, EnumCsvDataType, ICsvDataLoadedContext }  from '../../hp-time-series-chart/csv-loading/models';
 import { hpTimeSeriesChartActionCreators } from '../../hp-time-series-chart/action-creators';
 import { HpSlider } from '../../hp-slider';
 import { IDomain, IHpSliderScreenDimensions, IHpSliderHandleValues } from '../../hp-slider/interfaces';
@@ -33,6 +34,7 @@ export interface IGraphScreenState {
 export interface IGraphScreenDispatchProps {
   setZoomWindowLevel: (level: EnumZoomSelected, widthPx: number) => EnumZoomSelected,
   generateRandomData: (dates: Date[]) => void,
+  loadCsv: (url: string) => void,
   setWindowDateFromTo: (dateFrom: Date, dateTo: Date) => void
 }
 
@@ -49,32 +51,6 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
     timeSeriesChartPaddingRight: 10,
     timeSeriesChartPaddingTop: 10
   };
-
-  private eventChartConfiguration: IEventChartConfiguration = {
-    fillColor: "red",
-    heightPx: 30
-  };
-
-  private getCsvConfig = ():ICsvRawParseConfiguration => {
-    let columns: ICsvColumn[] = [{
-        type: EnumCsvDataType.DateTime,
-        display: true
-      }, {
-        type: EnumCsvDataType.Float,
-        display: true
-      }, {
-        type: EnumCsvDataType.Float,
-        display: false
-      }
-    ];
-    let result: ICsvRawParseConfiguration = {
-      columns: columns,
-      newLineCharacter: '\n',
-      delimiter: ",",
-      firstLineContainsHeaders: false
-    };
-    return result;
-  }
 
   public render() {
     return (
@@ -130,6 +106,31 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
               <ButtonGroup>
                 <Button 
                   bsSize="xs" 
+                  onClick={() => this.props.loadCsv("50k.csv")}>
+                  Load 50k
+                </Button>
+                <Button 
+                  bsSize="xs" 
+                  onClick={() => this.props.loadCsv("250k.csv")}>
+                  Load 250k
+                </Button>
+                <Button 
+                  bsSize="xs" 
+                  onClick={() => this.props.loadCsv("1M.csv")}>
+                  Load 1M
+                </Button>
+                <Button 
+                  bsSize="xs" 
+                  onClick={() => this.props.loadCsv("2M.csv")}>
+                  Load 2M
+                </Button>
+                <Button 
+                  bsSize="xs" 
+                  onClick={() => this.props.loadCsv("10M.csv")}>
+                  Load 10M
+                </Button>
+                <Button 
+                  bsSize="xs" 
                   onClick={() => {
                     let date = new Date();
                     this.props.generateRandomData([date, 
@@ -137,7 +138,7 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                                                    date, 
                                                    dateFns.addMonths(date, 2*12)]);
                   }}>
-                  Load random data
+                  Generate 1M
                 </Button>
               </ButtonGroup>
             </Col>
@@ -169,6 +170,7 @@ const mapStateToProps = (state: IAppState): IGraphScreenProps => {
 const matchDispatchToProps = (dispatch: Dispatch<void>) => {
   return bindActionCreators({
     setZoomWindowLevel: hpTimeSeriesChartActionCreators.setZoomWindowLevel,
+    loadCsv: hpTimeSeriesChartCsvLoadingActionCreators.loadCsv,
     generateRandomData: hpTimeSeriesChartActionCreators.generateRandomData,
     setWindowDateFromTo: hpTimeSeriesChartActionCreators.setWindowDateFromTo
   }, dispatch);

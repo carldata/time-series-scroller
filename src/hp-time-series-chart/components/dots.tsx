@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 import { IDateTimePoint } from '../state/date-time-point';
-import { IChartDimensions, IEventChartConfiguration, IChartTimeSeries } from '../interfaces';
+import { IChartDimensions, IChartTimeSeries } from '../interfaces';
 
 export interface IDotsProps {
   /**

@@ -1,7 +1,6 @@
 import { IDateTimePoint } from './date-time-point';
 import { ITimeSeries } from './time-series';
 import { IChartZoomSettings } from './chart-zoom-settings';
-import { IEventChartConfiguration } from '../interfaces';
 
 export interface IHpTimeSeriesChartState {
   /**
@@ -33,5 +32,4 @@ export interface IHpTimeSeriesChartState {
 
   chartZoomSettings: IChartZoomSettings;
   series: ITimeSeries[];
-  chartMarkerConfiguration?: IEventChartConfiguration;
 };

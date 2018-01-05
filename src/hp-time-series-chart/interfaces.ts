@@ -28,19 +28,3 @@ export interface IChartDimensions {
   timeSeriesChartPaddingLeft: number;
   timeSeriesChartPaddingRight: number;
 }
-
-export interface IGetDataResampledFunction {
-  (data: IDateTimePoint[], rFactor: number): IDateTimePoint[];
-}
-
-/**
- * If active, represents a shape of evert rectangle drawn 
- * on the bottom of screeen (in spectrogram chart)
- */
-export interface IEventChartConfiguration {
-  heightPx: number;
-  /**
-   * fill color of an rectangle representing event
-   */
-  fillColor: string;
-}
