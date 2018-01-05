@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import * as ui from '../../hp-time-series-chart/ui';
 import { EnumZoomSelected } from '../../hp-time-series-chart/state/enums';
-import { IChartDimensions, IEventChartConfiguration }  from '../../hp-time-series-chart/interfaces';
+import { IChartDimensions }  from '../../hp-time-series-chart/interfaces';
 import { ICsvColumn, EnumCsvDataType, ICsvDataLoadedContext }  from '../../hp-time-series-chart/csv-loading/models';
 import { hpTimeSeriesChartActionCreators } from '../../hp-time-series-chart/action-creators';
 import { HpSlider } from '../../hp-slider';
@@ -50,11 +50,6 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
     timeSeriesChartPaddingLeft: 30,
     timeSeriesChartPaddingRight: 10,
     timeSeriesChartPaddingTop: 10
-  };
-
-  private eventChartConfiguration: IEventChartConfiguration = {
-    fillColor: "red",
-    heightPx: 30
   };
 
   public render() {

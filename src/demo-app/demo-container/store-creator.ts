@@ -15,8 +15,8 @@ export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
   [hpTimeSeriesCsvLoadingChartActionTypes.STARTED_LOADING_CSV]: (state: IHpTimeSeriesChartState): IHpTimeSeriesChartState => {
     return _.extend({}, state, csvLoadingAuxiliary.startedLoadingCsvData(state));
   },
-  [hpTimeSeriesCsvLoadingChartActionTypes.RECEIVED_CSV_DATA_CHUNK]: (state: IHpTimeSeriesChartState, action: Action<Array<any>>): IHpTimeSeriesChartState => {
-    let [newState, timeSeries] = csvLoadingAuxiliary.receivedCsvDataChunk(state, action.payload);
+  [hpTimeSeriesCsvLoadingChartActionTypes.FINISHED_LOADING_CSV]: (state: IHpTimeSeriesChartState, action: Action<Array<any>>): IHpTimeSeriesChartState => {
+    let [newState, timeSeries] = csvLoadingAuxiliary.receivedCsvDataChunk(state, false, action.payload);
     return _.extend({}, state, newState);
   },
   [hpTimeSeriesChartActionTypes.SET_WINDOW_DATE_FROM_TO]: (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {

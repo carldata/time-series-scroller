@@ -7,7 +7,7 @@ import { Parser, ParseResult } from 'papaparse';
 
 export const hpTimeSeriesCsvLoadingChartActionTypes = {
   STARTED_LOADING_CSV: 'STARTED_LOADING_CSV',
-  RECEIVED_CSV_DATA_CHUNK: 'RECEIVED_CSV_DATA_CHUNK',
+  FINISHED_LOADING_CSV: 'FINISHED_LOADING_CSV',
 };
 
 export const hpTimeSeriesChartCsvLoadingActionCreators = {
@@ -17,12 +17,12 @@ export const hpTimeSeriesChartCsvLoadingActionCreators = {
     });
     Papa.parse(url, {
       download: true,
-      worker: true,
+      worker: false,
       header: true,
       skipEmptyLines: true, 
-      chunk: (results: ParseResult, parser: Parser) => {
+      complete: (results: ParseResult, file?: File) => {
         dispatch({
-          type: hpTimeSeriesCsvLoadingChartActionTypes.RECEIVED_CSV_DATA_CHUNK,
+          type: hpTimeSeriesCsvLoadingChartActionTypes.FINISHED_LOADING_CSV,
           payload: results.data
         });
       }

@@ -1,25 +1,20 @@
-import { Dots } from './components/dots';
 import * as dateFns from 'date-fns';
 import * as React from 'react';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
+import { Dots } from './components/dots';
 import { IHpTimeSeriesChartState } from './state';
 import { hpTimeSeriesChartCalculations } from './calculations';
-import { IChartDimensions, IEventChartConfiguration, IChartTimeSeries } from './interfaces';
+import { IChartDimensions, IChartTimeSeries } from './interfaces';
 import { IDateTimePoint } from './state/date-time-point';
 import { IChartZoomSettings } from './state/chart-zoom-settings';
 import { TimeSeries } from './components/time-series';
 import { DateTimeAxis } from './components/date-time-axis';
 import { ValueAxis } from './components/value-axis';
-import { Events } from './components/events';
 
 export interface IHpTimeSeriesChartProps {
   state: IHpTimeSeriesChartState;
   chartDimensions: IChartDimensions;
-  /**
-   * If set, chart will display events on the bottom of the screeen (in spectrogram chart)
-   */
-  eventChartConfiguration?: IEventChartConfiguration;
 }
 
 export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
@@ -58,12 +53,6 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
         yScale={yScale}
         chartTimeSeries={chartTimeSeries}
         chartDimensions={props.chartDimensions} 
-      />
-      <Events
-        xScale={xScale} 
-        data={[]}
-        chartDimensions={props.chartDimensions}
-        eventChartConfiguration={props.eventChartConfiguration} 
       />
       <DateTimeAxis xScale={xScale} chartDimensions={props.chartDimensions} />
       <ValueAxis yScale={yScale} chartDimensions={props.chartDimensions} />
