@@ -8,13 +8,13 @@ import { ITimeSeries } from '../state/time-series';
 const debug = false;
 
 const extractDateTimePoints = (csvRows: Array<any>): IDateTimePoint[] => {
-  let result: IDateTimePoint[] = [];
+  let result: IDateTimePoint[] = new Array(csvRows.length);
   for (let i=0; i < csvRows.length; i++) {
-    result.push({
+    result[i] = {
       unix: parseInt(csvRows[i].unix),
       value: parseFloat(csvRows[i].value),
       event: false
-    });
+    };
   }
   return result;
 }

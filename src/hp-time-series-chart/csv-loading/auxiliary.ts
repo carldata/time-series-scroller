@@ -13,32 +13,23 @@ export const csvLoadingAuxiliary = {
    * Returns a new, updated IChartState and ITimeSeries that was created and added to IChartState
    */
   startedLoadingCsvData: (state: IHpTimeSeriesChartState): IHpTimeSeriesChartState => {
-    let timeSeries: ITimeSeries = <ITimeSeries>{
-      color: "steelblue",
-      name: `csv_loaded_series_${state.series.length+1}`,
-      points: [],
-      unixFrom: 0,
-      unixTo: 100,
-      unixToIndexMap: hpTimeSeriesChartCalculations.createUnixToIndexMap([])
-    }
-
-    let chartState = _.extend({}, state, <IHpTimeSeriesChartState> {
-      series: [timeSeries]
+    return _.extend({}, state, <IHpTimeSeriesChartState> {
+      series: []
     });
-
-    return chartState;
   },
   /**
    * Returns a new, updated IChartState and ITimeSeries that was created and added to IChartState
    */
   receivedCsvDataChunk: (state: IHpTimeSeriesChartState, appendRows: boolean, csvRows: Array<any>): [IHpTimeSeriesChartState, ITimeSeries] => {
+    if (csvRows.length == 0)
+      return [state, state.series.length > 0 ? _.first(state.series) : null];
     let points: Array<IDateTimePoint> = csvCalculations.extractDateTimePoints(csvRows);
     
     let timeSeries: ITimeSeries = <ITimeSeries>{
       color: "steelblue",
       name: `csv_loaded_series_${state.series.length+1}`,
       points: appendRows ? 
-        (state.series.length == 0 ? points :  _.concat(state.series[0].points, points)) :
+        (state.series.length == 0 ? points :  _.concat(_.first(state.series).points, points)) :
         points,
       unixFrom: appendRows ? 
         (state.series.length == 0 ? _.first(points).unix : _.first(state.series).unixFrom) :
@@ -56,7 +47,7 @@ export const csvLoadingAuxiliary = {
     chartState.dateRangeUnixTo = timeSeries.unixTo;
     chartState.windowUnixFrom = timeSeries.unixFrom;
     chartState.windowUnixTo = timeSeries.unixTo;
-    chartState.yMin = _.min(_.concat([0], _.map(timeSeries.points, el => el.value)));
+    chartState.yMin = _.min( _.map(timeSeries.points, el => el.value));
     chartState.yMax = _.max(_.map(timeSeries.points, el => el.value));
 
     return [chartState, timeSeries];

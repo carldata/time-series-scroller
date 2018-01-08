@@ -12,11 +12,15 @@ export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
   [hpTimeSeriesChartActionTypes.GENERATE_RANDOM_DATA]: (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
     return hpTimeSeriesChartReducers.generateRandomData(state, action)
   },
-  [hpTimeSeriesCsvLoadingChartActionTypes.STARTED_LOADING_CSV]: (state: IHpTimeSeriesChartState): IHpTimeSeriesChartState => {
+  [hpTimeSeriesCsvLoadingChartActionTypes.STARTED_PROCESSING_CSV]: (state: IHpTimeSeriesChartState): IHpTimeSeriesChartState => {
     return _.extend({}, state, csvLoadingAuxiliary.startedLoadingCsvData(state));
   },
-  [hpTimeSeriesCsvLoadingChartActionTypes.FINISHED_LOADING_CSV]: (state: IHpTimeSeriesChartState, action: Action<Array<any>>): IHpTimeSeriesChartState => {
-    let [newState, timeSeries] = csvLoadingAuxiliary.receivedCsvDataChunk(state, false, action.payload);
+  [hpTimeSeriesCsvLoadingChartActionTypes.RECEIVED_CSV_CHUNK]: (state: IHpTimeSeriesChartState, action: Action<Array<any>>): IHpTimeSeriesChartState => {
+    let [newState, timeSeries] = csvLoadingAuxiliary.receivedCsvDataChunk(state, true, action.payload);
+    return _.extend({}, state, newState);
+  },
+  [hpTimeSeriesCsvLoadingChartActionTypes.FINISHED_PROCESSING_CSV]: (state: IHpTimeSeriesChartState, action: Action<Array<any>>): IHpTimeSeriesChartState => {
+    let [newState, timeSeries] = csvLoadingAuxiliary.receivedCsvDataChunk(state, true, action.payload);
     return _.extend({}, state, newState);
   },
   [hpTimeSeriesChartActionTypes.SET_ZOOM]: (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelected, number]>): IHpTimeSeriesChartState => {
