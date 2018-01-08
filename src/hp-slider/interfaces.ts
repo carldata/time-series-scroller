@@ -13,6 +13,5 @@ export interface IHpSliderHandleValues<T> {
 
 export interface IHpSliderScreenDimensions {
   sliderWidthPx: number;
-  sliderHeightPx: number;
   sliderHandleWidthThicknessPx: number;
 }

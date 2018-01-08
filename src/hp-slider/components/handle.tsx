@@ -82,7 +82,6 @@ export class HpSliderHandle extends React.Component<IHpSliderHandleProps, IHpSli
     let result: React.CSSProperties = {
       left: leftPx,
       width: widthPx >= 1 ? widthPx : 1,
-      height: this.props.dimensions.sliderHeightPx,
       position: "absolute",
       cursor: "pointer",
     };
@@ -90,11 +89,20 @@ export class HpSliderHandle extends React.Component<IHpSliderHandleProps, IHpSli
   }
 
   getClassName = ():string => {
-    let result = ["hpSliderHandle"];
+    let result = ["hp-slider-handle"];
     if (this.state.isPressed)
-      result.push("pressed");
-    else if (this.props.handleType == EnumHandleType.DragBar)
-      result.push("dragBar");
+      result.push("hp-slider-handle-pressed");
+    switch (this.props.handleType) {
+      case EnumHandleType.DragBar:
+        result.push("hp-slider-handle-dragBar");
+        break;
+      case EnumHandleType.Left:
+        result.push("hp-slider-handle-left");
+        break;
+      case EnumHandleType.Right:
+        result.push("hp-slider-handle-right");
+        break;
+    }
     return _.join(result, " ");
   }
 

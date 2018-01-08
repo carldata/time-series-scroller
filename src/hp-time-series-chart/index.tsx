@@ -37,6 +37,10 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
     }
   }
 
+  const displayAxis = (): boolean => {
+    return (_.isUndefined(props.mode) || (props.mode == EnumHpTimeSeriesChartMode.Standalone));
+  }
+
   const getXScale = () => {
     return d3.scaleTime()
       .domain([props.state.windowUnixFrom, props.state.windowUnixTo])
@@ -69,8 +73,8 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
         chartTimeSeries={chartTimeSeries}
         chartDimensions={props.chartDimensions} 
       />
-      <DateTimeAxis xScale={xScale} chartDimensions={props.chartDimensions} />
-      <ValueAxis yScale={yScale} chartDimensions={props.chartDimensions} />
+      {displayAxis() && <DateTimeAxis xScale={xScale} chartDimensions={props.chartDimensions} />}
+      {displayAxis() && <ValueAxis yScale={yScale} chartDimensions={props.chartDimensions} />}
     </svg>
   );
   

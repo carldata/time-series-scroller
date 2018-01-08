@@ -81,7 +81,6 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
           handleValues={{ left: this.state.windowUnixFrom, right: this.state.windowUnixTo }}
           dimensions={{
             sliderHandleWidthThicknessPx: 15,
-            sliderHeightPx: SLIDER_HEIGHT_PX,
             sliderWidthPx: this.props.chartDimensions.canvasWidth
           }}
           displayDragBar={true}
