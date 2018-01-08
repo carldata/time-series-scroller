@@ -78,25 +78,32 @@ export class HpSliderHandle extends React.Component<IHpSliderHandleProps, IHpSli
         widthPx = calculations.expressDomainLengthInPx(this.props.domain, this.props.dimensions, domainLengthSliderRepresents - 2*domainLengthHandleRepresents);
         break;
     }
-    let backgroundColor = "";
-    switch (this.props.handleType) {
-      case EnumHandleType.Left:
-      case EnumHandleType.Right:
-        backgroundColor = this.state.isPressed ? "red" : "gray";
-        break;
-      case EnumHandleType.DragBar:
-      backgroundColor = this.state.isPressed ? "red" : "lightgray";
-        break;
-    }
+    
     let result: React.CSSProperties = {
       left: leftPx,
       width: widthPx >= 1 ? widthPx : 1,
-      height: this.props.dimensions.sliderHeightPx,
-      backgroundColor: backgroundColor,
       position: "absolute",
-      cursor: "pointer"
+      cursor: "pointer",
     };
     return result;
+  }
+
+  getClassName = ():string => {
+    let result = ["hp-slider-handle"];
+    if (this.state.isPressed)
+      result.push("hp-slider-handle-pressed");
+    switch (this.props.handleType) {
+      case EnumHandleType.DragBar:
+        result.push("hp-slider-handle-dragBar");
+        break;
+      case EnumHandleType.Left:
+        result.push("hp-slider-handle-left");
+        break;
+      case EnumHandleType.Right:
+        result.push("hp-slider-handle-right");
+        break;
+    }
+    return _.join(result, " ");
   }
 
   globalMouseUp = (e): boolean => {
@@ -138,6 +145,7 @@ export class HpSliderHandle extends React.Component<IHpSliderHandleProps, IHpSli
   render() {
     let self = this;
     return <div 
+      className={this.getClassName()}
       style={this.getHandleStyle()}
       onMouseDown={(e) => {
         this.setState({ isPressed: true, previousScreenX: e.screenX });

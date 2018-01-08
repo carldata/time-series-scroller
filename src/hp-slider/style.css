@@ -1,0 +1,33 @@
+.hp-slider {
+  height: 80px;
+}
+
+.hp-slider-inner-border-rect {
+  border: 1px solid gray;
+  height: 80px;
+  border-radius: 5px;
+}
+
+.hp-slider-handle {
+  background-color: navy;
+  opacity: 0.5;
+  height: 80px;
+}
+
+.hp-slider-handle-right {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px
+}
+
+.hp-slider-handle-left {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px
+}
+
+.hp-slider-handle-dragBar {
+  background-color: cadetblue
+}
+
+.hpSliderHandle-pressed {
+  background-color: red
+}
