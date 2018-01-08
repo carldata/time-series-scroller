@@ -6,7 +6,7 @@ import { hpTimeSeriesChartCalculations } from './hp-time-series-chart/calculatio
 import { IChartDimensions } from './hp-time-series-chart/interfaces';
 import { IHpTimeSeriesChartState } from './hp-time-series-chart/state';
 import { HpSlider } from './hp-slider';
-import { HpTimeSeriesChart } from './hp-time-series-chart';
+import { EnumHpTimeSeriesChartMode, HpTimeSeriesChart } from './hp-time-series-chart';
 import * as React from 'react';
 import * as _ from 'lodash';
 import { ButtonGroup, Button } from 'react-bootstrap';
@@ -17,6 +17,8 @@ export interface IHpTimeSeriesScrollerProps {
   zoomWindowLevelSet?: (zoomLevel: EnumZoomSelected, unixFrom: number, unixTo: number) => void;
   displayZoomLevelButtons?: boolean;
 }
+
+const SLIDER_HEIGHT_PX = 80;
 
 export interface IHpTimeSeriesScrollerState extends IHpTimeSeriesChartState { }
 
@@ -47,12 +49,23 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
     }
   } 
 
-  private getZoomButtonStyle = (stateMode: EnumZoomSelected, expectedMode: EnumZoomSelected): string => {
+  private _getZoomButtonStyle = (stateMode: EnumZoomSelected, expectedMode: EnumZoomSelected): string => {
     return stateMode == expectedMode ? "success" : "default";
   }
 
-  private isZoomButtonDisabled = (zoomLimitationLevelButtonIsPresenting: EnumZoomSelected, currentZoomLimitationLevel: EnumZoomSelected): boolean => {
+  private _isZoomButtonDisabled = (zoomLimitationLevelButtonIsPresenting: EnumZoomSelected, currentZoomLimitationLevel: EnumZoomSelected): boolean => {
     return Math.abs(zoomLimitationLevelButtonIsPresenting - currentZoomLimitationLevel) > 1;
+  }
+
+  private _getChartInSliderDimensions = (): IChartDimensions => {
+    return {
+      canvasHeight: SLIDER_HEIGHT_PX,
+      canvasWidth: this.props.chartDimensions.canvasWidth,
+      timeSeriesChartPaddingBottom: 0,
+      timeSeriesChartPaddingLeft: 0,
+      timeSeriesChartPaddingRight: 0,
+      timeSeriesChartPaddingTop: 0
+    }
   }
 
   public render() {
@@ -68,7 +81,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
           handleValues={{ left: this.state.windowUnixFrom, right: this.state.windowUnixTo }}
           dimensions={{
             sliderHandleWidthThicknessPx: 15,
-            sliderHeightPx: 80,
+            sliderHeightPx: SLIDER_HEIGHT_PX,
             sliderWidthPx: this.props.chartDimensions.canvasWidth
           }}
           displayDragBar={true}
@@ -92,32 +105,38 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
               windowUnixTo: newUnixTo
             })
           }}
-        />
+        >
+          <HpTimeSeriesChart
+            chartDimensions={this._getChartInSliderDimensions()}
+            state={this.props.state}
+            mode={EnumHpTimeSeriesChartMode.SliderEmbedded}
+          />
+        </HpSlider>
         <br />
         {_.isBoolean(this.props.displayZoomLevelButtons) && this.props.displayZoomLevelButtons &&
           <ButtonGroup>
             <Button
               type="button"
-              disabled={this.isZoomButtonDisabled(EnumZoomSelected.NoZoom, this.state.chartZoomSettings.zoomSelected)} 
+              disabled={this._isZoomButtonDisabled(EnumZoomSelected.NoZoom, this.state.chartZoomSettings.zoomSelected)} 
               bsSize="xs"
               onMouseUp={(e) => this.props.zoomWindowLevelSet(EnumZoomSelected.NoZoom, this.state.windowUnixFrom, this.state.windowUnixTo) } 
-              bsStyle={this.getZoomButtonStyle(this.state.chartZoomSettings.zoomSelected, EnumZoomSelected.NoZoom)}>
+              bsStyle={this._getZoomButtonStyle(this.state.chartZoomSettings.zoomSelected, EnumZoomSelected.NoZoom)}>
               View All
             </Button>
             <Button 
               type="button"
-              disabled={this.isZoomButtonDisabled(EnumZoomSelected.ZoomLevel1, this.state.chartZoomSettings.zoomSelected)}
+              disabled={this._isZoomButtonDisabled(EnumZoomSelected.ZoomLevel1, this.state.chartZoomSettings.zoomSelected)}
               bsSize="xs" 
               onMouseUp={() => this.props.zoomWindowLevelSet(EnumZoomSelected.ZoomLevel1, this.state.windowUnixFrom, this.state.windowUnixTo) } 
-              bsStyle={this.getZoomButtonStyle(this.state.chartZoomSettings.zoomSelected, EnumZoomSelected.ZoomLevel1)}>
+              bsStyle={this._getZoomButtonStyle(this.state.chartZoomSettings.zoomSelected, EnumZoomSelected.ZoomLevel1)}>
               1
             </Button>
             <Button 
               type="button"
-              disabled={this.isZoomButtonDisabled(EnumZoomSelected.ZoomLevel2, this.state.chartZoomSettings.zoomSelected)}
+              disabled={this._isZoomButtonDisabled(EnumZoomSelected.ZoomLevel2, this.state.chartZoomSettings.zoomSelected)}
               bsSize="xs" 
               onMouseUp={() => this.props.zoomWindowLevelSet(EnumZoomSelected.ZoomLevel2, this.state.windowUnixFrom, this.state.windowUnixTo) } 
-              bsStyle={this.getZoomButtonStyle(this.state.chartZoomSettings.zoomSelected, EnumZoomSelected.ZoomLevel2)}>
+              bsStyle={this._getZoomButtonStyle(this.state.chartZoomSettings.zoomSelected, EnumZoomSelected.ZoomLevel2)}>
               2
             </Button>
           </ButtonGroup>

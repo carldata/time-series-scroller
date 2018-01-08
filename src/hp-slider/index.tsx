@@ -1,3 +1,4 @@
+import './style.css';
 import * as React from 'react';
 import * as _ from 'lodash';
 import { common } from './common';
@@ -57,6 +58,16 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
       width: this.props.dimensions.sliderWidthPx,
       height: this.props.dimensions.sliderHeightPx,
       position: "relative"
+    };
+    return result;
+  }
+
+  getSvgStyle = (): React.CSSProperties => {
+    let result: React.CSSProperties = {
+      width: this.props.dimensions.sliderWidthPx,
+      height: this.props.dimensions.sliderHeightPx,
+      position: "absolute",
+      backgroundColor: "white"
     };
     return result;
   }
@@ -134,7 +145,8 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
     let self = this;
     let correctedValues = this.correctedHandleValues();
     return (
-      <div style={this.getSliderStyle()}>
+      <div style={this.getSliderStyle()} className="hpSlider">
+        {this.props.children}
         <HpSliderHandle
           key="handle_left"
           domain={this.props.domain}

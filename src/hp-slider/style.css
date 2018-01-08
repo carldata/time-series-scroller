@@ -1,0 +1,16 @@
+.hpSlider {
+  background-color: lightblue
+}
+
+.hpSliderHandle {
+  background-color: navy;
+  opacity: 0.5;
+}
+
+.hpSliderHandle.dragBar {
+  background-color: cadetblue
+}
+
+.hpSliderHandle.pressed {
+  background-color: red
+}

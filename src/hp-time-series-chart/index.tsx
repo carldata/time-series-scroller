@@ -12,12 +12,31 @@ import { TimeSeries } from './components/time-series';
 import { DateTimeAxis } from './components/date-time-axis';
 import { ValueAxis } from './components/value-axis';
 
+export enum EnumHpTimeSeriesChartMode {
+  Standalone,
+  SliderEmbedded
+}
+
 export interface IHpTimeSeriesChartProps {
   state: IHpTimeSeriesChartState;
   chartDimensions: IChartDimensions;
+  mode?: EnumHpTimeSeriesChartMode;
 }
 
 export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
+  const getStyle = ():React.CSSProperties => {
+    if (_.isUndefined(props.mode))
+      return { };
+    switch (props.mode) {
+      case  EnumHpTimeSeriesChartMode.Standalone:
+        return { };
+      case EnumHpTimeSeriesChartMode.SliderEmbedded:
+        return {
+          position: "absolute"
+        }
+    }
+  }
+
   const getXScale = () => {
     return d3.scaleTime()
       .domain([props.state.windowUnixFrom, props.state.windowUnixTo])
@@ -46,6 +65,7 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
   let yScale = getYScale();
   return (
     <svg 
+      style={getStyle()}
       width={props.chartDimensions.canvasWidth} 
       height={props.chartDimensions.canvasHeight}>
       <TimeSeries 
