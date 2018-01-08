@@ -32,11 +32,6 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
         props.chartDimensions.timeSeriesChartPaddingTop]);
   };
 
-  const getFilteredPoints = () => {
-    return _.filter(_.first(props.state.series).points, 
-      (p: IDateTimePoint) => _.inRange(p.unix, props.state.windowUnixFrom, props.state.windowUnixTo));
-  }
-
   let chartTimeSeries: IChartTimeSeries[] = _.map(props.state.series, 
     ts => hpTimeSeriesChartCalculations.getTimeSeriesChartBuckets(ts,
                                                                   props.state.windowUnixFrom, 

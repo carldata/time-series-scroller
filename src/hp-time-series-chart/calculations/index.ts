@@ -29,6 +29,8 @@ const getBucketOutside = (allData: IDateTimePoint[],
     <ITimeSeriesBucket>{
       minY: sample.value,
       maxY: sample.value,
+      date: new Date(sample.unix),
+      numberOfSamples: 1,
       leftboundY: sample.value,
       rightboundY: sample.value,
       unixFrom: browseDirection == EnumBrowseDirection.Backward ? filterFrom : filterTo,
