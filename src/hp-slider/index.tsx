@@ -112,30 +112,22 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
     let result = true;
     let valueLeft: number | null = null;
     let valueRight: number | null = null;
-    let handleDistanceWillIncrease: boolean = false;
     switch (this.state.pressedHandle) {
       case EnumHandleType.Left:
         valueLeft = _.isNumber(newValue) ? newValue : valueLeft;
-        handleDistanceWillIncrease = (valueLeft < this.props.handleValues.left);
         break;
       case EnumHandleType.Right:
         valueRight = _.isNumber(newValue) ? newValue : valueRight;
-        handleDistanceWillIncrease = (valueRight > this.props.handleValues.right);
         break;
       case EnumHandleType.DragBar:
         valueLeft = _.isArray(newValue) ? newValue[0] : valueLeft;
         valueRight = _.isArray(newValue) ? newValue[1] : valueRight;
         break;
     }
-    let handleWidthInDomainUnits = calculations.expressLengthPxInDomain(this.props.domain, this.props.dimensions, this.props.dimensions.sliderHandleWidthThicknessPx);
-    if (_.isNumber(valueLeft)) {  
-      result = result && (valueLeft >= this.props.domain.domainMin);
-      result = result && ((valueLeft <= this.props.handleValues.right - 2*handleWidthInDomainUnits) || handleDistanceWillIncrease);
-    }
-    if (_.isNumber(valueRight)) {  
-      result = result && (valueRight <= this.props.domain.domainMax);
-      result = result && ((valueRight >= this.props.handleValues.left + 2*handleWidthInDomainUnits) || handleDistanceWillIncrease);
-    }
+    if (_.isNumber(valueLeft))  
+      result = result && _.inRange(valueLeft, this.props.domain.domainMin, this.props.domain.domainMax);
+    if (_.isNumber(valueRight))
+      result = result && _.inRange(valueRight, this.props.domain.domainMin, this.props.domain.domainMax);
     return result;
   }
 
