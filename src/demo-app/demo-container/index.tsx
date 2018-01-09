@@ -115,7 +115,7 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                 <Button 
                   bsSize="xs" 
                   onClick={() => this.props.loadCsv("250k.csv")}>
-                  Load 250k4
+                  Load 250k
                 </Button>
                 <Button 
                   bsSize="xs" 
