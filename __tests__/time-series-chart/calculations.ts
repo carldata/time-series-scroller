@@ -2,23 +2,22 @@ import { hpTimeSeriesChartReducerAuxFunctions } from '../../src/hp-time-series-c
 import { hpTimeSeriesChartCalculations } from '../../src/hp-time-series-chart/calculations';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
-import { IDateTimePoint } from '../../src/hp-time-series-chart/state/date-time-point';
+import { IUnixTimePoint } from '../../src/hp-time-series-chart/state/unix-time-point';
 import { csvLoadingCalculations } from '../../src/hp-time-series-chart/csv-loading/calculations';
 
 describe("time-series-chart calculations test", () => {
-  const convertToDateTimePointArray = (start: Date, deltas: number[]): IDateTimePoint[] => {
-    let result: IDateTimePoint[] = [];
+  const convertToDateTimePointArray = (start: Date, deltas: number[]): IUnixTimePoint[] => {
+    let result: IUnixTimePoint[] = [];
     for (const delta of deltas) {
       result.push({
         value: _.random(-100, 100),
-        unix: dateFns.addMinutes(start, delta).getTime(),
-        event: false
+        unix: dateFns.addMinutes(start, delta).getTime()
       });
     }
     return result;
   }
   
-  const regularSeries = (lengthHours: number, granualityMinutes: number): IDateTimePoint[] => 
+  const regularSeries = (lengthHours: number, granualityMinutes: number): IUnixTimePoint[] => 
     convertToDateTimePointArray(new Date(2016, 2, 1), 
                                 _.times(lengthHours*(60/granualityMinutes), i => i*granualityMinutes))
 

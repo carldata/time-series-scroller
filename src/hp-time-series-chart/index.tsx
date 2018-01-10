@@ -6,7 +6,7 @@ import { Dots } from './components/dots';
 import { IHpTimeSeriesChartState } from './state';
 import { hpTimeSeriesChartCalculations } from './calculations';
 import { IChartDimensions, IChartTimeSeries } from './interfaces';
-import { IDateTimePoint } from './state/date-time-point';
+import { IUnixTimePoint } from './state/unix-time-point';
 import { IChartZoomSettings } from './state/chart-zoom-settings';
 import { TimeSeries } from './components/time-series';
 import { DateTimeAxis } from './components/date-time-axis';

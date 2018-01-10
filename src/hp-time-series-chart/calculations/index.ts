@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { IChartTimeSeries } from '../interfaces';
 import { ITimeSeries } from '../state/time-series';
-import { IDateTimePoint } from '../state/date-time-point';
+import { IUnixTimePoint } from '../state/unix-time-point';
 import { IChartZoomSettings } from '../state/chart-zoom-settings';
 import { EnumZoomSelected } from '../state/enums';
 import { IHpTimeSeriesChartState } from '../state';
@@ -17,14 +17,14 @@ enum EnumBrowseDirection {
   Forward
 }
 
-const getBucketOutside = (allData: IDateTimePoint[],
+const getBucketOutside = (allData: IUnixTimePoint[],
                           browseDirection: EnumBrowseDirection,
                           filterFrom: number,
                           filterTo: number): ITimeSeriesBucket => 
 {
   let sample = browseDirection == EnumBrowseDirection.Backward ?
-    _.last(_.filter(allData, (el: IDateTimePoint) => el.unix <= filterFrom)) :
-    _.first(_.filter(allData, (el: IDateTimePoint) => el.unix >= filterTo));
+    _.last(_.filter(allData, (el: IUnixTimePoint) => el.unix <= filterFrom)) :
+    _.first(_.filter(allData, (el: IUnixTimePoint) => el.unix >= filterTo));
   return _.isObject(sample) ?
     <ITimeSeriesBucket>{
       minY: sample.value,
@@ -49,7 +49,7 @@ const getBucketForTime = (unix: number,
   }
 }
 
-const getTimeSeriesBuckets = (allData: IDateTimePoint[],
+const getTimeSeriesBuckets = (allData: IUnixTimePoint[],
                               unixToIndexMap: Map<number, number>,
                               numberOfBuckets: number,
                               filterFrom?: number,
@@ -96,7 +96,7 @@ const getTimeSeriesBuckets = (allData: IDateTimePoint[],
   };
 }
 
-const findIndexToBrowsePointsFrom = (allData: IDateTimePoint[],
+const findIndexToBrowsePointsFrom = (allData: IUnixTimePoint[],
                                     unixToIndexMap: Map<number, number>,
                                     filterFrom: number): number => {
   let result = 0;
@@ -125,7 +125,7 @@ const getTimeSeriesChartBuckets = (series: ITimeSeries,
   };
 }
 
-const findFirstIndexMeetingUnixFrom = (allPoints: IDateTimePoint[], unixFrom: number, lastIndex: number): number => {
+const findFirstIndexMeetingUnixFrom = (allPoints: IUnixTimePoint[], unixFrom: number, lastIndex: number): number => {
   for (let i=lastIndex; i < allPoints.length-1; i++) {
     if (allPoints[i].unix >= unixFrom)
       return i;
@@ -133,7 +133,7 @@ const findFirstIndexMeetingUnixFrom = (allPoints: IDateTimePoint[], unixFrom: nu
   return 0;
 }
 
-const createUnixToIndexMap = (allPoints: IDateTimePoint[]): Map<number, number> => {
+const createUnixToIndexMap = (allPoints: IUnixTimePoint[]): Map<number, number> => {
   let result: Map<number, number> = new Map();
   if (allPoints.length == 0)
     return result;

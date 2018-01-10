@@ -1,5 +1,5 @@
 import { IChartZoomSettings } from './chart-zoom-settings';
-import { IDateTimePoint } from './date-time-point';
+import { IUnixTimePoint } from './unix-time-point';
 
 /**
  * Describes a data series as loaded from CSV / database / web service
@@ -10,7 +10,7 @@ export interface ITimeSeries {
    * The color time series will be drawn with
    */
   color: string;
-  points: IDateTimePoint[];
+  points: IUnixTimePoint[];
   
   /**
    * Map introduced for optimization allowing us quckly find index of the 

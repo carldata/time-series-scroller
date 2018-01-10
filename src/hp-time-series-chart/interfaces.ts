@@ -1,5 +1,5 @@
 import { ITimeSeriesBucket, IChartTimeSeriesBuckets } from './calculations/interfaces';
-import { IDateTimePoint } from './state/date-time-point';
+import { IUnixTimePoint } from './state/unix-time-point';
 import { EnumZoomSelected } from './state/enums';
 
 /**

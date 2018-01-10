@@ -12,7 +12,7 @@ import { hpTimeSeriesChartCalculations as c } from './calculations';
 import { ICsvDataLoadedContext } from './csv-loading/models';
 import { IHpTimeSeriesChartState } from './state';
 import { IChartZoomSettings } from './state/chart-zoom-settings';
-import { IDateTimePoint } from './state/date-time-point';
+import { IUnixTimePoint } from './state/unix-time-point';
 import { EnumZoomSelected } from './state/enums';
 import { ITimeSeries } from './state/time-series';
 import { hpTimeSeriesChartCalculations } from '../index';
@@ -45,13 +45,13 @@ const buildInitialState = ():IHpTimeSeriesChartState => {
   return result;
 }
 
-const randomDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IDateTimePoint[] => {
+const randomDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IUnixTimePoint[] => {
   let referenceDate = new Date(dateRangeDateFrom.getTime());
   let result = [];
   let currentValue = _.random(50, 100);
   let iterationIndex = 0;
   while (dateFns.isBefore(referenceDate, dateRangeDateTo)) {
-    result.push(<IDateTimePoint>{ 
+    result.push(<IUnixTimePoint>{ 
       unix: referenceDate.getTime(), 
       value: currentValue
     });
@@ -71,12 +71,12 @@ const randomDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): I
   return result;
 };
 
-const hourIsEvenDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IDateTimePoint[] => {
+const hourIsEvenDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IUnixTimePoint[] => {
   let referenceDate = new Date(dateRangeDateFrom.getTime());
   let result = [];
   let iterationIndex = 0;
   while (dateFns.isBefore(referenceDate, dateRangeDateTo)) {
-    result.push(<IDateTimePoint>{ 
+    result.push(<IUnixTimePoint>{ 
       unix: referenceDate.getTime(), 
       value: dateFns.getHours(referenceDate.getTime()) % 2 ? 1 : 0
     });
@@ -108,7 +108,7 @@ const getFrameDatesByZoomLevel = (settings: IChartZoomSettings): Date[] => {
  */
 const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo] = action.payload;
-  let points: Array<IDateTimePoint> = randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
+  let points: Array<IUnixTimePoint> = randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
   return <IHpTimeSeriesChartState> {
     series: [<ITimeSeries>{
       color: "steelblue",
@@ -132,20 +132,6 @@ const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[
     dateRangeUnixFrom: windowDateFrom.getTime(),
     dateRangeUnixTo: windowDateTo.getTime()
   }
-}
-
-const setEvents = (series: ITimeSeries, action: Action<collections.Dictionary<number, boolean>>): ITimeSeries => {  
-  let unixDatesContainingEvents = action.payload;
-  let points: IDateTimePoint[] = [];
-  _.each(series.points, el => {
-    let point = _.extend(el, <IDateTimePoint>{
-      event: action.payload.containsKey(el.unix)
-    });
-    points.push(point);
-  });
-  return _.extend({}, series, <ITimeSeries> {
-    points: points
-  });
 }
 
 const setZoom = (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelected, number]>): IHpTimeSeriesChartState => {
@@ -196,7 +182,6 @@ const setZoom = (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelecte
 
 export const hpTimeSeriesChartReducerAuxFunctions = {
   buildInitialState,
-  setEvents,
   hourIsEvenDateTimePoints
 }
 

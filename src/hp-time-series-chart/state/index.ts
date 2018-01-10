@@ -1,4 +1,4 @@
-import { IDateTimePoint } from './date-time-point';
+import { IUnixTimePoint } from './unix-time-point'
 import { ITimeSeries } from './time-series';
 import { IChartZoomSettings } from './chart-zoom-settings';
 

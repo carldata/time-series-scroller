@@ -2,7 +2,7 @@ import { ITimeSeriesBucket } from '../calculations/interfaces';
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
-import { IDateTimePoint } from '../state/date-time-point';
+import { IUnixTimePoint } from '../state/unix-time-point';
 import { IChartDimensions, IChartTimeSeries } from '../interfaces';
 
 export interface IDotsProps {
@@ -15,7 +15,7 @@ export interface IDotsProps {
    */
   yScale: (value: number) => number;
   
-  points: IDateTimePoint[];
+  points: IUnixTimePoint[];
   chartDimensions: IChartDimensions;
 }
 

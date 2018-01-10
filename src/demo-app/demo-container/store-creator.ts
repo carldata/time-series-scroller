@@ -1,3 +1,4 @@
+import { EnumRawCsvFormat } from '../../hp-time-series-chart/csv-loading/calculations';
 import { hpTimeSeriesChartActionTypes } from '../../hp-time-series-chart/action-creators';
 import { csvLoadingAuxiliary } from '../../hp-time-series-chart/csv-loading/auxiliary';
 import { hpTimeSeriesCsvLoadingChartActionTypes } from '../../hp-time-series-chart/csv-loading/action-creators';
@@ -16,11 +17,19 @@ export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
     return _.extend({}, state, csvLoadingAuxiliary.startedLoadingCsvData(state));
   },
   [hpTimeSeriesCsvLoadingChartActionTypes.RECEIVED_CSV_CHUNK]: (state: IHpTimeSeriesChartState, action: Action<Array<any>>): IHpTimeSeriesChartState => {
-    let [newState, timeSeries] = csvLoadingAuxiliary.receivedCsvDataChunk(state, true, action.payload);
+    let [newState, timeSeries] = csvLoadingAuxiliary.receivedCsvDataChunk(state, true, action.payload, {
+      rawFormat: EnumRawCsvFormat.UnixTimeThenValue,
+      timeStampColumnName: "unix",
+      valueColumnName: "value"
+    });
     return _.extend({}, state, newState);
   },
   [hpTimeSeriesCsvLoadingChartActionTypes.FINISHED_PROCESSING_CSV]: (state: IHpTimeSeriesChartState, action: Action<Array<any>>): IHpTimeSeriesChartState => {
-    let [newState, timeSeries] = csvLoadingAuxiliary.receivedCsvDataChunk(state, true, action.payload);
+    let [newState, timeSeries] = csvLoadingAuxiliary.receivedCsvDataChunk(state, true, action.payload, {
+      rawFormat: EnumRawCsvFormat.UnixTimeThenValue,
+      timeStampColumnName: "unix",
+      valueColumnName: "value"
+    });
     return _.extend({}, state, newState);
   },
   [hpTimeSeriesChartActionTypes.SET_ZOOM]: (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelected, number]>): IHpTimeSeriesChartState => {

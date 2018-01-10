@@ -2,7 +2,7 @@ import { HpTimeSeriesScroller, IHpTimeSeriesScrollerProps } from './component';
 import { EnumCsvDataType } from './hp-time-series-chart/csv-loading/models';
 import { csvLoadingAuxiliary } from './hp-time-series-chart/csv-loading/auxiliary';
 import { ITimeSeries } from './hp-time-series-chart/state/time-series';
-import { IDateTimePoint } from './hp-time-series-chart/state/date-time-point';
+import { IUnixTimePoint } from './hp-time-series-chart/state/unix-time-point';
 import { EnumHandleType } from './hp-slider/enums';
 import { hpTimeSeriesChartCalculations } from './hp-time-series-chart/calculations';
 import { hpTimeSeriesChartReducerAuxFunctions, hpTimeSeriesChartReducers } from './hp-time-series-chart/reducers';
@@ -24,7 +24,7 @@ export {
   IHpSliderProps,
   IHpSliderState,
   hpTimeSeriesChartCalculations,
-  IDateTimePoint,
+  IUnixTimePoint,
   csvLoadingAuxiliary,
   EnumCsvDataType
 }
