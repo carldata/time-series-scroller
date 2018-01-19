@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 let translateValueToHandleLeftPositionPx = (domain: IDomain<number>, dimensions: IHpSliderScreenDimensions, type: EnumHandleType, value: number): number => {
   let result = (value - domain.domainMin) / (domain.domainMax - domain.domainMin) * dimensions.sliderWidthPx;
   if (type == EnumHandleType.Right)
-    result -= dimensions.sliderHandleWidthThicknessPx;
+    result -= dimensions.sliderHandleWidthPx;
   return _.isNaN(result) ? 0 : result;
 }
 

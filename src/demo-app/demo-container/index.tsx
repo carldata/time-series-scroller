@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css';
-import * as styles from './styles.scss';
+import * as hpSliderStyles from '../../sass/hp-slider.scss';
+import * as hpTimeSeriesChartStyles from '../../sass/hp-time-series-chart.scss';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import * as React from 'react';
@@ -9,7 +10,6 @@ import { Panel, ButtonGroup, Button, ListGroup, ListGroupItem, Grid, Form, Row, 
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { hpTimeSeriesChartCsvLoadingActionCreators } from '../../hp-time-series-chart/csv-loading/action-creators';
-import { HpTimeSeriesScroller } from '../../component';
 import { hpTimeSeriesChartCalculations } from '../../hp-time-series-chart/calculations';
 import { EnumZoomSelected } from '../../hp-time-series-chart/state/enums';
 import { IChartDimensions }  from '../../hp-time-series-chart/interfaces';
@@ -22,6 +22,8 @@ import { HpTimeSeriesChart } from '../../hp-time-series-chart';
 import { bindActionCreators } from 'redux';
 import { IAppState } from '../state/index';
 import { IHpTimeSeriesChartState } from '../../hp-time-series-chart/state';
+import { HpTimeSeriesScroller } from '../../time-series-scroller';
+import { ITimeSeriesScrollerDimensions } from '../../time-series-scroller-dimensions';
 
 export interface IGraphScreenProps {
   chartState: IHpTimeSeriesChartState;
@@ -42,16 +44,17 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
     super(props);
   }
 
-  private chartDimensions: IChartDimensions = {
-    heightPx: 500,
-    widthPx: 800,
-    paddingBottomPx: 50,
-    paddingLeftPx: 30,
-    paddingRightPx: 10,
-    paddingTopPx: 10
-  };
-
   public render() {
+    const dimensions: ITimeSeriesScrollerDimensions = {
+      widthPx: parseInt(hpTimeSeriesChartStyles.widthPx),
+      heightPx: parseInt(hpTimeSeriesChartStyles.heightPx),
+      paddingBottomPx: parseInt(hpTimeSeriesChartStyles.paddingBottomPx),
+      paddingLeftPx: parseInt(hpTimeSeriesChartStyles.paddingLeftPx),
+      paddingRightPx: parseInt(hpTimeSeriesChartStyles.paddingRightPx),
+      paddingTopPx: parseInt(hpTimeSeriesChartStyles.paddingTopPx),
+      sliderHandleWidthPx: parseInt(hpSliderStyles.handleWidthPx),
+      sliderHeightPx: parseInt(hpSliderStyles.heightPx)
+    };
     return (
       <div>
         <Grid>
@@ -150,11 +153,11 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
           <Row>
             <Col componentClass={ControlLabel} md={12}>
               <HpTimeSeriesScroller
-                chartDimensions={this.chartDimensions}
+                dimensions={dimensions}
                 state={this.props.chartState}
                 zoomWindowLevelSet={(level, unixFrom, unixTo) => {
                   this.props.setWindowUnixFromTo(unixFrom, unixTo);
-                  this.props.setZoomWindowLevel(level, this.chartDimensions.widthPx);
+                  this.props.setZoomWindowLevel(level, dimensions.widthPx);
                 }}
               />
             </Col>

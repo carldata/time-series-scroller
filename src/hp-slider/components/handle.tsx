@@ -61,11 +61,11 @@ export class HpSliderHandle extends React.Component<IHpSliderHandleProps, IHpSli
       case EnumHandleType.Right:
         let value = _.isNumber(this.props.value) ? this.props.value : 0; 
         leftPx = calculations.translateValueToHandleLeftPositionPx(this.props.domain, this.props.dimensions, this.props.handleType, value);
-        widthPx = this.props.dimensions.sliderHandleWidthThicknessPx;
+        widthPx = this.props.dimensions.sliderHandleWidthPx;
         break;
       case EnumHandleType.DragBar:
         leftPx = calculations.translateValueToHandleLeftPositionPx(this.props.domain, this.props.dimensions, this.props.handleType, this.props.value[0]) +
-          this.props.dimensions.sliderHandleWidthThicknessPx;
+          this.props.dimensions.sliderHandleWidthPx;
         /**
          * Keep in mind:
          * - the left edge of left handle (of type EnumHandleType.Left) represents this.props.value[0] and 
@@ -74,7 +74,7 @@ export class HpSliderHandle extends React.Component<IHpSliderHandleProps, IHpSli
          * EnumHandleType.Bar cannot occupy the whole screen space that domainLengthSliderRepresents holds. 
          */
         let domainLengthSliderRepresents = (this.props.value[1] - this.props.value[0]);
-        let domainLengthHandleRepresents = calculations.expressLengthPxInDomain(this.props.domain, this.props.dimensions, this.props.dimensions.sliderHandleWidthThicknessPx);
+        let domainLengthHandleRepresents = calculations.expressLengthPxInDomain(this.props.domain, this.props.dimensions, this.props.dimensions.sliderHandleWidthPx);
         widthPx = calculations.expressDomainLengthInPx(this.props.domain, this.props.dimensions, domainLengthSliderRepresents - 2*domainLengthHandleRepresents);
         break;
     }

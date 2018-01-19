@@ -11,9 +11,7 @@ import { EnumZoomSelected } from './state/enums';
 import { ICsvDataLoadedContext } from './csv-loading/models';
 
 export const hpTimeSeriesChartActionTypes = {
-  SET_CHART_WIDTH: 'SET_CHART_WIDTH',
   GENERATE_RANDOM_DATA: 'GENERATE_RANDOM_DATA',
-  SET_EVENTS: 'SET_EVENTS',
   SET_WINDOW_UNIX_FROM_TO: 'SET_WINDOW_UNIX_FROM_TO',
   SET_WINDOW_WIDTH_MINUTES: 'SET_WINDOW_WIDTH_MINUTES',
   SET_ZOOM: 'SET_ZOOM',
@@ -32,18 +30,6 @@ export const hpTimeSeriesChartActionCreators = {
     hpTimeSeriesChartActionTypes.GENERATE_RANDOM_DATA,
     (dates: Date[]) => dates
   ),
-  setChartWidth: createAction<number, number>(
-    hpTimeSeriesChartActionTypes.SET_CHART_WIDTH,
-    n => n
-  ),
-  setEvents: createAction<collections.Dictionary<number, boolean>, number[]>(
-    hpTimeSeriesChartActionTypes.SET_EVENTS,
-    (unixDatesContainingEvents: number[]) => {
-      let result = new collections.Dictionary<number, boolean>();
-      _.each(unixDatesContainingEvents, el => result.setValue(el, true));
-      return result;
-    }
-  ), 
   setWindowUnixFromTo: createAction<number[], number, number>(
     hpTimeSeriesChartActionTypes.SET_WINDOW_UNIX_FROM_TO,
     (unixFrom: number, unixTo: number) => [unixFrom, unixTo]

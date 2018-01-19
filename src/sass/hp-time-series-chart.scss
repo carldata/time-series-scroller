@@ -1,0 +1,15 @@
+@import 'aux-functions';
+$hpTimeSeriesChartWidthPx: 800px;
+$hpTimeSeriesChartHeightPx: 500px;
+$hpTimeSeriesChartPaddingBottomPx: 50px;
+$hpTimeSeriesChartPaddingLeftPx: 30px;
+$hpTimeSeriesChartPaddingRightPx: 10px;
+$hpTimeSeriesChartPaddingTopPx: 10px;
+:export {
+  widthPx: strip-unit($hpTimeSeriesChartWidthPx);
+  heightPx: strip-unit($hpTimeSeriesChartHeightPx);
+  paddingBottomPx: strip-unit($hpTimeSeriesChartPaddingBottomPx);
+  paddingLeftPx: strip-unit($hpTimeSeriesChartPaddingLeftPx);
+  paddingRightPx: strip-unit($hpTimeSeriesChartPaddingRightPx);
+  paddingTopPx: strip-unit($hpTimeSeriesChartPaddingTopPx);
+}

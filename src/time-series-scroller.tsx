@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+import * as React from 'react';
 import { IDomain } from './hp-slider/interfaces';
 import { EnumZoomSelected } from './hp-time-series-chart/state/enums';
 import * as dateFns from 'date-fns';
@@ -7,21 +9,22 @@ import { IChartDimensions } from './hp-time-series-chart/interfaces';
 import { IHpTimeSeriesChartState } from './hp-time-series-chart/state';
 import { HpSlider } from './hp-slider';
 import { EnumHpTimeSeriesChartMode, HpTimeSeriesChart } from './hp-time-series-chart';
-import * as React from 'react';
-import * as _ from 'lodash';
 import { ButtonGroup, Button } from 'react-bootstrap';
+import { ITimeSeriesScrollerDimensions } from './time-series-scroller-dimensions';
 
 export interface IHpTimeSeriesScrollerProps {
   state: IHpTimeSeriesChartState;
-  chartDimensions: IChartDimensions;
+  dimensions: ITimeSeriesScrollerDimensions;
   zoomWindowLevelSet?: (zoomLevel: EnumZoomSelected, unixFrom: number, unixTo: number) => void;
   displayZoomLevelButtons?: boolean;
 }
 
-const SLIDER_HEIGHT_PX = 80;
-
 export interface IHpTimeSeriesScrollerState extends IHpTimeSeriesChartState { }
 
+/**
+ * This statefull component aggregates HpTimeSeriesChart and HpSlider components, 
+ * making a demonstration how to use them.
+ */
 export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerProps, IHpTimeSeriesScrollerState> {
   constructor(props: IHpTimeSeriesScrollerProps) {
     super(props);
@@ -59,8 +62,8 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
 
   private _getChartInSliderDimensions = (): IChartDimensions => {
     return {
-      heightPx: SLIDER_HEIGHT_PX,
-      widthPx: this.props.chartDimensions.widthPx,
+      heightPx: this.props.dimensions.sliderHeightPx,
+      widthPx: this.props.dimensions.widthPx,
       paddingBottomPx: 0,
       paddingLeftPx: 0,
       paddingRightPx: 0,
@@ -72,7 +75,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
     return (
       <span>
         <HpTimeSeriesChart
-          chartDimensions={this.props.chartDimensions}
+          chartDimensions={this.props.dimensions}
           state={this.state}
         />
         <br />
@@ -80,8 +83,8 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
           domain={this.getDomain()}
           handleValues={{ left: this.state.windowUnixFrom, right: this.state.windowUnixTo }}
           dimensions={{
-            sliderHandleWidthThicknessPx: 15,
-            sliderWidthPx: this.props.chartDimensions.widthPx
+            sliderHandleWidthPx: this.props.dimensions.sliderHandleWidthPx,
+            sliderWidthPx: this.props.dimensions.widthPx
           }}
           displayDragBar={true}
           handleMoved={(value: number | number[], type: EnumHandleType) => {

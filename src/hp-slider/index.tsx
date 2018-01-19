@@ -1,6 +1,5 @@
-import * as styles from './styles.scss';
-import * as React from 'react';
 import * as _ from 'lodash';
+import * as React from 'react';
 import { common } from './common';
 import { calculations } from './calculations';
 import { IHpSliderScreenDimensions, IDomain, IHpSliderHandleValues } from './interfaces';
@@ -94,7 +93,7 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
    * as correctly as possible - (left handle should be always before the right handle).
    */
   correctedHandleValues = (): number[] => {
-    let handleWidthInDomainUnits = calculations.expressLengthPxInDomain(this.props.domain, this.props.dimensions, this.props.dimensions.sliderHandleWidthThicknessPx);
+    let handleWidthInDomainUnits = calculations.expressLengthPxInDomain(this.props.domain, this.props.dimensions, this.props.dimensions.sliderHandleWidthPx);
     let result: number[] = [this.props.handleValues.left, this.props.handleValues.right];
     let handleDifferenceInDomainUnits = this.props.handleValues.right - this.props.handleValues.left;
     if (handleDifferenceInDomainUnits < 2*handleWidthInDomainUnits) {
@@ -132,10 +131,9 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
   }
 
   render() { 
-    console.log(styles.hpSlider, styles.height);
     let correctedValues = this.correctedHandleValues();
     return (
-      <div style={this.getSliderStyle()} className="hp-slider">
+      <div className="hp-slider">
         {this.props.children}
         <div 
           style={{ width: this.props.dimensions.sliderWidthPx, position: "absolute" }}
