@@ -1,5 +1,9 @@
+$hpSliderWidthPx: 800;
+$hpSliderHeightPx: 80;
+
 .hp-slider {
-  height: 80px;
+  width: $hpSliderWidthPx;
+  height: $hpSliderHeightPx;
 }
 
 .hp-slider-inner-border-rect {
@@ -30,4 +34,9 @@
 
 .hpSliderHandle-pressed {
   background-color: red
+}
+
+:export {
+  width: $hpSliderWidthPx;
+  height: $hpSliderHeightPx;
 }

@@ -13,7 +13,7 @@ export interface IValueAxisProps {
 
 export const ValueAxis = (props: IValueAxisProps) => {
   let getAxisTransform = ():string =>  {
-    return `translate(${props.chartDimensions.timeSeriesChartPaddingLeft}, 0)`;
+    return `translate(${props.chartDimensions.paddingLeftPx}, 0)`;
   }
 
   return (
