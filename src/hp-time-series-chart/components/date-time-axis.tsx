@@ -13,7 +13,7 @@ export interface DateTimeAxisProps {
 
 export const DateTimeAxis = (props: DateTimeAxisProps) => {
   let getAxisTransform = ():string =>  {
-    return `translate(0, ${props.chartDimensions.canvasHeight - props.chartDimensions.timeSeriesChartPaddingBottom})`;
+    return `translate(0, ${props.chartDimensions.heightPx - props.chartDimensions.paddingBottomPx})`;
   }
 
   return (

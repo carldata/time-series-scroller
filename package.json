@@ -9,6 +9,7 @@
     "postinstall": "typings install",
     "dev": "webpack-dev-server --open --config webpack.config.js",
     "prod": "webpack --config webpack.config.js",
+    "scss2dts": "webpack --config webpack.config.js --env.mode=scss2dts",
     "tests": "jest"
   },
   "author": "Sharp Coding <sharp.coding@gmail.com>",
@@ -66,8 +67,11 @@
     "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^21.2.1",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.6",
     "ts-loader": "^2.3.5",
     "typescript": "^2.3.4",
+    "typings-for-css-modules-loader": "^1.7.0",
     "url-loader": "^0.5.9",
     "webpack": "^2.6.1",
     "webpack-dev-server": "^2.9.3"

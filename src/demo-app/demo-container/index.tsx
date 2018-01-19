@@ -1,7 +1,5 @@
-import { hpTimeSeriesChartCsvLoadingActionCreators } from '../../hp-time-series-chart/csv-loading/action-creators';
-import { HpTimeSeriesScroller } from '../../component';
-import { hpTimeSeriesChartCalculations } from '../../hp-time-series-chart/calculations';
 import 'bootstrap/dist/css/bootstrap.css';
+import * as styles from './styles.scss';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import * as React from 'react';
@@ -10,6 +8,9 @@ import { connect } from 'react-redux';
 import { Panel, ButtonGroup, Button, ListGroup, ListGroupItem, Grid, Form, Row, Col, FormGroup, ControlLabel, FormControl, HelpBlock  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
+import { hpTimeSeriesChartCsvLoadingActionCreators } from '../../hp-time-series-chart/csv-loading/action-creators';
+import { HpTimeSeriesScroller } from '../../component';
+import { hpTimeSeriesChartCalculations } from '../../hp-time-series-chart/calculations';
 import { EnumZoomSelected } from '../../hp-time-series-chart/state/enums';
 import { IChartDimensions }  from '../../hp-time-series-chart/interfaces';
 import { ICsvColumn, EnumCsvDataType, ICsvDataLoadedContext }  from '../../hp-time-series-chart/csv-loading/models';
@@ -42,12 +43,12 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
   }
 
   private chartDimensions: IChartDimensions = {
-    canvasHeight: 500,
-    canvasWidth: 800,
-    timeSeriesChartPaddingBottom: 50,
-    timeSeriesChartPaddingLeft: 30,
-    timeSeriesChartPaddingRight: 10,
-    timeSeriesChartPaddingTop: 10
+    heightPx: 500,
+    widthPx: 800,
+    paddingBottomPx: 50,
+    paddingLeftPx: 30,
+    paddingRightPx: 10,
+    paddingTopPx: 10
   };
 
   public render() {
@@ -153,7 +154,7 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                 state={this.props.chartState}
                 zoomWindowLevelSet={(level, unixFrom, unixTo) => {
                   this.props.setWindowUnixFromTo(unixFrom, unixTo);
-                  this.props.setZoomWindowLevel(level, this.chartDimensions.canvasWidth);
+                  this.props.setZoomWindowLevel(level, this.chartDimensions.widthPx);
                 }}
               />
             </Col>

@@ -44,29 +44,29 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
   const getXScale = () => {
     return d3.scaleTime()
       .domain([props.state.windowUnixFrom, props.state.windowUnixTo])
-      .range([props.chartDimensions.timeSeriesChartPaddingLeft, 
-        props.chartDimensions.canvasWidth - props.chartDimensions.timeSeriesChartPaddingLeft - props.chartDimensions.timeSeriesChartPaddingRight]);
+      .range([props.chartDimensions.paddingLeftPx, 
+        props.chartDimensions.widthPx - props.chartDimensions.paddingLeftPx - props.chartDimensions.paddingRightPx]);
   };
   
   const getYScale = () => {
     return d3.scaleLinear()
       .domain([props.state.yMin, props.state.yMax])
-      .range([props.chartDimensions.canvasHeight - props.chartDimensions.timeSeriesChartPaddingTop - props.chartDimensions.timeSeriesChartPaddingBottom, 
-        props.chartDimensions.timeSeriesChartPaddingTop]);
+      .range([props.chartDimensions.heightPx - props.chartDimensions.paddingTopPx - props.chartDimensions.paddingBottomPx, 
+        props.chartDimensions.paddingTopPx]);
   };
 
   let chartTimeSeries: IChartTimeSeries[] = _.map(props.state.series, 
     ts => hpTimeSeriesChartCalculations.getTimeSeriesChartBuckets(ts,
                                                                   props.state.windowUnixFrom, 
                                                                   props.state.windowUnixTo,
-                                                                  props.chartDimensions.canvasWidth));
+                                                                  props.chartDimensions.widthPx));
   let xScale = getXScale();
   let yScale = getYScale();
   return (
     <svg 
       style={getStyle()}
-      width={props.chartDimensions.canvasWidth} 
-      height={props.chartDimensions.canvasHeight}>
+      width={props.chartDimensions.widthPx} 
+      height={props.chartDimensions.heightPx}>
       <TimeSeries 
         xScale={xScale} 
         yScale={yScale}

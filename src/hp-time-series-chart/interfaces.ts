@@ -18,13 +18,13 @@ export interface IChartTimeSeries {
  * Different read-only dimensions provided in creation time 
  */
 export interface IChartDimensions {
-  canvasWidth: number;
-  canvasHeight: number;
+  widthPx: number;
+  heightPx: number;
   /**
    * The following padding values appy to main chart only !
    */
-  timeSeriesChartPaddingBottom: number;
-  timeSeriesChartPaddingTop: number;
-  timeSeriesChartPaddingLeft: number;
-  timeSeriesChartPaddingRight: number;
+  paddingBottomPx: number;
+  paddingTopPx: number;
+  paddingLeftPx: number;
+  paddingRightPx: number;
 }

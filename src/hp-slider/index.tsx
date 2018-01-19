@@ -1,4 +1,4 @@
-import './style.css';
+import * as styles from './styles.scss';
 import * as React from 'react';
 import * as _ from 'lodash';
 import { common } from './common';
@@ -132,7 +132,7 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
   }
 
   render() { 
-    let self = this;
+    console.log(styles.hpSlider, styles.height);
     let correctedValues = this.correctedHandleValues();
     return (
       <div style={this.getSliderStyle()} className="hp-slider">

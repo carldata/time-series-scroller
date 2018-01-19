@@ -59,12 +59,12 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
 
   private _getChartInSliderDimensions = (): IChartDimensions => {
     return {
-      canvasHeight: SLIDER_HEIGHT_PX,
-      canvasWidth: this.props.chartDimensions.canvasWidth,
-      timeSeriesChartPaddingBottom: 0,
-      timeSeriesChartPaddingLeft: 0,
-      timeSeriesChartPaddingRight: 0,
-      timeSeriesChartPaddingTop: 0
+      heightPx: SLIDER_HEIGHT_PX,
+      widthPx: this.props.chartDimensions.widthPx,
+      paddingBottomPx: 0,
+      paddingLeftPx: 0,
+      paddingRightPx: 0,
+      paddingTopPx: 0
     }
   }
 
@@ -81,7 +81,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
           handleValues={{ left: this.state.windowUnixFrom, right: this.state.windowUnixTo }}
           dimensions={{
             sliderHandleWidthThicknessPx: 15,
-            sliderWidthPx: this.props.chartDimensions.canvasWidth
+            sliderWidthPx: this.props.chartDimensions.widthPx
           }}
           displayDragBar={true}
           handleMoved={(value: number | number[], type: EnumHandleType) => {
