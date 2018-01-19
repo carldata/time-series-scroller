@@ -22,7 +22,7 @@ export const hpTimeSeriesChartCsvLoadingActionCreators = {
     let resultsCacheIndex = 0;
     Papa.parse(url, {
       download: true,
-      worker: false,
+      worker: true,
       header: true,
       skipEmptyLines: true,
       step: (results: ParseResult) => {
