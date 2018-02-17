@@ -19,21 +19,17 @@ export interface IExtractUnixTimePointsConfig {
 }
 
 const extractUnixTimePoints = (csvRows: Array<any>, config: IExtractUnixTimePointsConfig): IUnixTimePoint[] => {
-  let result: IUnixTimePoint[] = new Array(csvRows.length);
-  for (let i=0; i < csvRows.length; i++) {
-    result[i] = {
-      unix: function() {
-        switch (config.rawFormat) {
-          case EnumRawCsvFormat.UnixTimeThenValue:
-            return parseInt(csvRows[i][config.timeStampColumnName]);
-          case EnumRawCsvFormat.DateTimeThenValue:
-            return dateFns.parse(csvRows[i][config.timeStampColumnName]).getTime();
-        }
-      }(),
-      value: parseFloat(csvRows[i][config.valueColumnName])
-    };
-  }
-  return result;
+  return _.map(csvRows, (row: any) => { return {
+    unix: (() => {
+      switch (config.rawFormat) {
+        case EnumRawCsvFormat.UnixTimeThenValue:
+          return parseInt(row[config.timeStampColumnName]);
+        case EnumRawCsvFormat.DateTimeThenValue:
+          return dateFns.parse(row[config.timeStampColumnName]).getTime();
+      }
+    })(),
+    value: parseFloat(row[config.valueColumnName])
+  }});
 }
 
 export const csvLoadingCalculations = {
