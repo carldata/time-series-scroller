@@ -6,7 +6,7 @@ import * as dateFns from 'date-fns';
 import * as React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { Panel, ButtonGroup, Button, ListGroup, ListGroupItem, Grid, Form, Row, Col, FormGroup, ControlLabel, FormControl, HelpBlock  } from 'react-bootstrap';
+import { Panel, ButtonGroup, Button, ListGroup, ListGroupItem, Grid, Form, Row, Col, FormGroup, ControlLabel, FormControl, HelpBlock, ButtonToolbar, Checkbox  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { hpTimeSeriesChartCsvLoadingActionCreators } from '../../hp-time-series-chart/csv-loading/action-creators';
@@ -30,18 +30,22 @@ export interface IGraphScreenProps {
 }
 
 export interface IGraphScreenState {
+  useStreaming: boolean;
 }
 
 export interface IGraphScreenDispatchProps {
   setZoomWindowLevel: (level: EnumZoomSelected, widthPx: number) => EnumZoomSelected,
   generateRandomData: (dates: Date[]) => void,
-  loadCsv: (url: string) => void,
+  loadCsv: (url: string, useStreaming: boolean) => void,
   setWindowUnixFromTo: (unixFrom: number, unixTo: number) => void
 }
 
 class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScreenDispatchProps, IGraphScreenState> {
   constructor(props: IGraphScreenProps & IGraphScreenDispatchProps) {
     super(props);
+    this.state = {
+      useStreaming: false
+    }
   }
 
   public render() {
@@ -84,74 +88,66 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
             </Col>
           </Row>
           <Row>
-            <Col componentClass={ControlLabel} md={2}>
-                Window date from:
-            </Col>
-            <Col md={2}>
-              <ControlLabel>{dateFns.format(this.props.chartState.windowUnixFrom, "YYYY-MM-DD HH:mm")}</ControlLabel>
-            </Col>
-            <Col componentClass={ControlLabel} md={2}>
-              Window date to:
-            </Col>
-            <Col md={2}>
-              <ControlLabel>{dateFns.format(this.props.chartState.windowUnixTo, "YYYY-MM-DD HH:mm")}</ControlLabel>
-            </Col>
-            <Col componentClass={ControlLabel} md={2}>
-              Min. window width:
-            </Col>
-            <Col md={2}>
-              -
-            </Col>
-          </Row>
-          <Row>
-            <Col componentClass={ControlLabel} md={12}>
-              <ButtonGroup>
-                <Button 
-                  bsSize="xs" 
-                  onClick={() => this.props.loadCsv("50.csv")}>
-                  Load 50
-                </Button>
-                <Button 
-                  bsSize="xs" 
-                  onClick={() => this.props.loadCsv("50k.csv")}>
-                  Load 50k
-                </Button>
-                <Button 
-                  bsSize="xs" 
-                  onClick={() => this.props.loadCsv("250k.csv")}>
-                  Load 250k
-                </Button>
-                <Button 
-                  bsSize="xs" 
-                  onClick={() => this.props.loadCsv("2M.csv")}>
-                  Load 2M
-                </Button>
-                <Button 
-                  bsSize="xs" 
-                  onClick={() => this.props.loadCsv("4M.csv")}>
-                  Load 4M
-                </Button>
-                <Button 
-                  bsSize="xs" 
-                  onClick={() => this.props.loadCsv("10M.csv")}>
-                  Load 10M
-                </Button>
-                <Button 
-                  bsSize="xs" 
-                  onClick={() => {
-                    let date = new Date();
-                    this.props.generateRandomData([date, 
-                                                   dateFns.addMonths(date, 2*12), 
-                                                   date, 
-                                                   dateFns.addMonths(date, 2*12)]);
-                  }}>
-                  Generate 1M
-                </Button>
-              </ButtonGroup>
+            <Col>
+              <Form inline>
+                <FormGroup >
+                  <ButtonGroup>
+                    <Button 
+                      bsSize="xs" 
+                      onClick={() => this.props.loadCsv("50.csv", this.state.useStreaming)}>
+                      Load 50
+                    </Button>
+                    <Button
+                      bsSize="xs" 
+                      onClick={() => this.props.loadCsv("50k.csv", this.state.useStreaming)}>
+                      Load 50k
+                    </Button>
+                    <Button
+                      bsSize="xs" 
+                      onClick={() => this.props.loadCsv("250k.csv", this.state.useStreaming)}>
+                      Load 250k
+                    </Button>
+                    <Button
+                      bsSize="xs" 
+                      onClick={() => this.props.loadCsv("2M.csv", this.state.useStreaming)}>
+                      Load 2M
+                    </Button>
+                    <Button
+                      bsSize="xs" 
+                      onClick={() => this.props.loadCsv("4M.csv", this.state.useStreaming)}>
+                      Load 4M
+                    </Button>
+                    <Button
+                      bsSize="xs" 
+                      onClick={() => this.props.loadCsv("10M.csv", this.state.useStreaming)}>
+                      Load 10M
+                    </Button>
+                    <Button
+                      bsSize="xs" 
+                      onClick={() => {
+                        let date = new Date();
+                        this.props.generateRandomData([date, 
+                                                      dateFns.addMonths(date, 2*12), 
+                                                      date, 
+                                                      dateFns.addMonths(date, 2*12)]);
+                      }}>
+                      Generate 1M
+                    </Button>
+                  </ButtonGroup>
+                </FormGroup>
+                <FormGroup>
+                  <Checkbox inline 
+                    checked={this.state.useStreaming} 
+                    onChange={() => 
+                      this.setState({ useStreaming: !this.state.useStreaming }) }>
+                    Use streaming
+                  </Checkbox>
+                </FormGroup>
+              </Form>
             </Col>
           </Row>
           <Row>
-            <Col componentClass={ControlLabel} md={12}>
+            <Col componentClass={ControlLabel}>
               <HpTimeSeriesScroller
                 dimensions={dimensions}
                 state={this.props.chartState}

@@ -30,7 +30,7 @@ export const hpTimeSeriesChartCsvLoadingActionCreators = {
       complete: (results: ParseResult) => {
         dispatch({
           type: hpTimeSeriesCsvLoadingChartActionTypes.FINISHED_PROCESSING_CSV,
-          payload: results.data
+          payload: _.isObject(results) ? results.data : []
         });
       }
     });

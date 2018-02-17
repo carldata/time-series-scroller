@@ -1,7 +1,8 @@
-import { hpTimeSeriesChartCsvLoadingActionCreators } from '../hp-time-series-chart/csv-loading/action-creators';
+import './styles.scss';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import thunk from 'redux-thunk';
+import { hpTimeSeriesChartCsvLoadingActionCreators } from '../hp-time-series-chart/csv-loading/action-creators';
 import { HashRouter, Route } from 'react-router-dom';
 import { Store, createStore, compose, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
