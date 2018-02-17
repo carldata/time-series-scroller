@@ -8,7 +8,6 @@ import { Dispatch } from 'redux';
 import * as collections from 'typescript-collections';
 import { Dictionary } from 'typescript-collections';
 import { EnumZoomSelected } from './state/enums';
-import { ICsvDataLoadedContext } from './csv-loading/models';
 
 export const hpTimeSeriesChartActionTypes = {
   GENERATE_RANDOM_DATA: 'GENERATE_RANDOM_DATA',

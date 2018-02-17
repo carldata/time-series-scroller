@@ -9,7 +9,6 @@ import * as collections from 'typescript-collections';
 import { Dictionary } from 'typescript-collections';
 
 import { hpTimeSeriesChartCalculations as c } from './calculations';
-import { ICsvDataLoadedContext } from './csv-loading/models';
 import { IHpTimeSeriesChartState } from './state';
 import { IChartZoomSettings } from './state/chart-zoom-settings';
 import { IUnixTimePoint } from './state/unix-time-point';

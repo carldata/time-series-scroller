@@ -6,7 +6,6 @@ import * as _ from 'lodash';
 import { Action, handleActions } from "redux-actions";
 import { hpTimeSeriesChartReducers, hpTimeSeriesChartReducerAuxFunctions } from "../../hp-time-series-chart/reducers";
 import { IHpTimeSeriesChartState } from "../../hp-time-series-chart/state";
-import { EnumCsvDataType, ICsvDataLoadedContext } from '../../hp-time-series-chart/csv-loading/models';
 import { EnumZoomSelected } from "../../hp-time-series-chart/state/enums";
 
 export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({

@@ -13,7 +13,6 @@ import { hpTimeSeriesChartCsvLoadingActionCreators } from '../../hp-time-series-
 import { hpTimeSeriesChartCalculations } from '../../hp-time-series-chart/calculations';
 import { EnumZoomSelected } from '../../hp-time-series-chart/state/enums';
 import { IChartDimensions }  from '../../hp-time-series-chart/interfaces';
-import { ICsvColumn, EnumCsvDataType, ICsvDataLoadedContext }  from '../../hp-time-series-chart/csv-loading/models';
 import { hpTimeSeriesChartActionCreators } from '../../hp-time-series-chart/action-creators';
 import { HpSlider } from '../../hp-slider';
 import { IDomain, IHpSliderScreenDimensions, IHpSliderHandleValues } from '../../hp-slider/interfaces';

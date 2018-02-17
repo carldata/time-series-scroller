@@ -1,6 +1,5 @@
 import { HpTimeSeriesScroller, IHpTimeSeriesScrollerProps } from './time-series-scroller';
 import { ITimeSeriesScrollerDimensions } from './time-series-scroller-dimensions';
-import { EnumCsvDataType } from './hp-time-series-chart/csv-loading/models';
 import { csvLoadingAuxiliary } from './hp-time-series-chart/csv-loading/auxiliary';
 import { ITimeSeries } from './hp-time-series-chart/state/time-series';
 import { IUnixTimePoint } from './hp-time-series-chart/state/unix-time-point';
@@ -30,7 +29,6 @@ export {
   hpTimeSeriesChartCalculations,
   IUnixTimePoint,
   csvLoadingAuxiliary,
-  EnumCsvDataType,
   hpSliderStyles,
   hpTimeSeriesChartStyles
 }

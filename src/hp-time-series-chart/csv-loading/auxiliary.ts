@@ -3,7 +3,6 @@ import * as dateFns from 'date-fns';
 import { handleActions, Action } from 'redux-actions';
 import { hpTimeSeriesChartCalculations } from '../calculations';
 import { csvLoadingCalculations as csvCalculations, EnumRawCsvFormat, IExtractUnixTimePointsConfig } from './calculations';
-import { ICsvDataLoadedContext } from './models';
 import { IHpTimeSeriesChartState } from '../state/index';
 import { IUnixTimePoint } from '../state/unix-time-point';
 import { ITimeSeries } from '../state/time-series';
