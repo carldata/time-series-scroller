@@ -31,5 +31,10 @@ export interface IHpTimeSeriesChartState {
   yMax: number;
 
   chartZoomSettings: IChartZoomSettings;
+
+  /**
+   * Series as displayed in component.
+   * Currently there is support for only one !
+   */
   series: ITimeSeries[];
 };

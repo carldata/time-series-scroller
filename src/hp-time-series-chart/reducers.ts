@@ -133,8 +133,8 @@ const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[
   }
 }
 
-const setZoom = (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelected, number]>): IHpTimeSeriesChartState => {
-  let [zoom, widthPx] = action.payload;
+const setZoom = (state: IHpTimeSeriesChartState, action: Action<EnumZoomSelected>): IHpTimeSeriesChartState => {
+  let zoom = action.payload;
   let result = <IHpTimeSeriesChartState>{};
   let chartZoomSettings = <IChartZoomSettings> _.extend({}, state.chartZoomSettings, {
     zoomSelected: action.payload

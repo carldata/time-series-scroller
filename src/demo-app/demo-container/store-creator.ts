@@ -1,8 +1,8 @@
+import * as _ from 'lodash';
 import { EnumRawCsvFormat } from '../../hp-time-series-chart/csv-loading/calculations';
 import { hpTimeSeriesChartActionTypes } from '../../hp-time-series-chart/action-creators';
 import { csvLoadingAuxiliary } from '../../hp-time-series-chart/csv-loading/auxiliary';
 import { hpTimeSeriesCsvLoadingChartActionTypes } from '../../hp-time-series-chart/csv-loading/action-creators';
-import * as _ from 'lodash';
 import { Action, handleActions } from "redux-actions";
 import { hpTimeSeriesChartReducers, hpTimeSeriesChartReducerAuxFunctions } from "../../hp-time-series-chart/reducers";
 import { IHpTimeSeriesChartState } from "../../hp-time-series-chart/state";
@@ -31,7 +31,7 @@ export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
     });
     return _.extend({}, state, newState);
   },
-  [hpTimeSeriesChartActionTypes.SET_ZOOM]: (state: IHpTimeSeriesChartState, action: Action<[EnumZoomSelected, number]>): IHpTimeSeriesChartState => {
+  [hpTimeSeriesChartActionTypes.SET_ZOOM]: (state: IHpTimeSeriesChartState, action: Action<EnumZoomSelected>): IHpTimeSeriesChartState => {
     return hpTimeSeriesChartReducers.setZoom(state, action);
   }
 }, hpTimeSeriesChartReducerAuxFunctions.buildInitialState());

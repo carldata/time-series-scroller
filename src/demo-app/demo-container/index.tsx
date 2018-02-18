@@ -33,7 +33,7 @@ export interface IGraphScreenState {
 }
 
 export interface IGraphScreenDispatchProps {
-  setZoomWindowLevel: (level: EnumZoomSelected, widthPx: number) => EnumZoomSelected,
+  setZoomWindowLevel: (level: EnumZoomSelected) => EnumZoomSelected,
   generateRandomData: (dates: Date[]) => void,
   loadCsv: (url: string, useStreaming: boolean) => void,
   setWindowUnixFromTo: (unixFrom: number, unixTo: number) => void
@@ -152,7 +152,7 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                 state={this.props.chartState}
                 zoomWindowLevelSet={(level, unixFrom, unixTo) => {
                   this.props.setWindowUnixFromTo(unixFrom, unixTo);
-                  this.props.setZoomWindowLevel(level, dimensions.widthPx);
+                  this.props.setZoomWindowLevel(level);
                 }}
               />
             </Col>
