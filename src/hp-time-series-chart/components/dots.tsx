@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 import { IUnixTimePoint } from '../state/unix-time-point';
-import { IChartDimensions, IChartTimeSeries } from '../interfaces';
+import { IChartTimeSeries } from '../interfaces';
 
 export interface IDotsProps {
   /**
@@ -16,7 +16,6 @@ export interface IDotsProps {
   yScale: (value: number) => number;
   
   points: IUnixTimePoint[];
-  chartDimensions: IChartDimensions;
 }
 
 export interface IDotsState {

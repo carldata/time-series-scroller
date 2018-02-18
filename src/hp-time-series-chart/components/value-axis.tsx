@@ -1,10 +1,10 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
-import { IChartDimensions } from '../interfaces';
+import { IHpTimeSeriesChartScss } from '../../sass/styles';
 
 export interface IValueAxisProps {
-  chartDimensions: IChartDimensions;  
+  scss: IHpTimeSeriesChartScss;  
   /**
    * placeholder for D3 function that calculates x-scale
    */
@@ -13,7 +13,7 @@ export interface IValueAxisProps {
 
 export const ValueAxis = (props: IValueAxisProps) => {
   let getAxisTransform = ():string =>  {
-    return `translate(${props.chartDimensions.paddingLeftPx}, 0)`;
+    return `translate(${props.scss.paddingLeftPx}, 0)`;
   }
 
   return (

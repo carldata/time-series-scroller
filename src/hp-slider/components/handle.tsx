@@ -3,7 +3,8 @@ import * as _ from 'lodash';
 import { common } from '../common';
 import { calculations } from '../calculations';
 import { EnumHandleType } from '../enums';
-import { IHpSliderScreenDimensions, IDomain, IHpSliderHandleValues } from '../interfaces';
+import { IDomain, IHpSliderHandleValues } from '../interfaces';
+import { IHpSliderScss } from '../../sass/styles';
 
 export interface IHpSliderHandleMoved {
   (newValue: number | number[], handle: EnumHandleType): void;
@@ -14,7 +15,7 @@ export interface IHpSliderHandlePressed {
 }
 
 export interface IHpSliderHandleProps {
-  dimensions: IHpSliderScreenDimensions;
+  scss: IHpSliderScss;
   handleType: EnumHandleType;
   domain: IDomain<number>;
   /**
@@ -60,12 +61,12 @@ export class HpSliderHandle extends React.Component<IHpSliderHandleProps, IHpSli
       case EnumHandleType.Left:
       case EnumHandleType.Right:
         let value = _.isNumber(this.props.value) ? this.props.value : 0; 
-        leftPx = calculations.translateValueToHandleLeftPositionPx(this.props.domain, this.props.dimensions, this.props.handleType, value);
-        widthPx = this.props.dimensions.sliderHandleWidthPx;
+        leftPx = calculations.translateValueToHandleLeftPositionPx(this.props.domain, this.props.scss, this.props.handleType, value);
+        widthPx = this.props.scss.handleWidthPx;
         break;
       case EnumHandleType.DragBar:
-        leftPx = calculations.translateValueToHandleLeftPositionPx(this.props.domain, this.props.dimensions, this.props.handleType, this.props.value[0]) +
-          this.props.dimensions.sliderHandleWidthPx;
+        leftPx = calculations.translateValueToHandleLeftPositionPx(this.props.domain, this.props.scss, this.props.handleType, this.props.value[0]) +
+          this.props.scss.handleWidthPx;
         /**
          * Keep in mind:
          * - the left edge of left handle (of type EnumHandleType.Left) represents this.props.value[0] and 
@@ -74,8 +75,8 @@ export class HpSliderHandle extends React.Component<IHpSliderHandleProps, IHpSli
          * EnumHandleType.Bar cannot occupy the whole screen space that domainLengthSliderRepresents holds. 
          */
         let domainLengthSliderRepresents = (this.props.value[1] - this.props.value[0]);
-        let domainLengthHandleRepresents = calculations.expressLengthPxInDomain(this.props.domain, this.props.dimensions, this.props.dimensions.sliderHandleWidthPx);
-        widthPx = calculations.expressDomainLengthInPx(this.props.domain, this.props.dimensions, domainLengthSliderRepresents - 2*domainLengthHandleRepresents);
+        let domainLengthHandleRepresents = calculations.expressLengthPxInDomain(this.props.domain, this.props.scss, this.props.scss.handleWidthPx);
+        widthPx = calculations.expressDomainLengthInPx(this.props.domain, this.props.scss, domainLengthSliderRepresents - 2*domainLengthHandleRepresents);
         break;
     }
     
@@ -121,7 +122,7 @@ export class HpSliderHandle extends React.Component<IHpSliderHandleProps, IHpSli
       //for a positive delta, handle bar was moved rightwards,
       //for a negative delta, handle was moved leftwards
       let deltaPx = e.screenX - this.state.previousScreenX;
-      let deltaDomain = calculations.expressLengthPxInDomain(this.props.domain, this.props.dimensions, deltaPx);
+      let deltaDomain = calculations.expressLengthPxInDomain(this.props.domain, this.props.scss, deltaPx);
       this.setState({ previousScreenX: e.screenX });
       if (_.isFunction(this.props.onMoved)) {
         switch (this.props.handleType) {

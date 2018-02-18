@@ -1,5 +1,4 @@
 import { HpTimeSeriesScroller, IHpTimeSeriesScrollerProps } from './time-series-scroller';
-import { ITimeSeriesScrollerDimensions } from './time-series-scroller-dimensions';
 import { csvLoadingAuxiliary } from './hp-time-series-chart/csv-loading/auxiliary';
 import { ITimeSeries } from './hp-time-series-chart/state/time-series';
 import { IUnixTimePoint } from './hp-time-series-chart/state/unix-time-point';
@@ -10,13 +9,11 @@ import { hpTimeSeriesChartActionCreators, hpTimeSeriesChartActionTypes } from '.
 import { IHpTimeSeriesChartState } from './hp-time-series-chart/state';
 import { HpTimeSeriesChart, IHpTimeSeriesChartProps } from './hp-time-series-chart';
 import { HpSlider, IHpSliderProps, IHpSliderState } from './hp-slider';
-import * as hpSliderStyles from './sass/hp-slider.scss';
-import * as hpTimeSeriesChartStyles from './sass/hp-time-series-chart.scss';
+import { IHpTimeSeriesChartScss, convertHpTimeSeriesChartScss, IHpSliderScss, convertHpSliderScss } from './sass/styles';
 
 export {
   HpTimeSeriesScroller,
   IHpTimeSeriesScrollerProps,
-  ITimeSeriesScrollerDimensions,
   IHpTimeSeriesChartProps,
   IHpTimeSeriesChartState,
   hpTimeSeriesChartActionCreators,
@@ -29,6 +26,8 @@ export {
   hpTimeSeriesChartCalculations,
   IUnixTimePoint,
   csvLoadingAuxiliary,
-  hpSliderStyles,
-  hpTimeSeriesChartStyles
+  IHpSliderScss,
+  convertHpSliderScss,
+  IHpTimeSeriesChartScss,
+  convertHpTimeSeriesChartScss,
 }

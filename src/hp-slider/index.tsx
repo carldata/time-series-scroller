@@ -2,12 +2,13 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import { common } from './common';
 import { calculations } from './calculations';
-import { IHpSliderScreenDimensions, IDomain, IHpSliderHandleValues } from './interfaces';
+import { IDomain, IHpSliderHandleValues } from './interfaces';
 import { HpSliderHandle, IHpSliderHandleMoved } from './components/handle';
 import { EnumHandleType } from './enums';
+import { IHpSliderScss } from '../sass/styles';
 
 export interface IHpSliderProps {
-  dimensions: IHpSliderScreenDimensions;
+  scss: IHpSliderScss;
   /**
    * The (real number, linear) domain provided for convenience of a particluar applications.
    * See that IDomain<T> is a generic interface - in the future there can be a different (unit) type applied.
@@ -54,7 +55,7 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
 
   getSliderStyle = (): React.CSSProperties => {
     let result: React.CSSProperties = {
-      width: this.props.dimensions.sliderWidthPx,
+      width: this.props.scss.widthPx,
       position: "relative"
     };
     return result;
@@ -62,7 +63,7 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
 
   getSvgStyle = (): React.CSSProperties => {
     let result: React.CSSProperties = {
-      width: this.props.dimensions.sliderWidthPx,
+      width: this.props.scss.widthPx,
       position: "absolute",
       backgroundColor: "white"
     };
@@ -93,7 +94,7 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
    * as correctly as possible - (left handle should be always before the right handle).
    */
   correctedHandleValues = (): number[] => {
-    let handleWidthInDomainUnits = calculations.expressLengthPxInDomain(this.props.domain, this.props.dimensions, this.props.dimensions.sliderHandleWidthPx);
+    let handleWidthInDomainUnits = calculations.expressLengthPxInDomain(this.props.domain, this.props.scss, this.props.scss.handleWidthPx);
     let result: number[] = [this.props.handleValues.left, this.props.handleValues.right];
     let handleDifferenceInDomainUnits = this.props.handleValues.right - this.props.handleValues.left;
     if (handleDifferenceInDomainUnits < 2*handleWidthInDomainUnits) {
@@ -136,13 +137,13 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
       <div className="hp-slider">
         {this.props.children}
         <div 
-          style={{ width: this.props.dimensions.sliderWidthPx, position: "absolute" }}
+          style={{ width: this.props.scss.widthPx, position: "absolute" }}
           className="hp-slider-inner-border-rect"
         />
         <HpSliderHandle
           key="handle_left"
           domain={this.props.domain}
-          dimensions={this.props.dimensions}
+          scss={this.props.scss}
           value={correctedValues[0]}
           handleType={EnumHandleType.Left}
           onMoved={(newValue: number, type: EnumHandleType) => {
@@ -155,7 +156,7 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
         />
         {this.props.displayDragBar && 
           <HpSliderHandle
-            dimensions={this.props.dimensions}
+            scss={this.props.scss}
             domain={this.props.domain}
             handleType={EnumHandleType.DragBar}
             onMoved={(newValue: number[], type: EnumHandleType) => {
@@ -171,7 +172,7 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
         <HpSliderHandle
           key="handle_right" 
           domain={this.props.domain}
-          dimensions={this.props.dimensions}
+          scss={this.props.scss}
           value={correctedValues[1]}
           handleType={EnumHandleType.Right}
           onMoved={(newValue: number, type: EnumHandleType) => {

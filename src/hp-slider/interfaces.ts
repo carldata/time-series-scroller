@@ -10,8 +10,3 @@ export interface IHpSliderHandleValues<T> {
   left: T;
   right: T;
 }
-
-export interface IHpSliderScreenDimensions {
-  sliderWidthPx: number;
-  sliderHandleWidthPx: number;
-}

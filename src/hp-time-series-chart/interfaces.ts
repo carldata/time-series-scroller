@@ -13,18 +13,3 @@ export interface IChartTimeSeries {
   color: string;
   buckets: IChartTimeSeriesBuckets;
 }
-
-/**
- * Different read-only dimensions provided in creation time 
- */
-export interface IChartDimensions {
-  widthPx: number;
-  heightPx: number;
-  /**
-   * The following padding values appy to main chart only !
-   */
-  paddingBottomPx: number;
-  paddingTopPx: number;
-  paddingLeftPx: number;
-  paddingRightPx: number;
-}
