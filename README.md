@@ -2,6 +2,8 @@
 
 Specialized time-series-over-domain component focused on code quality and performance. 
 100% functional, yet not mature - still beta/under development (see project goals below).
+All components are written from scratch using D3 and primitive HTML elements, 
+this is not a mock over a third-party library.
 
 ## Getting started with the development version
 
@@ -12,9 +14,9 @@ npm i
 npm run dev
 ```
 
-Everything succeeded, you should be seeing this:
+Everything succeeded, you should be seeing this (click below for brief You Tube demo):
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/yALqQtGD_Ak/0.jpg)](https://www.youtube.com/watch?v=yALqQtGD_Ak)
+[![IMAGE ALT component demo](https://img.youtube.com/vi/yALqQtGD_Ak/0.jpg)](https://www.youtube.com/watch?v=yALqQtGD_Ak)
 
 ## Getting started with the npm-dependency
 
@@ -31,6 +33,7 @@ npm i time-series-scroller --save-dev
 - [x] SCSS variables imported as variables in JavaScript
 - [x] SCSS variables defining attributes / data structures for styling
 - [ ] [StoryBook](https://storybook.js.org/) demonstrations
+- [ ] Zooming in/out redesigned
 - [ ] Documentation
   - [ ] reusable actions/reducers
   - [ ] how to integrate
