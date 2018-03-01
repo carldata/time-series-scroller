@@ -1,7 +1,7 @@
 import { IDomain } from './interfaces';
 import { EnumHandleType } from './enums';
 import * as _ from 'lodash';
-import { IHpSliderScss } from '../sass/styles';
+import { IHpSliderScss, IHpSliderScssGeneric } from '../sass/styles';
 
 let translateValueToHandleLeftPositionPx = (domain: IDomain<number>, scss: IHpSliderScss , type: EnumHandleType, value: number): number => {
   let result = (value - domain.domainMin) / (domain.domainMax - domain.domainMin) * scss.widthPx;
