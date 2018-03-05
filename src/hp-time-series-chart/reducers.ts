@@ -54,7 +54,7 @@ const randomDateTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): I
       unix: referenceDate.getTime(), 
       value: currentValue
     });
-    referenceDate = dateFns.addSeconds(referenceDate, SECONDS_PER_SAMPLE);
+    referenceDate = dateFns.addSeconds(referenceDate, _.random(1, 5) * SECONDS_PER_SAMPLE);
     let chanceForChangeIndexValue = _.random(0, 100);
     if (_.inRange(chanceForChangeIndexValue, 0, 10)) {
       currentValue += 40 - _.random(0, 80);
@@ -107,30 +107,20 @@ const getFrameDatesByZoomLevel = (settings: IChartZoomSettings): Date[] => {
  */
 const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo] = action.payload;
-  let points: Array<IUnixTimePoint> = randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
-  return <IHpTimeSeriesChartState> {
-    series: [<ITimeSeries>{
-      color: "steelblue",
-      unixFrom: dateRangeDateFrom.getTime(),
-      unixTo: dateRangeDateTo.getTime(),
-      name: "random series",
-      points: points,
-      unixToIndexMap: unixIndexMapCalculations.createUnixToIndexMap(points)
-    }],
-    chartZoomSettings: {
-      zoomSelected: EnumZoomSelected.NoZoom,
-      zoomLevel1FramePointsUnixFrom: 0,
-      zoomLevel1FramePointsUnixTo: 0,
-      zoomLevel2FramePointsUnixFrom: 0,
-      zoomLevel2FramePointsUnixTo: 0
-    },
-    yMin: _.min(_.map(points, el => el.value)),
-    yMax: _.max(_.map(points, el => el.value)),
-    windowUnixFrom: windowDateFrom.getTime(),
-    windowUnixTo: windowDateTo.getTime(),
-    dateRangeUnixFrom: windowDateFrom.getTime(),
-    dateRangeUnixTo: windowDateTo.getTime()
-  }
+  let pointsA: Array<IUnixTimePoint> = randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
+  let pointsB: Array<IUnixTimePoint> = [];//randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
+  return setData(state, {
+    type: null,
+    payload: [{
+      color: "red",
+      name: "Random Series A",
+      points: pointsA
+    }, {
+      color: "green",
+      name: "Random Series B",
+      points: pointsB
+    }]
+  });
 }
 
 const setData = (state: IHpTimeSeriesChartState, action: Action<IExternalSourceTimeSeries[]>): IHpTimeSeriesChartState => {
@@ -139,8 +129,8 @@ const setData = (state: IHpTimeSeriesChartState, action: Action<IExternalSourceT
       action.payload, 
       (el: IExternalSourceTimeSeries) => <ITimeSeries> {
         color: el.color,
-        unixFrom: _.isEmpty(el.points) ? 0 : _.first(el.points).unix,
-        unixTo: _.isEmpty(el.points) ? 0 : _.last(el.points).unix,
+        unixFrom: _.isEmpty(el.points) ? Number.MAX_VALUE : _.first(el.points).unix,
+        unixTo: _.isEmpty(el.points) ? Number.MIN_VALUE : _.last(el.points).unix,
         points: el.points,
         name: el.name,
         unixToIndexMap: unixIndexMapCalculations.createUnixToIndexMap(el.points)
