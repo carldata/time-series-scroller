@@ -14,8 +14,8 @@
   },
   "author": "Sharp Coding <sharp.coding@gmail.com>",
   "license": "MIT",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./lib/out/index.js",
+  "types": "./lib/out/index.d.ts",
   "jest": {
     "moduleFileExtensions": [
       "ts",
