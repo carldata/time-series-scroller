@@ -8,7 +8,7 @@ import { EnumZoomSelected } from '../state/enums';
 import { IHpTimeSeriesChartState } from '../state';
 import { IChartTimeSeriesBuckets, ITimeSeriesBucket } from './interfaces';
 import { csvLoadingCalculations } from '../csv-loading/calculations';
-import { UNIX_TO_INDEX_MAP_PRECISION } from '../state/settings';
+import { unixIndexMapCalculations } from './unix-index-map';
 
 const debug = true;
 
@@ -38,17 +38,6 @@ const getBucketOutside = (allData: IUnixTimePoint[],
     } : null;
 }
 
-const getBucketForTime = (unix: number,
-                          filterFrom: number,
-                          bucketLengthUnix: number): ITimeSeriesBucket => 
-{
-  let bucketIndex = _.floor((unix - filterFrom) / bucketLengthUnix);
-  return <ITimeSeriesBucket> {
-    unixFrom: filterFrom + bucketIndex * bucketLengthUnix,
-    unixTo: filterFrom + (bucketIndex+1) * bucketLengthUnix
-  }
-}
-
 const getTimeSeriesBuckets = (allData: IUnixTimePoint[],
                               unixToIndexMap: Map<number, number>,
                               numberOfBuckets: number,
@@ -64,7 +53,7 @@ const getTimeSeriesBuckets = (allData: IUnixTimePoint[],
   filterFrom = _.isNumber(filterFrom) ? filterFrom : _.first(allData).unix;
   filterTo = _.isNumber(filterTo) ? filterTo : _.last(allData).unix;
   let bucketLengthUnix = (filterTo - filterFrom) / numberOfBuckets;
-  let indexFrom = findIndexToBrowsePointsFrom(allData, unixToIndexMap, filterFrom);
+  let indexFrom = unixIndexMapCalculations.findIndexToBrowsePointsFrom(allData, unixToIndexMap, filterFrom);
   let buckets: ITimeSeriesBucket[] = [];
   let referenceBucket: ITimeSeriesBucket = null;
   for (let i = indexFrom; i < allData.length; i++) {
@@ -96,17 +85,6 @@ const getTimeSeriesBuckets = (allData: IUnixTimePoint[],
   };
 }
 
-const findIndexToBrowsePointsFrom = (allData: IUnixTimePoint[],
-                                    unixToIndexMap: Map<number, number>,
-                                    filterFrom: number): number => {
-  let result = 0;
-  let optimizationMapBucketLengthUnix = (_.last(allData).unix - _.first(allData).unix) / UNIX_TO_INDEX_MAP_PRECISION;
-  let bucket = hpTimeSeriesChartCalculations.getBucketForTime(filterFrom,
-                                                              _.first(allData).unix,
-                                                              optimizationMapBucketLengthUnix);
-  return unixToIndexMap.get(bucket.unixFrom);
-}
-
 /**
  * Converts ITimeSeries object to IChartTimeSeries object.
  * ITimeSeries is as model-adopted representation of time series.
@@ -125,33 +103,7 @@ const getTimeSeriesChartBuckets = (series: ITimeSeries,
   };
 }
 
-const findFirstIndexMeetingUnixFrom = (allPoints: IUnixTimePoint[], unixFrom: number, lastIndex: number): number => {
-  for (let i=lastIndex; i < allPoints.length-1; i++) {
-    if (allPoints[i].unix >= unixFrom)
-      return i;
-  }
-  return 0;
-}
-
-const createUnixToIndexMap = (allPoints: IUnixTimePoint[]): Map<number, number> => {
-  let result: Map<number, number> = new Map();
-  if (allPoints.length == 0)
-    return result;
-  let bucketLengthUnix = ((_.last(allPoints).unix - _.first(allPoints).unix) / UNIX_TO_INDEX_MAP_PRECISION);
-  let firstUnixFrom = _.first(allPoints).unix;
-  let indexOfElement = 0;
-  for (let i=0; i < UNIX_TO_INDEX_MAP_PRECISION; i++) {
-    let unixFrom = firstUnixFrom + i*bucketLengthUnix;
-    let unixTo = firstUnixFrom + (i+1)*bucketLengthUnix;
-    indexOfElement = findFirstIndexMeetingUnixFrom(allPoints, unixFrom, indexOfElement);
-    result.set(unixFrom, indexOfElement);
-  }
-  return result;
-}
-
 export const hpTimeSeriesChartCalculations = {
   getTimeSeriesBuckets,
-  getTimeSeriesChartBuckets,
-  getBucketForTime,
-  createUnixToIndexMap,
+  getTimeSeriesChartBuckets
 }

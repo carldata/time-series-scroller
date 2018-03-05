@@ -5,8 +5,6 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { Action } from 'redux-actions';
-import * as collections from 'typescript-collections';
-import { Dictionary } from 'typescript-collections';
 
 import { hpTimeSeriesChartCalculations as c } from './calculations';
 import { IHpTimeSeriesChartState } from './state';
@@ -15,6 +13,7 @@ import { IUnixTimePoint } from './state/unix-time-point';
 import { EnumZoomSelected } from './state/enums';
 import { ITimeSeries } from './state/time-series';
 import { hpTimeSeriesChartCalculations } from '../index';
+import { unixIndexMapCalculations } from './calculations/unix-index-map';
 
 const SAMPLE_VALUE_MAX = 150;
 const SECONDS_PER_SAMPLE = 60;
@@ -115,7 +114,7 @@ const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[
       unixTo: dateRangeDateTo.getTime(),
       name: "random series",
       points: points,
-      unixToIndexMap: hpTimeSeriesChartCalculations.createUnixToIndexMap(points)
+      unixToIndexMap: unixIndexMapCalculations.createUnixToIndexMap(points)
     }],
     chartZoomSettings: {
       zoomSelected: EnumZoomSelected.NoZoom,

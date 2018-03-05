@@ -1,12 +1,11 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { handleActions, Action } from 'redux-actions';
-import { hpTimeSeriesChartCalculations } from '../calculations';
+import { unixIndexMapCalculations } from '../calculations/unix-index-map';
 import { csvLoadingCalculations as csvCalculations, EnumRawCsvFormat, IExtractUnixTimePointsConfig } from './calculations';
 import { IHpTimeSeriesChartState } from '../state/index';
 import { IUnixTimePoint } from '../state/unix-time-point';
 import { ITimeSeries } from '../state/time-series';
-import { isExtraneousPopstateEvent } from 'history/DOMUtils';
 
 export const csvLoadingAuxiliary = {
     /**
@@ -37,7 +36,7 @@ export const csvLoadingAuxiliary = {
       unixTo: _.last(points).unix
     }
 
-    timeSeries.unixToIndexMap = hpTimeSeriesChartCalculations.createUnixToIndexMap(timeSeries.points);
+    timeSeries.unixToIndexMap = unixIndexMapCalculations.createUnixToIndexMap(timeSeries.points);
 
     let chartState = _.extend({}, state, <IHpTimeSeriesChartState> {
       series: [timeSeries]

@@ -1,8 +1,15 @@
 .git
-__tests__
+/.vscode
+/__tests__
+/dist
 /node_modules/
+/node_modules_mods/
 /src/
 /build/__tests__/
-webpack.config.json
+npm-publish-win.bat
 jest-preprocessor.js
+package-lock.json
 tsconfig.json
+tsconfig.json
+webpack.config.json
+gruntfile.js

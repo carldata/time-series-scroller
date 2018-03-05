@@ -5,8 +5,6 @@ import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { createAction, Action } from 'redux-actions';
 import { Dispatch } from 'redux';
-import * as collections from 'typescript-collections';
-import { Dictionary } from 'typescript-collections';
 import { EnumZoomSelected } from './state/enums';
 
 export const hpTimeSeriesChartActionTypes = {

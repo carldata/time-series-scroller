@@ -6,7 +6,11 @@
     "sourceMap": true,
     "outDir": "dist",
     "noImplicitAny": false,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "lib": [
+      "es2017",
+      "dom"
+    ]
   },
   "exclude": [
     "dist",

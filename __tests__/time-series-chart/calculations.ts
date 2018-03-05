@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { IUnixTimePoint } from '../../src/hp-time-series-chart/state/unix-time-point';
 import { csvLoadingCalculations } from '../../src/hp-time-series-chart/csv-loading/calculations';
+import { unixIndexMapCalculations } from '../../src/hp-time-series-chart/calculations/unix-index-map';
 
 describe("time-series-chart calculations test", () => {
   const convertToDateTimePointArray = (start: Date, deltas: number[]): IUnixTimePoint[] => {
@@ -29,15 +30,14 @@ describe("time-series-chart calculations test", () => {
     let distribution = [1, 2, 5, 10, 15, 30, 60][_.random(0, 6)];
     let numberOfBuckets = _.random(100, 2000);
     let series = regularSeries(hours, distribution);
-    let map = hpTimeSeriesChartCalculations.createUnixToIndexMap(series);
+    let map = unixIndexMapCalculations.createUnixToIndexMap(series);
     let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(series, map, numberOfBuckets);
-    console.log(`Running with hours: ${hours}, distribution: ${distribution}, numberOfBuckets: ${numberOfBuckets}`);
     expect(result.buckets.length).toBeGreaterThan(0);
     expect(result.buckets.length).toBeLessThanOrEqual(numberOfBuckets);
   });
 
   it('time series is transformed to no empty buckets', () => {
-    let map = hpTimeSeriesChartCalculations.createUnixToIndexMap(notEvenlyDistributedSeries);
+    let map = unixIndexMapCalculations.createUnixToIndexMap(notEvenlyDistributedSeries);
     let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(notEvenlyDistributedSeries, map, 4);
     expect(result.buckets.length).toBe(3);
   });
@@ -48,7 +48,7 @@ describe("time-series-chart calculations test", () => {
     const series = hpTimeSeriesChartReducerAuxFunctions.hourIsEvenDateTimePoints(startDate, dateFns.addMinutes(startDate, minutes));
     let numberOfBuckets = _.random(5, 20);
     let division = _.random(3, 12);
-    let map = hpTimeSeriesChartCalculations.createUnixToIndexMap(series);
+    let map = unixIndexMapCalculations.createUnixToIndexMap(series);
     let buckets = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(series, 
                                                                      map, 
                                                                      numberOfBuckets,
@@ -66,7 +66,7 @@ describe("time-series-chart calculations test", () => {
   it('not-evenly distributed series gets transformed to buckets under specific filter conditions - test A', () => {
     let from = dateFns.addMinutes(new Date(2016, 0, 15), 25).getTime();
     let to = dateFns.addMinutes(new Date(2016, 0, 15), 35).getTime();
-    let map = hpTimeSeriesChartCalculations.createUnixToIndexMap(notEvenlyDistributedSeries);
+    let map = unixIndexMapCalculations.createUnixToIndexMap(notEvenlyDistributedSeries);
     let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(notEvenlyDistributedSeries, map, 5, from, to);
     expect(result.buckets.length).toBe(2);
     expect(_.sumBy(result.buckets, b => b.numberOfSamples)).toBe(5);
@@ -81,7 +81,7 @@ describe("time-series-chart calculations test", () => {
   it('not-evenly distributed series gets transformed to buckets under specific filter conditions - test B', () => {
     let from = dateFns.addMinutes(new Date(2016, 0, 15), 25).getTime();
     let to = dateFns.addMinutes(new Date(2016, 0, 15), 35).getTime();
-    let map = hpTimeSeriesChartCalculations.createUnixToIndexMap(notEvenlyDistributedSeries);
+    let map = unixIndexMapCalculations.createUnixToIndexMap(notEvenlyDistributedSeries);
     let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(notEvenlyDistributedSeries, map, 5, from, to);
     expect(result.shadowPreceding.unixFrom).toBe(1452813900000);
     expect(result.shadowPreceding.unixTo).toBe(1452813900000);
@@ -92,7 +92,7 @@ describe("time-series-chart calculations test", () => {
   it('not-evenly distributed series has no buckets but shadow buckets get found', () => {
     let from = dateFns.addMinutes(new Date(2016, 0, 15), 15).getTime();
     let to = dateFns.addMinutes(new Date(2016, 0, 15), 28).getTime();
-    let map = hpTimeSeriesChartCalculations.createUnixToIndexMap(notEvenlyDistributedSeries);
+    let map = unixIndexMapCalculations.createUnixToIndexMap(notEvenlyDistributedSeries);
     let result = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(notEvenlyDistributedSeries, map, 5, from, to);
     expect(result.shadowPreceding).not.toBe(null);
     expect(result.shadowSucceeding).not.toBe(null);
