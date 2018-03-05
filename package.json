@@ -1,6 +1,6 @@
 {
   "name": "time-series-scroller",
-  "version": "0.5.18",
+  "version": "0.5.20",
   "description": "High-performant TypeScript components for displaying time-series",
   "repository": {
     "type": "git"

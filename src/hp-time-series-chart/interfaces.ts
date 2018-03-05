@@ -13,3 +13,12 @@ export interface IChartTimeSeries {
   color: string;
   buckets: IChartTimeSeriesBuckets;
 }
+
+/**
+ * Time series as loaded from external source
+ */
+export interface IExternalSourceTimeSeries {
+  name: string;
+  color: string;
+  points: IUnixTimePoint[];
+}

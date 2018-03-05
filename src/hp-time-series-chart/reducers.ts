@@ -14,6 +14,7 @@ import { EnumZoomSelected } from './state/enums';
 import { ITimeSeries } from './state/time-series';
 import { hpTimeSeriesChartCalculations } from '../index';
 import { unixIndexMapCalculations } from './calculations/unix-index-map';
+import { IExternalSourceTimeSeries } from './interfaces';
 
 const SAMPLE_VALUE_MAX = 150;
 const SECONDS_PER_SAMPLE = 60;
@@ -132,6 +133,44 @@ const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[
   }
 }
 
+const setData = (state: IHpTimeSeriesChartState, action: Action<IExternalSourceTimeSeries[]>): IHpTimeSeriesChartState => {
+  const stateWithSeries = <IHpTimeSeriesChartState> {
+    series: _.map<IExternalSourceTimeSeries, ITimeSeries>(
+      action.payload, 
+      (el: IExternalSourceTimeSeries) => <ITimeSeries> {
+        color: el.color,
+        unixFrom: _.isEmpty(el.points) ? 0 : _.first(el.points).unix,
+        unixTo: _.isEmpty(el.points) ? 0 : _.last(el.points).unix,
+        points: el.points,
+        name: el.name,
+        unixToIndexMap: unixIndexMapCalculations.createUnixToIndexMap(el.points)
+      })
+  };
+  const allValues: number[] = _.reduceRight<ITimeSeries, number[]>(stateWithSeries.series, 
+    (accumulator: number[], series: ITimeSeries) =>
+      _.concat(accumulator, _.map(series.points, el => el.value)), []);
+  const unixFrom = _.min(_.concat(_.map(stateWithSeries.series, el => el.unixFrom)));
+  const unixTo = _.max(_.concat(_.map(stateWithSeries.series, el => el.unixTo)));
+  const stateWithUnixFromTo = _.extend(stateWithSeries, <IHpTimeSeriesChartState>{
+    dateRangeUnixFrom: unixFrom,
+    dateRangeUnixTo: unixTo,
+    windowUnixFrom: unixFrom,
+    windowUnixTo: unixTo,
+    yMin: _.min(allValues),
+    yMax: _.max(allValues)
+  });
+  const stateWithChartSettings = <IHpTimeSeriesChartState> {
+    chartZoomSettings: {
+      zoomSelected: EnumZoomSelected.NoZoom,
+      zoomLevel1FramePointsUnixFrom: 0,
+      zoomLevel1FramePointsUnixTo: 0,
+      zoomLevel2FramePointsUnixFrom: 0,
+      zoomLevel2FramePointsUnixTo: 0
+    }
+  }
+  return _.extend(stateWithSeries, stateWithUnixFromTo, stateWithChartSettings);
+}
+
 const setZoom = (state: IHpTimeSeriesChartState, action: Action<EnumZoomSelected>): IHpTimeSeriesChartState => {
   let zoom = action.payload;
   let result = <IHpTimeSeriesChartState>{};
@@ -186,4 +225,5 @@ export const hpTimeSeriesChartReducerAuxFunctions = {
 export const hpTimeSeriesChartReducers = {
   generateRandomData,
   setZoom,
+  setData
 }
