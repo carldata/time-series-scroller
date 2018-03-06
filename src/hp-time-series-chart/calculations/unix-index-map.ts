@@ -51,7 +51,7 @@ const findIndexToBrowsePointsFrom = (allPoints: IUnixTimePoint[],
   let mapParameters = calculateMapParameters(allPoints);
   let unix =  mapParameters.unixFrom + _.floor((browseFromUnix - mapParameters.unixFrom)/
                                        mapParameters.bucketLengthUnix)*mapParameters.bucketLengthUnix;
-  return unixToIndexMap.get(unix);
+  return unixToIndexMap.get(unix) || 0;
 }
 
 const findFirstIndexMeetingUnixFrom = (allPoints: IUnixTimePoint[], unixFrom: number, lastIndex: number): number => {

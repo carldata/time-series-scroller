@@ -108,7 +108,7 @@ const getFrameDatesByZoomLevel = (settings: IChartZoomSettings): Date[] => {
 const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo] = action.payload;
   let pointsA: Array<IUnixTimePoint> = randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
-  let pointsB: Array<IUnixTimePoint> = [];//randomDateTimePoints(dateRangeDateFrom, dateRangeDateTo);
+  let pointsB: Array<IUnixTimePoint> = randomDateTimePoints(dateFns.addHours(dateRangeDateFrom, dateFns.differenceInHours(dateRangeDateFrom, dateRangeDateTo)/3), dateRangeDateTo);
   return setData(state, {
     type: null,
     payload: [{
