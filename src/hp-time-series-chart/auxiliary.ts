@@ -5,14 +5,18 @@ import { hpTimeSeriesChartActionTypes } from "../hp-time-series-chart/action-cre
 import { IExternalSourceTimeSeries } from "./state/time-series";
 import { hpTimeSeriesChartReducerAuxFunctions } from "./reducers-aux";
 
+const seriesContainsData = (series: IExternalSourceTimeSeries[]): boolean => 
+_.reduce(series, (acc, el) => acc || (el.points.length > 0), false)
+
+const buildStateFromExternalSource = (series: IExternalSourceTimeSeries[]): IHpTimeSeriesChartState => {
+return seriesContainsData(series) ? 
+  hpTimeSeriesChartReducers.setData(null, { 
+    type: hpTimeSeriesChartActionTypes.SET_DATA,
+    payload: series
+  }) : hpTimeSeriesChartReducerAuxFunctions.buildInitialState();
+}
+
 export const hpTimeSeriesChartAuxiliary = {
-  buildStateFromExternalSource: (series: IExternalSourceTimeSeries[]): IHpTimeSeriesChartState => {
-    return _.isEmpty(series) ? 
-      hpTimeSeriesChartReducerAuxFunctions.buildInitialState() : 
-      hpTimeSeriesChartReducers.setData(null, { 
-        type: hpTimeSeriesChartActionTypes.SET_DATA,
-        payload: series
-      });
-  }
+  buildStateFromExternalSource
 }
 

@@ -13,7 +13,7 @@ export interface IHpTimeSeriesScrollerWrapperProps {
 }
 
 /**
- * Component wraps HpTimeSeriesScroller providing the façade usage;
+ * Wraps HpTimeSeriesScroller providing the façade usage;
  * properties are simplified as much as possible to facilitate setting them "manually"
  * (without using/calling reducers).
  * It is the recommended way to use the HpTimeSeriesScroller without Redux.

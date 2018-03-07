@@ -3,7 +3,7 @@ import { IUnixTimePoint } from './unix-time-point';
 import { EnumTimeSeriesType } from './enums';
 import { IChartTimeSeriesBuckets } from '../calculations/interfaces';
 
-interface IBaseTimeSeries {
+export interface IBaseTimeSeries {
   /**
    * Keep in mind the name attribute is reused as the React element key
    */

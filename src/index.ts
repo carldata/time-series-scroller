@@ -13,6 +13,7 @@ import { HpTimeSeriesScrollerWrapper, IHpTimeSeriesScrollerWrapperProps } from '
 import { hpTimeSeriesChartAuxiliary } from './hp-time-series-chart/auxiliary';
 import { hpTimeSeriesChartReducerAuxFunctions } from './hp-time-series-chart/reducers-aux';
 import { IExternalSourceTimeSeries } from './hp-time-series-chart/state/time-series';
+import { EnumTimeSeriesType } from './hp-time-series-chart/state/enums';
 
 export {
   HpTimeSeriesScroller,
@@ -24,6 +25,7 @@ export {
   hpTimeSeriesChartReducerAuxFunctions,
   hpTimeSeriesChartReducers,
   IExternalSourceTimeSeries,
+  EnumTimeSeriesType,
   HpSlider,
   IHpSliderProps,
   IHpSliderState,
@@ -36,5 +38,5 @@ export {
   convertHpTimeSeriesChartScss,
   HpTimeSeriesScrollerWrapper,
   IHpTimeSeriesScrollerWrapperProps,
-  hpTimeSeriesChartAuxiliary
+  hpTimeSeriesChartAuxiliary,
 }
