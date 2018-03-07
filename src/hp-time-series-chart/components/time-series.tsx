@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 import { IUnixTimePoint } from '../state/unix-time-point';
-import { IChartTimeSeries } from '../interfaces';
+import { IOnScreenTimeSeries } from '../state/time-series';
 
 export interface ITimeSeriesProps {
   /**
@@ -15,7 +15,7 @@ export interface ITimeSeriesProps {
    */
   yScale: (value: number) => number;
   
-  chartTimeSeries: IChartTimeSeries[];
+  chartTimeSeries: IOnScreenTimeSeries[];
 }
 
 export interface ITimeSeriesState {
@@ -53,7 +53,7 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
     return result;
   }
   
-  private getSvgPath(chartTimeSeries: IChartTimeSeries): string {
+  private getSvgPath(chartTimeSeries: IOnScreenTimeSeries): string {
     let self = this;
 
     let line = d3.line()
@@ -67,7 +67,7 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
     return line(chartTimeSeries.buckets);
   }
 
-  private getSvgAreaPath(ts: IChartTimeSeries): string {
+  private getSvgAreaPath(ts: IOnScreenTimeSeries): string {
     let self = this;
 
     let area = d3.area()

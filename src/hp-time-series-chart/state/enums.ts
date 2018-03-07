@@ -3,3 +3,8 @@ export enum EnumZoomSelected {
   ZoomLevel1,
   ZoomLevel2
 }
+
+export enum EnumTimeSeriesType {
+  Line,
+  Dots
+}

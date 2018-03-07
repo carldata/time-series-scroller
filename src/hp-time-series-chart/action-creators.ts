@@ -6,12 +6,20 @@ import * as dateFns from 'date-fns';
 import { createAction, Action } from 'redux-actions';
 import { Dispatch } from 'redux';
 import { EnumZoomSelected } from './state/enums';
+import { IExternalSourceTimeSeries } from './state/time-series';
 
 export const hpTimeSeriesChartActionTypes = {
+  /**
+   * Used for test purposes only 
+   */
   GENERATE_RANDOM_DATA: 'GENERATE_RANDOM_DATA',
   SET_WINDOW_UNIX_FROM_TO: 'SET_WINDOW_UNIX_FROM_TO',
   SET_WINDOW_WIDTH_MINUTES: 'SET_WINDOW_WIDTH_MINUTES',
   SET_ZOOM: 'SET_ZOOM',
+  /**
+   * Action cast as datas source is set from external source 
+   */
+  SET_DATA: 'SET_DATA',
   SCROLL_TO_THE_NEXT_FRAME: 'SCROLL_TO_THE_NEXT_FRAME',
   SCROLL_TO_THE_PREVIOUS_FRAME: 'SCROLL_TO_THE_PREVIOUS_FRAME'
 };
@@ -26,6 +34,10 @@ export const hpTimeSeriesChartActionCreators = {
   generateRandomData: createAction<Date[], Date[]>(
     hpTimeSeriesChartActionTypes.GENERATE_RANDOM_DATA,
     (dates: Date[]) => dates
+  ),
+  setData: createAction<IExternalSourceTimeSeries[], IExternalSourceTimeSeries[]>(
+    hpTimeSeriesChartActionTypes.SET_DATA,
+    (series: IExternalSourceTimeSeries[]) => series
   ),
   setWindowUnixFromTo: createAction<number[], number, number>(
     hpTimeSeriesChartActionTypes.SET_WINDOW_UNIX_FROM_TO,

@@ -2,7 +2,6 @@ import { hpTimeSeriesChartCalculations } from '../calculations';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { IUnixTimePoint } from '../state/unix-time-point';
-import { ITimeSeries } from '../state/time-series';
 
 const debug = false;
 

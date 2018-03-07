@@ -1,7 +1,5 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
-import { IChartTimeSeries } from '../interfaces';
-import { ITimeSeries } from '../state/time-series';
 import { IUnixTimePoint } from '../state/unix-time-point';
 import { IChartZoomSettings } from '../state/chart-zoom-settings';
 import { EnumZoomSelected } from '../state/enums';
@@ -9,6 +7,7 @@ import { IHpTimeSeriesChartState } from '../state';
 import { IChartTimeSeriesBuckets, ITimeSeriesBucket } from './interfaces';
 import { csvLoadingCalculations } from '../csv-loading/calculations';
 import { unixIndexMapCalculations } from './unix-index-map';
+import { IHpTimeSeriesChartTimeSeries, IOnScreenTimeSeries } from '../state/time-series';
 
 const debug = true;
 
@@ -85,25 +84,20 @@ const getTimeSeriesBuckets = (allData: IUnixTimePoint[],
   };
 }
 
-/**
- * Converts ITimeSeries object to IChartTimeSeries object.
- * ITimeSeries is as model-adopted representation of time series.
- * ITimeSeriesChartBuckets is chart-adopted representation of time series, 
- * it has NOT such things like cache objects or the full timing of points.
- */
-const getTimeSeriesChartBuckets = (series: ITimeSeries,
-                                   unixFrom: number,
-                                   unixTo: number,
-                                   numberOfBuckets: number): IChartTimeSeries => {
-  let buckets = getTimeSeriesBuckets(series.points, series.unixToIndexMap, numberOfBuckets, unixFrom, unixTo);
-  return {
+const convertToOnScreenTimeSeries = (series: IHpTimeSeriesChartTimeSeries,
+                                     unixFrom: number,
+                                     unixTo: number,
+                                     numberOfBuckets: number): IOnScreenTimeSeries => {
+  return <IOnScreenTimeSeries> {
     name: series.name,
     color: series.color,
-    buckets: buckets
+    buckets: getTimeSeriesBuckets(series.points, series.unixToIndexMap, numberOfBuckets, unixFrom, unixTo),
+    type: series.type
   };
 }
 
+
 export const hpTimeSeriesChartCalculations = {
   getTimeSeriesBuckets,
-  getTimeSeriesChartBuckets
+  convertToOnScreenTimeSeries,
 }

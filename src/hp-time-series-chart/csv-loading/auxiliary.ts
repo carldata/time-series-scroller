@@ -5,10 +5,10 @@ import { unixIndexMapCalculations } from '../calculations/unix-index-map';
 import { csvLoadingCalculations as csvCalculations, EnumRawCsvFormat, IExtractUnixTimePointsConfig } from './calculations';
 import { IHpTimeSeriesChartState } from '../state/index';
 import { IUnixTimePoint } from '../state/unix-time-point';
-import { ITimeSeries } from '../state/time-series';
+import { IHpTimeSeriesChartTimeSeries } from '../state/time-series';
 
 export const csvLoadingAuxiliary = {
-    /**
+  /**
    * Returns a new, updated IChartState and ITimeSeries that was created and added to IChartState
    */
   startedLoadingCsvData: (state: IHpTimeSeriesChartState): IHpTimeSeriesChartState => {
@@ -16,15 +16,20 @@ export const csvLoadingAuxiliary = {
       series: []
     });
   },
+  
   /**
    * Returns a new, updated IChartState and ITimeSeries that was created and added to IChartState
    */
-  receivedCsvDataChunk: (state: IHpTimeSeriesChartState, appendRows: boolean, csvRows: Array<any>, csvExtractConfig: IExtractUnixTimePointsConfig): [IHpTimeSeriesChartState, ITimeSeries] => {
+  receivedCsvDataChunk: (state: IHpTimeSeriesChartState, 
+                         appendRows: boolean,
+                         csvRows: Array<any>, 
+                         csvExtractConfig: IExtractUnixTimePointsConfig): [IHpTimeSeriesChartState, IHpTimeSeriesChartTimeSeries] => 
+  {
     if (csvRows.length == 0)
       return [state, state.series.length > 0 ? _.first(state.series) : null];
     let points: Array<IUnixTimePoint> = csvCalculations.extractUnixTimePoints(csvRows, csvExtractConfig);
     
-    let timeSeries: ITimeSeries = <ITimeSeries>{
+    let timeSeries = <IHpTimeSeriesChartTimeSeries>{
       color: "steelblue",
       name: `csv_loaded_series_${state.series.length+1}`,
       points: appendRows ? 

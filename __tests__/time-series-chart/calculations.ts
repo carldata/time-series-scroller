@@ -1,10 +1,10 @@
-import { hpTimeSeriesChartReducerAuxFunctions } from '../../src/hp-time-series-chart/reducers';
 import { hpTimeSeriesChartCalculations } from '../../src/hp-time-series-chart/calculations';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { IUnixTimePoint } from '../../src/hp-time-series-chart/state/unix-time-point';
 import { csvLoadingCalculations } from '../../src/hp-time-series-chart/csv-loading/calculations';
 import { unixIndexMapCalculations } from '../../src/hp-time-series-chart/calculations/unix-index-map';
+import { hpTimeSeriesChartReducerAuxFunctions } from '../../src/hp-time-series-chart/reducers-aux';
 
 describe("time-series-chart calculations test", () => {
   const convertToDateTimePointArray = (start: Date, deltas: number[]): IUnixTimePoint[] => {
@@ -42,10 +42,10 @@ describe("time-series-chart calculations test", () => {
     expect(result.buckets.length).toBe(3);
   });
 
-  it('buckets are fed with proper data', () => {
+  it('square (hourly) wave', () => {
     let minutes = _.random(6*60, 12*60);
     const startDate = new Date(2016, 0, 1);
-    const series = hpTimeSeriesChartReducerAuxFunctions.hourIsEvenDateTimePoints(startDate, dateFns.addMinutes(startDate, minutes));
+    const series = hpTimeSeriesChartReducerAuxFunctions.squareWaveTimePoints(startDate, dateFns.addMinutes(startDate, minutes));
     let numberOfBuckets = _.random(5, 20);
     let division = _.random(3, 12);
     let map = unixIndexMapCalculations.createUnixToIndexMap(series);

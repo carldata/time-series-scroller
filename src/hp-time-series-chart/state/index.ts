@@ -1,6 +1,6 @@
 import { IUnixTimePoint } from './unix-time-point'
-import { ITimeSeries } from './time-series';
 import { IChartZoomSettings } from './chart-zoom-settings';
+import { IHpTimeSeriesChartTimeSeries } from './time-series';
 
 export interface IHpTimeSeriesChartState {
   /**
@@ -36,5 +36,5 @@ export interface IHpTimeSeriesChartState {
    * Series as displayed in component.
    * Currently there is support for only one !
    */
-  series: ITimeSeries[];
+  series: IHpTimeSeriesChartTimeSeries[];
 };

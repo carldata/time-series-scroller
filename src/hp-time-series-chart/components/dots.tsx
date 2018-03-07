@@ -3,7 +3,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 import { IUnixTimePoint } from '../state/unix-time-point';
-import { IChartTimeSeries } from '../interfaces';
 
 export interface IDotsProps {
   /**

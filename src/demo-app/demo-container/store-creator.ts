@@ -4,9 +4,10 @@ import { hpTimeSeriesChartActionTypes } from '../../hp-time-series-chart/action-
 import { csvLoadingAuxiliary } from '../../hp-time-series-chart/csv-loading/auxiliary';
 import { hpTimeSeriesCsvLoadingChartActionTypes } from '../../hp-time-series-chart/csv-loading/action-creators';
 import { Action, handleActions } from "redux-actions";
-import { hpTimeSeriesChartReducers, hpTimeSeriesChartReducerAuxFunctions } from "../../hp-time-series-chart/reducers";
+import { hpTimeSeriesChartReducers } from "../../hp-time-series-chart/reducers";
 import { IHpTimeSeriesChartState } from "../../hp-time-series-chart/state";
 import { EnumZoomSelected } from "../../hp-time-series-chart/state/enums";
+import { hpTimeSeriesChartReducerAuxFunctions } from '../../hp-time-series-chart/reducers-aux';
 
 export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
   [hpTimeSeriesChartActionTypes.GENERATE_RANDOM_DATA]: (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
