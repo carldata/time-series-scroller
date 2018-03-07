@@ -64,15 +64,12 @@ const randomContinousUnixTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo:
  * For testing purposes only
  */
 const randomIntermittentUnixTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IUnixTimePoint[] => {
-  let result = randomContinousUnixTimePoints(dateRangeDateFrom, dateRangeDateTo);
-  let nullHoleCounter = 0;
-  for (let p of result) {
-    if ((nullHoleCounter == 0) && (2 <= _.random(1, 11)))
-      nullHoleCounter = _.random(5, 20);
-    if (nullHoleCounter > 0) { 
-      p.value = null; 
-      nullHoleCounter-- 
-    }
+  let result = [];
+  let holeCounter = 0;
+  for (let p of  randomContinousUnixTimePoints(dateRangeDateFrom, dateRangeDateTo)) {
+    if ((holeCounter == 0) && (1 <= _.random(0, 11)))
+      holeCounter = _.random(5, 25);
+    (holeCounter > 0) ? holeCounter-- : result.push(p);
   }
   return result;
 };

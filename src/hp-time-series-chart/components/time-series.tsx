@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import * as d3 from 'd3';
 import { IUnixTimePoint } from '../state/unix-time-point';
 import { IOnScreenTimeSeries } from '../state/time-series';
+import { EnumTimeSeriesType } from '../state/enums';
 
 export interface ITimeSeriesProps {
   /**
@@ -52,20 +53,6 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
     });
     return result;
   }
-  
-  private getSvgPath(chartTimeSeries: IOnScreenTimeSeries): string {
-    let self = this;
-
-    let line = d3.line()
-      .x(function(d: ITimeSeriesBucket) { 
-        return self.props.xScale(d.date); 
-      })
-      .y(function(d: ITimeSeriesBucket) { 
-        return self.props.yScale(d.minY); 
-      });
-
-    return line(chartTimeSeries.buckets);
-  }
 
   private getSvgAreaPath(ts: IOnScreenTimeSeries): string {
     let self = this;
@@ -84,17 +71,84 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
     return area(this.transformBucketsToAreaTimeSeries(buckets));
   }
 
-  renderPaths() {
-    return _.map(this.props.chartTimeSeries, ts =>
-      (<path 
-        key={ts.name} 
-        d={this.getSvgAreaPath(ts)} 
-        fill={ts.color} 
-        stroke={ts.color} />)
-    );
+  renderSvgArea = (ts: IOnScreenTimeSeries): JSX.Element =>
+    (<path 
+      key={ts.name} 
+      d={this.getSvgAreaPath(ts)} 
+      fill={ts.color} 
+      stroke={ts.color} />);
+  
+  getCircleKey = (ts: IOnScreenTimeSeries, b: ITimeSeriesBucket, unix: number, y: number) => 
+    `${ts.name}|${b.unixFrom}|${b.unixTo}|${unix}|${y}`
+
+  getCircleRadius = (b: ITimeSeriesBucket) => {
+    return 2;
+  }
+  
+  renderSvgCircles = (ts: IOnScreenTimeSeries): JSX.Element[] => {
+    let result = [];
+    let bucketsToDisplay = _.filter(ts.buckets.buckets, (b: ITimeSeriesBucket) => 
+      _.isNumber(b.minY) && _.isNumber(b.maxY) && _.isNumber(b.leftboundY) && _.isNumber(b.rightboundY));
+    for (let b of bucketsToDisplay) {
+      let unixAvg = b.unixFrom+(b.unixTo-b.unixFrom)/2;
+      if (b.numberOfSamples == 1) {
+        result.push(<circle 
+          key={this.getCircleKey(ts, b, unixAvg, b.maxY)} 
+          cx={this.props.xScale(new Date(unixAvg))} 
+          cy={this.props.yScale(b.maxY)} 
+          fill={ts.color} 
+          r={this.getCircleRadius(b)} />);
+      }
+      if (b.numberOfSamples >= 2) {
+        result.push(<circle 
+          key={this.getCircleKey(ts, b, b.unixFrom, b.leftboundY)} 
+          cx={this.props.xScale(b.unixFrom)} 
+          cy={this.props.yScale(b.leftboundY)} 
+          fill={ts.color} 
+          r={this.getCircleRadius(b)} />);
+        if (b.rightboundY != b.leftboundY)
+          result.push(<circle 
+            key={this.getCircleKey(ts, b, b.unixTo, b.rightboundY)} 
+            cx={this.props.xScale(b.unixTo)} 
+            cy={this.props.yScale(b.rightboundY)} 
+            fill={ts.color} 
+            r={this.getCircleRadius(b)} />);
+      }
+      if (b.numberOfSamples > 2) {
+        result.push(<circle 
+          key={this.getCircleKey(ts, b, unixAvg, b.minY)} 
+          cx={this.props.xScale(unixAvg)} 
+          cy={this.props.yScale(b.minY)} 
+          fill={ts.color} 
+          r={this.getCircleRadius(b)} />);
+        if (b.maxY != b.minY) 
+          result.push(<circle 
+            key={this.getCircleKey(ts, b, unixAvg, b.maxY)} 
+            cx={this.props.xScale(unixAvg)} 
+            cy={this.props.yScale(b.maxY)} 
+            fill={ts.color} 
+            r={this.getCircleRadius(b)} />);
+      }
+    }
+    return result;
+  }
+
+  renderSvgPrimitives() {
+    let result = [];
+    _.each(this.props.chartTimeSeries, ts => {
+      switch (ts.type) {
+        case EnumTimeSeriesType.Line:
+          result.push(this.renderSvgArea(ts));
+          break;
+        case EnumTimeSeriesType.Dots:
+          result = _.concat(result, this.renderSvgCircles(ts));
+          break;
+      }
+    })
+    return result;
   }
 
   render() {
-    return (<g>{this.renderPaths()}</g>)
+    return (<g>{this.renderSvgPrimitives()}</g>)
   }
 }

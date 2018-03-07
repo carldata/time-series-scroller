@@ -6,6 +6,7 @@ import { csvLoadingCalculations as csvCalculations, EnumRawCsvFormat, IExtractUn
 import { IHpTimeSeriesChartState } from '../state/index';
 import { IUnixTimePoint } from '../state/unix-time-point';
 import { IHpTimeSeriesChartTimeSeries } from '../state/time-series';
+import { EnumTimeSeriesType } from '../state/enums';
 
 export const csvLoadingAuxiliary = {
   /**
@@ -38,7 +39,8 @@ export const csvLoadingAuxiliary = {
       unixFrom: appendRows ? 
         (state.series.length == 0 ? _.first(points).unix : _.first(state.series).unixFrom) :
         _.first(points).unix,
-      unixTo: _.last(points).unix
+      unixTo: _.last(points).unix,
+      type: EnumTimeSeriesType.Dots
     }
 
     timeSeries.unixToIndexMap = unixIndexMapCalculations.createUnixToIndexMap(timeSeries.points);

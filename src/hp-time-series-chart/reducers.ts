@@ -31,7 +31,7 @@ const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[
   return setData(state, {
     type: null,
     payload: [{
-      color: "red",
+      color: "orange",
       name: "Random Series A",
       points: pointsA,
       type: EnumTimeSeriesType.Line,
@@ -42,10 +42,10 @@ const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[
       type: EnumTimeSeriesType.Line
     },
     {
-      color: "orange",
+      color: "red",
       name: "Random Series C",
       points: pointsC,
-      type: EnumTimeSeriesType.Line
+      type: EnumTimeSeriesType.Dots
     }]
   });
 }
@@ -60,6 +60,7 @@ const setData = (state: IHpTimeSeriesChartState, action: Action<IExternalSourceT
         unixTo: _.isEmpty(el.points) ? Number.MIN_VALUE : _.last(el.points).unix,
         points: el.points,
         name: el.name,
+        type: el.type,
         unixToIndexMap: unixIndexMapCalculations.createUnixToIndexMap(el.points)
       })
   };
