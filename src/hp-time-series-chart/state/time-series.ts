@@ -5,7 +5,7 @@ import { IChartTimeSeriesBuckets } from '../calculations/interfaces';
 
 export interface IBaseTimeSeries {
   /**
-   * Keep in mind the name attribute is reused as the React element key
+   * Attribute is reused as the React element key
    */
   name: string;
   color: string;
@@ -34,7 +34,8 @@ export interface IHpTimeSeriesChartTimeSeries extends IExternalSourceTimeSeries 
   /**
    * Map introduced for optimization allowing us quckly find index of the 
    * first sample in points array for a given "bucket from" unix timestamp -
-   * this is bucketing over raw data to: 1) make "filter" operation much faster
+   * this is bucketing over raw data to: 
+   * 1) make "filter" operation much faster
    * 2) avoid creation of filtered array of the raw data. 
    */
   unixToIndexMap: Map<number, number>;  

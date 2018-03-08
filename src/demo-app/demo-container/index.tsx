@@ -168,4 +168,4 @@ const matchDispatchToProps = (dispatch: Dispatch<void>) => {
   }, dispatch);
 }
 
-export const RealTimeTesting = connect<IGraphScreenProps, IGraphScreenDispatchProps, {}>(mapStateToProps, matchDispatchToProps)(GraphScreenComponent)
+export const GraphScreen = connect<IGraphScreenProps, IGraphScreenDispatchProps, {}>(mapStateToProps, matchDispatchToProps)(GraphScreenComponent)

@@ -23,11 +23,11 @@ const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[
   let [dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo] = action.payload;
   let pointsA: Array<IUnixTimePoint> = auxFunctions.randomContinousUnixTimePoints(dateRangeDateFrom, dateRangeDateTo);
   let pointsB: Array<IUnixTimePoint> = auxFunctions.randomContinousUnixTimePoints(
-    dateFns.addHours(dateRangeDateFrom, dateFns.differenceInHours(dateRangeDateFrom, dateRangeDateTo)/3), 
-    dateRangeDateTo);
-  let pointsC: Array<IUnixTimePoint> = auxFunctions.randomIntermittentUnixTimePoints(
-    dateFns.addHours(dateRangeDateFrom, dateFns.differenceInHours(dateRangeDateFrom, dateRangeDateTo)/5), 
-    dateFns.addHours(dateRangeDateTo, -dateFns.differenceInHours(dateRangeDateFrom, dateRangeDateTo)/5));
+    dateFns.addHours(dateRangeDateFrom, dateFns.differenceInHours(dateRangeDateTo, dateRangeDateFrom)/3), 
+    dateFns.addHours(dateRangeDateTo, -dateFns.differenceInHours(dateRangeDateTo, dateRangeDateFrom)/3));
+  let pointsC: Array<IUnixTimePoint> = auxFunctions.randomContinousUnixTimePoints(
+    dateFns.addHours(dateRangeDateFrom, dateFns.differenceInHours(dateRangeDateTo, dateRangeDateFrom)/5), 
+    dateFns.addHours(dateRangeDateTo, -dateFns.differenceInHours(dateRangeDateTo, dateRangeDateFrom)/5));
   return setData(state, {
     type: null,
     payload: [{
@@ -39,13 +39,13 @@ const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[
       color: "green",
       name: "Random Series B",
       points: pointsB,
-      type: EnumTimeSeriesType.Line
+      type: EnumTimeSeriesType.Dots
     },
     {
       color: "red",
       name: "Random Series C",
       points: pointsC,
-      type: EnumTimeSeriesType.Dots
+      type: EnumTimeSeriesType.DottedLine
     }]
   });
 }

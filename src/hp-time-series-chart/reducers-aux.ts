@@ -35,7 +35,7 @@ const buildInitialState = ():IHpTimeSeriesChartState => {
 }
 
 /**
- * For testing purposes only
+ * For testing only
  */
 const randomContinousUnixTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IUnixTimePoint[] => {
   let referenceDate = new Date(dateRangeDateFrom.getTime());
@@ -61,7 +61,7 @@ const randomContinousUnixTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo:
 };
 
 /**
- * For testing purposes only
+ * For testing only
  */
 const randomIntermittentUnixTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IUnixTimePoint[] => {
   let result = [];
@@ -75,7 +75,7 @@ const randomIntermittentUnixTimePoints = (dateRangeDateFrom: Date, dateRangeDate
 };
 
 /**
- * For testing purposes only
+ * For testing only
  */
 const squareWaveTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IUnixTimePoint[] => {
   let referenceDate = new Date(dateRangeDateFrom.getTime());

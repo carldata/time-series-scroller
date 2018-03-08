@@ -64,7 +64,6 @@ const findFirstIndexMeetingUnixFrom = (allPoints: IUnixTimePoint[], unixFrom: nu
 
 /**
  * Creates a Map used for browse/scroll speed optimizations
- * @param allPoints 
  */
 const createUnixToIndexMap = (allPoints: IUnixTimePoint[]): Map<number, number> => {
   let result: Map<number, number> = new Map();

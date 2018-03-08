@@ -7,7 +7,7 @@ import { HashRouter, Route } from 'react-router-dom';
 import { Store, createStore, compose, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import { HpTimeSeriesChart } from '../hp-time-series-chart';
-import { RealTimeTesting } from './demo-container';
+import { GraphScreen } from './demo-container';
 import { storeCreator } from './demo-container/store-creator';
 
 const combinedReducers = combineReducers({
@@ -21,7 +21,7 @@ const store: Store<any> = createStore(combinedReducers, composeEnhancers(), appl
 ReactDOM.render(
   <Provider store={store}>
     <div>
-      <RealTimeTesting />
+      <GraphScreen />
     </div>
   </Provider>,
   document.body.appendChild(document.createElement('div'))
