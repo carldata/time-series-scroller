@@ -5,6 +5,8 @@ import { ITimeSeriesBucket } from "../../calculations/interfaces";
 import { IOnScreenTimeSeries } from "../../state/time-series";
 import { ITimeSeriesRendererContext } from '.';
 
+const getTimeSeriesKey = (ctx: ITimeSeriesRendererContext) => `Dot-Time-Series|${ctx.ts.name}`
+
 const getCircleKey = (ts: IOnScreenTimeSeries, b: ITimeSeriesBucket, unix: number, y: number) => 
   `${ts.name}|${b.unixFrom}|${b.unixTo}|${unix}|${y}`
 
@@ -14,9 +16,7 @@ const getCircleRadius = (b: ITimeSeriesBucket) => {
 
 const renderSvgCircles = (ctx: ITimeSeriesRendererContext): JSX.Element[] => {
   let result = [];
-  let bucketsToDisplay = _.filter(ctx.ts.buckets.buckets, (b: ITimeSeriesBucket) => 
-    _.isNumber(b.minY) && _.isNumber(b.maxY) && _.isNumber(b.leftboundY) && _.isNumber(b.rightboundY));
-  for (let b of bucketsToDisplay) {
+  for (let b of ctx.ts.buckets.buckets) {
     let unixAvg = b.unixFrom+(b.unixTo-b.unixFrom)/2;
     if (b.numberOfSamples == 1) {
       result.push(<circle 
@@ -61,4 +61,4 @@ const renderSvgCircles = (ctx: ITimeSeriesRendererContext): JSX.Element[] => {
 }
 
 export const renderDotTimeSeries = (ctx: ITimeSeriesRendererContext): JSX.Element =>
-  <g key={ctx.ts.name}>{renderSvgCircles(ctx)}</g>;
+  <g key={getTimeSeriesKey(ctx)}>{renderSvgCircles(ctx)}</g>;

@@ -6,5 +6,6 @@ export enum EnumZoomSelected {
 
 export enum EnumTimeSeriesType {
   Line,
-  Dots
+  Dots,
+  DottedLine
 }

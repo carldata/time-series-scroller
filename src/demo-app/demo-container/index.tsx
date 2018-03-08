@@ -115,9 +115,9 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                       onClick={() => {
                         let date = new Date();
                         this.props.generateRandomData([date, 
-                                                      dateFns.addMonths(date, 6), 
+                                                      dateFns.addMonths(date, 1), 
                                                       date, 
-                                                      dateFns.addMonths(date, 6)]);
+                                                      dateFns.addMonths(date, 1)]);
                       }}>
                       Generate 1M
                     </Button>

@@ -67,8 +67,8 @@ const randomIntermittentUnixTimePoints = (dateRangeDateFrom: Date, dateRangeDate
   let result = [];
   let holeCounter = 0;
   for (let p of  randomContinousUnixTimePoints(dateRangeDateFrom, dateRangeDateTo)) {
-    if ((holeCounter == 0) && (1 <= _.random(0, 11)))
-      holeCounter = _.random(5, 25);
+    if ((holeCounter == 0) && (2 <= _.random(0, 10)))
+      holeCounter = _.random(2, 8);
     (holeCounter > 0) ? holeCounter-- : result.push(p);
   }
   return result;

@@ -22,10 +22,10 @@ import { IExternalSourceTimeSeries, IHpTimeSeriesChartTimeSeries } from './state
 const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo] = action.payload;
   let pointsA: Array<IUnixTimePoint> = auxFunctions.randomContinousUnixTimePoints(dateRangeDateFrom, dateRangeDateTo);
-  let pointsB: Array<IUnixTimePoint> = auxFunctions.randomContinousUnixTimePoints(
+  let pointsB: Array<IUnixTimePoint> = auxFunctions.randomIntermittentUnixTimePoints(
     dateFns.addHours(dateRangeDateFrom, dateFns.differenceInHours(dateRangeDateTo, dateRangeDateFrom)/3), 
     dateFns.addHours(dateRangeDateTo, -dateFns.differenceInHours(dateRangeDateTo, dateRangeDateFrom)/3));
-  let pointsC: Array<IUnixTimePoint> = auxFunctions.randomContinousUnixTimePoints(
+  let pointsC: Array<IUnixTimePoint> = auxFunctions.randomIntermittentUnixTimePoints(
     dateFns.addHours(dateRangeDateFrom, dateFns.differenceInHours(dateRangeDateTo, dateRangeDateFrom)/5), 
     dateFns.addHours(dateRangeDateTo, -dateFns.differenceInHours(dateRangeDateTo, dateRangeDateFrom)/5));
   return setData(state, {

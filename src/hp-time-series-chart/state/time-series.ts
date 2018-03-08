@@ -8,6 +8,12 @@ export interface IBaseTimeSeries {
    * Attribute is reused as the React element key
    */
   name: string;
+  /** 
+   * Holds identifier for a time series that is not continous
+   * and consist of different segments (line is not continous)
+   * Attribute is reused as the React element key
+   */
+  segmentId?: number;
   color: string;
   type: EnumTimeSeriesType;
 }

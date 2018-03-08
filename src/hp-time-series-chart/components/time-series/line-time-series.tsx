@@ -11,6 +11,8 @@ interface IAreaTimePoint {
   y1: number;
 }
 
+const getTimeSeriesKey = (ctx: ITimeSeriesRendererContext) => `Line-Time-Series|${ctx.ts.name}`
+
 const transformBucketsToAreaTimeSeries = (buckets: ITimeSeriesBucket[]): IAreaTimePoint[] => {
   let result: IAreaTimePoint[] = [];
   _.each(buckets, (b: ITimeSeriesBucket) => {
@@ -50,7 +52,7 @@ const getSvgAreaPath = (ctx: ITimeSeriesRendererContext): string => {
 
 export const renderLineTimeSeries = (ctx: ITimeSeriesRendererContext): JSX.Element =>
   (<path 
-    key={ctx.ts.name} 
+    key={getTimeSeriesKey(ctx)}
     d={getSvgAreaPath(ctx)} 
     fill={ctx.ts.color} 
     stroke={ctx.ts.color} />);
