@@ -56,12 +56,6 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
         props.scss.paddingTopPx]);
   };
 
-  let onScreenTimeSeriesCollection: IOnScreenTimeSeries[] = _.map(props.state.series, ts => 
-    hpTimeSeriesChartCalculations.convertToOnScreenTimeSeries(ts,
-                                                              props.state.windowUnixFrom,
-                                                              props.state.windowUnixTo,
-                                                              props.scss.widthPx));
-  
   let xScale = getXScale();
   let yScale = getYScale();
   return (
@@ -72,7 +66,10 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
       <TimeSeries 
         xScale={xScale} 
         yScale={yScale}
-        chartTimeSeries={onScreenTimeSeriesCollection}
+        chartTimeSeries={hpTimeSeriesChartCalculations.convertToOnScreenTimeSeries(props.state.series,
+                                                                                   props.state.windowUnixFrom,
+                                                                                   props.state.windowUnixTo,
+                                                                                   props.scss.widthPx)}
       />
       {displayAxis() && <DateTimeAxis xScale={xScale} scss={props.scss} />}
       {displayAxis() && <ValueAxis yScale={yScale} scss={props.scss} />}

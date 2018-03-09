@@ -8,12 +8,6 @@ export interface IBaseTimeSeries {
    * Attribute is reused as the React element key
    */
   name: string;
-  /** 
-   * Holds identifier for a time series that is not continous
-   * and consist of different segments (line is not continous)
-   * Attribute is reused as the React element key
-   */
-  segmentId?: number;
   color: string;
   type: EnumTimeSeriesType;
 }
@@ -22,6 +16,12 @@ export interface IBaseTimeSeries {
  * Defines all the aspects required for displaying time series on screen.
  */
 export interface IOnScreenTimeSeries extends IBaseTimeSeries {
+  /** 
+   * Identifier that is used in React key - it makes possible to display 
+   * sematically the same time series that consists of different fragments -
+   * as a matter of fact each fragment (on screen) is a different time series
+   */
+  fragmentId: number;
   buckets: IChartTimeSeriesBuckets;
 }
 

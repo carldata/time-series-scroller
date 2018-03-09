@@ -32,18 +32,18 @@ const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[
     type: null,
     payload: [{
       color: "orange",
-      name: "Random Series A",
+      name: "Random Series",
       points: pointsA,
       type: EnumTimeSeriesType.Line,
     }, {
       color: "green",
-      name: "Random Series B",
+      name: "Random Series",
       points: pointsB,
       type: EnumTimeSeriesType.Dots
     },
     {
       color: "red",
-      name: "Random Series C",
+      name: "Random Series",
       points: pointsC,
       type: EnumTimeSeriesType.DottedLine
     }]

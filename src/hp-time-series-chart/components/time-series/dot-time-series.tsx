@@ -5,10 +5,11 @@ import { ITimeSeriesBucket } from "../../calculations/interfaces";
 import { IOnScreenTimeSeries } from "../../state/time-series";
 import { ITimeSeriesRendererContext } from '.';
 
-const getTimeSeriesKey = (ctx: ITimeSeriesRendererContext) => `Dot-Time-Series|${ctx.ts.name}`
+// Dot-Time-Series prefix in key name must stay here, since DottedLine type of series draws two types of chart one one another
+const getTimeSeriesKey = (ctx: ITimeSeriesRendererContext) => `Dot-Time-Series|${ctx.ts.name}|${ctx.ts.fragmentId}`
 
 const getCircleKey = (ts: IOnScreenTimeSeries, b: ITimeSeriesBucket, unix: number, y: number) => 
-  `${ts.name}|${b.unixFrom}|${b.unixTo}|${unix}|${y}`
+  `${ts.name}|${ts.fragmentId}|${b.unixFrom}|${b.unixTo}|${unix}|${y}`
 
 const getCircleRadius = (b: ITimeSeriesBucket) => {
   return 2;

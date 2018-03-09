@@ -84,16 +84,22 @@ const getTimeSeriesBuckets = (allData: IUnixTimePoint[],
   };
 }
 
-const convertToOnScreenTimeSeries = (series: IHpTimeSeriesChartTimeSeries,
+const convertToOnScreenTimeSeries = (series: IHpTimeSeriesChartTimeSeries[],
                                      unixFrom: number,
                                      unixTo: number,
-                                     numberOfBuckets: number): IOnScreenTimeSeries => {
-  return <IOnScreenTimeSeries> {
-    name: series.name,
-    color: series.color,
-    buckets: getTimeSeriesBuckets(series.points, series.unixToIndexMap, numberOfBuckets, unixFrom, unixTo),
-    type: series.type
-  };
+                                     numberOfBuckets: number): IOnScreenTimeSeries[] => {
+  let grouped: IHpTimeSeriesChartTimeSeries[][] = _.toArray(_.groupBy(series, (ts: IHpTimeSeriesChartTimeSeries)  => ts.name));
+  return _.reduce(grouped, (acc: IOnScreenTimeSeries[], col: IHpTimeSeriesChartTimeSeries[]) => {
+    return _.concat(acc, _.map<IHpTimeSeriesChartTimeSeries, IOnScreenTimeSeries>(col, ts => 
+      <IOnScreenTimeSeries> {
+        name: ts.name,
+        fragmentId: _.indexOf(col, ts),
+        color: ts.color,
+        buckets: getTimeSeriesBuckets(ts.points, ts.unixToIndexMap, numberOfBuckets, unixFrom, unixTo),
+        type: ts.type
+      }
+    ))
+  }, []);
 }
 
 

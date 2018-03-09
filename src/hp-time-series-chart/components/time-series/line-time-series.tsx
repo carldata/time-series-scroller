@@ -11,7 +11,8 @@ interface IAreaTimePoint {
   y1: number;
 }
 
-const getTimeSeriesKey = (ctx: ITimeSeriesRendererContext) => `Line-Time-Series|${ctx.ts.name}`
+// Line-Time-Series prefix in key name must stay here, since DottedLine type of series draws two types of chart one one another
+const getTimeSeriesKey = (ctx: ITimeSeriesRendererContext) => `Line-Time-Series|${ctx.ts.name}|${ctx.ts.fragmentId}`
 
 const transformBucketsToAreaTimeSeries = (buckets: ITimeSeriesBucket[]): IAreaTimePoint[] => {
   let result: IAreaTimePoint[] = [];
