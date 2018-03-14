@@ -47,11 +47,11 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
           result.push(renderLineTimeSeries(ctx));
           break;
         case EnumTimeSeriesType.Dots:
-          result.push(renderDotTimeSeries(ctx));
+          result.push(renderDotTimeSeries(ctx, 2));
           break;
         case EnumTimeSeriesType.DottedLine:
           result.push(renderLineTimeSeries(ctx));
-          result.push(renderDotTimeSeries(ctx));
+          result.push(renderDotTimeSeries(ctx, 2));
           break;
       }
     })

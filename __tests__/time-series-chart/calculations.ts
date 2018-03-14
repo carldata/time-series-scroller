@@ -73,8 +73,8 @@ describe("time-series-chart calculations test", () => {
     for (let bucket of result.buckets) {
       expect(bucket.minY).not.toBe(undefined);
       expect(bucket.maxY).not.toBe(undefined); 
-      expect(bucket.leftboundY).not.toBe(undefined); 
-      expect(bucket.rightboundY).not.toBe(undefined); 
+      expect(bucket.firstSample).not.toBe(undefined); 
+      expect(bucket.lastSample).not.toBe(undefined); 
     }
   });
 

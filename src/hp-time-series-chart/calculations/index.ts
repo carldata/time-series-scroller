@@ -30,10 +30,8 @@ const getBucketOutside = (allData: IUnixTimePoint[],
       maxY: sample.value,
       date: new Date(sample.unix),
       numberOfSamples: 1,
-      leftboundY: sample.value,
-      rightboundY: sample.value,
-      sourceUnixFrom: sample.unix,
-      sourceUnixTo: sample.unix,
+      firstSample: sample,
+      lastSample: sample,
       unixFrom: browseDirection == EnumBrowseDirection.Backward ? filterFrom : filterTo,
       unixTo: browseDirection == EnumBrowseDirection.Backward ? filterFrom : filterTo
     } : null;
@@ -67,24 +65,24 @@ const getTimeSeriesBuckets = (allData: IUnixTimePoint[],
       referenceBucket = <ITimeSeriesBucket>{
         unixFrom: filterFrom + bucketIndex * bucketLengthUnix,
         unixTo: filterFrom + (bucketIndex + 1) * bucketLengthUnix,
+        firstSample: el,
+        lastSample: el,
         date: new Date(filterFrom + (bucketIndex + 0.5) * bucketLengthUnix),
         leftboundY: el.value,
         numberOfSamples: 0,
         minY: el.value,
         maxY: el.value,
-        sourceUnixFrom: el.unix,
       }
       buckets.push(referenceBucket);
     }
-    referenceBucket.rightboundY = el.value;
-    referenceBucket.sourceUnixTo = el.value;
+    referenceBucket.lastSample = el;
     referenceBucket.numberOfSamples++;
     referenceBucket.minY = el.value < referenceBucket.minY ? el.value : referenceBucket.minY;
     referenceBucket.maxY = el.value > referenceBucket.maxY ? el.value : referenceBucket.maxY;
   }
-  buckets = _.filter(buckets, b => b.unixFrom >= filterFrom && b.unixTo <= filterTo);
+  const filtered = _.filter(buckets, b => b.unixFrom >= filterFrom && b.unixTo <= filterTo);
   return {
-    buckets: buckets,
+    buckets: filtered,
     shadowPreceding: buckets.length > 0 && _.first(buckets).unixFrom <= filterFrom ? null : getBucketOutside(allData, EnumBrowseDirection.Backward, filterFrom, filterTo),
     shadowSucceeding: buckets.length > 0 && _.last(buckets).unixTo >= filterTo ? null : getBucketOutside(allData, EnumBrowseDirection.Forward, filterFrom, filterTo)
   };

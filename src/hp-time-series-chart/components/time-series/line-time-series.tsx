@@ -22,13 +22,14 @@ const transformBucketsToAreaTimeSeries = (buckets: ITimeSeriesBucket[]): IAreaTi
         result.push({ x: b.date, y0: b.minY, y1: b.minY });
         break;
       case 2:
-        result.push({ x: new Date(b.unixFrom), y0: b.leftboundY, y1: b.leftboundY });
-        result.push({ x: new Date(b.unixTo), y0: b.rightboundY, y1: b.rightboundY });
+        result.push({ x: new Date(b.firstSample.unix), y0: b.firstSample.value, y1: b.firstSample.value });
+        result.push({ x: new Date(b.lastSample.unix), y0: b.lastSample.value, y1: b.lastSample.value });
         break;
       default:
-        result.push({ x: new Date(b.unixFrom), y0: b.leftboundY, y1: b.leftboundY });
+        result.push({ x: new Date(b.firstSample.unix), y0: b.firstSample.value, y1: b.firstSample.value });
         result.push({ x: b.date, y0: b.minY, y1: b.maxY });
-        result.push({ x: new Date(b.unixTo), y0: b.rightboundY, y1: b.rightboundY });
+        result.push({ x: new Date(b.lastSample.unix), y0: b.lastSample.value, y1: b.lastSample.value });
+        break;
     }
   });
   return result;

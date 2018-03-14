@@ -58,6 +58,7 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
 
   let xScale = getXScale();
   let yScale = getYScale();
+
   return (
     <svg 
       style={getStyle()}

@@ -34,7 +34,7 @@ export interface IGraphScreenState {
 
 export interface IGraphScreenDispatchProps {
   setZoomWindowLevel: (level: EnumZoomSelected) => EnumZoomSelected,
-  generateThreeRandomSeries: (dateFrom: Date, dateTo: Date) => void,
+  generateTwoRandomSeries: (dateFrom: Date, dateTo: Date) => void,
   loadCsv: (url: string, useStreaming: boolean) => void,
   setWindowUnixFromTo: (unixFrom: number, unixTo: number) => void
 }
@@ -115,9 +115,9 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                       bsSize="xs" 
                       onClick={() => {
                         let date = new Date();
-                        this.props.generateThreeRandomSeries(date, dateFns.addDays(date, 2))
+                        this.props.generateTwoRandomSeries(date, dateFns.addDays(date, 1))
                       }}>
-                      Generate 1M
+                      Generate Random
                     </Button>
                   </ButtonGroup>
                 </FormGroup>
@@ -161,7 +161,7 @@ const matchDispatchToProps = (dispatch: Dispatch<void>) => {
   return bindActionCreators({
     setZoomWindowLevel: hpTimeSeriesChartActionCreators.setZoomWindowLevel,
     loadCsv: hpTimeSeriesChartCsvLoadingActionCreators.loadCsv,
-    generateThreeRandomSeries: actionCreators.generateThreeRandomSeries,
+    generateTwoRandomSeries: actionCreators.generateTwoRandomSeries,
     setWindowUnixFromTo: hpTimeSeriesChartActionCreators.setWindowUnixFromTo
   }, dispatch);
 }

@@ -12,18 +12,19 @@ import { hpTimeSeriesChartReducerAuxFunctions } from '../../hp-time-series-chart
 import { IExternalSourceTimeSeries } from '../..';
 
 export const actions = {
-  THREE_RANDOM_SERIES: 'THREE_RANDOM_SERIES'
+  TWO_RANDOM_SERIES: 'TWO_RANDOM_SERIES',
+  PREDEFINED_SERIES: 'PREDEFINED_SERIES'
 }
 
 export const actionCreators = {
-  generateThreeRandomSeries: createAction<{ dateFrom: Date, dateTo: Date }, Date, Date>(
-    actions.THREE_RANDOM_SERIES,
+  generateTwoRandomSeries: createAction<{ dateFrom: Date, dateTo: Date }, Date, Date>(
+    actions.TWO_RANDOM_SERIES,
     (dateFrom: Date, dateTo: Date) => { return { dateFrom, dateTo } }
   )
 }
 
 export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
-  [actions.THREE_RANDOM_SERIES]: (state: IHpTimeSeriesChartState, action: Action<{ dateFrom: Date, dateTo: Date }>): IHpTimeSeriesChartState => {
+  [actions.TWO_RANDOM_SERIES]: (state: IHpTimeSeriesChartState, action: Action<{ dateFrom: Date, dateTo: Date }>): IHpTimeSeriesChartState => {
     return hpTimeSeriesChartReducers.setData(state, { 
       type: hpTimeSeriesChartActionTypes.SET_DATA,
       payload: [

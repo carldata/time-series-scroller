@@ -40,7 +40,7 @@ export const csvLoadingAuxiliary = {
         (state.series.length == 0 ? _.first(points).unix : _.first(state.series).unixFrom) :
         _.first(points).unix,
       unixTo: _.last(points).unix,
-      type: EnumTimeSeriesType.Dots
+      type: EnumTimeSeriesType.DottedLine
     }
 
     timeSeries.unixToIndexMap = unixIndexMapCalculations.createUnixToIndexMap(timeSeries.points);

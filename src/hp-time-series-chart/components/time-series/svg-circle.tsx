@@ -5,14 +5,14 @@ import { ITimeSeriesRendererContext } from ".";
 
 export interface ISvgCircleProps {
   ctx: ITimeSeriesRendererContext;  
-  unix: number;
+  date: Date;
   y: number;
 } 
 
 export class SvgCircle extends React.Component<ISvgCircleProps> {
   render() {
     return <circle
-      cx={this.props.ctx.xScale(new Date(this.props.unix))} 
+      cx={this.props.ctx.xScale(this.props.date)} 
       cy={this.props.ctx.yScale(this.props.y)} 
       fill={this.props.ctx.ts.color} 
       r={2} />
