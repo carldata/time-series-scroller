@@ -4,59 +4,20 @@ import * as React from 'react';
 import { ITimeSeriesBucket } from "../../calculations/interfaces";
 import { IOnScreenTimeSeries } from "../../state/time-series";
 import { ITimeSeriesRendererContext } from '.';
+import { SvgCircle } from './svg-circle';
 
 // Dot-Time-Series prefix in key name must stay here, since DottedLine type of series draws two types of chart one one another
 const getTimeSeriesKey = (ctx: ITimeSeriesRendererContext) => `Dot-Time-Series|${ctx.ts.name}|${ctx.ts.fragmentId}`
 
-const getCircleKey = (ts: IOnScreenTimeSeries, b: ITimeSeriesBucket, unix: number, y: number) => 
-  `${ts.name}|${ts.fragmentId}|${b.unixFrom}|${b.unixTo}|${unix}|${y}`
-
-const getCircleRadius = (b: ITimeSeriesBucket) => {
-  return 2;
-}
+const getCircleKey = (ts: IOnScreenTimeSeries, b: ITimeSeriesBucket) =>
+  `${ts.name}|${ts.fragmentId}|${b.sourceUnixFrom}|${b.sourceUnixTo}`;
 
 const renderSvgCircles = (ctx: ITimeSeriesRendererContext): JSX.Element[] => {
   let result = [];
   for (let b of ctx.ts.buckets.buckets) {
     let unixAvg = b.unixFrom+(b.unixTo-b.unixFrom)/2;
-    if (b.numberOfSamples == 1) {
-      result.push(<circle 
-        key={getCircleKey(ctx.ts, b, unixAvg, b.maxY)} 
-        cx={ctx.xScale(new Date(unixAvg))} 
-        cy={ctx.yScale(b.maxY)} 
-        fill={ctx.ts.color} 
-        r={getCircleRadius(b)} />);
-    }
-    if (b.numberOfSamples >= 2) {
-      result.push(<circle 
-        key={getCircleKey(ctx.ts, b, b.unixFrom, b.leftboundY)} 
-        cx={ctx.xScale(b.unixFrom)} 
-        cy={ctx.yScale(b.leftboundY)} 
-        fill={ctx.ts.color} 
-        r={getCircleRadius(b)} />);
-      if (b.rightboundY != b.leftboundY)
-        result.push(<circle 
-          key={getCircleKey(ctx.ts, b, b.unixTo, b.rightboundY)} 
-          cx={ctx.xScale(b.unixTo)} 
-          cy={ctx.yScale(b.rightboundY)} 
-          fill={ctx.ts.color} 
-          r={getCircleRadius(b)} />);
-    }
-    if (b.numberOfSamples > 2) {
-      result.push(<circle 
-        key={getCircleKey(ctx.ts, b, unixAvg, b.minY)} 
-        cx={ctx.xScale(unixAvg)} 
-        cy={ctx.yScale(b.minY)} 
-        fill={ctx.ts.color} 
-        r={getCircleRadius(b)} />);
-      if (b.maxY != b.minY) 
-        result.push(<circle 
-          key={getCircleKey(ctx.ts, b, unixAvg, b.maxY)} 
-          cx={ctx.xScale(unixAvg)} 
-          cy={ctx.yScale(b.maxY)} 
-          fill={ctx.ts.color} 
-          r={getCircleRadius(b)} />);
-    }
+    if (b.numberOfSamples == 1)
+      result.push(<SvgCircle key={getCircleKey(ctx.ts, b)} ctx={ctx} unix={unixAvg} y={b.maxY} />)
   }
   return result;
 }

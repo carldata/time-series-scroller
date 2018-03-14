@@ -14,6 +14,7 @@ import { EnumZoomSelected, EnumTimeSeriesType } from './state/enums';
 import { unixIndexMapCalculations } from './calculations/unix-index-map';
 import { hpTimeSeriesChartReducerAuxFunctions as auxFunctions } from './reducers-aux';
 import { IExternalSourceTimeSeries, IHpTimeSeriesChartTimeSeries } from './state/time-series';
+import { hpTimeSeriesChartActionTypes } from '..';
 
 
 /**
@@ -21,31 +22,14 @@ import { IExternalSourceTimeSeries, IHpTimeSeriesChartTimeSeries } from './state
  */
 const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
   let [dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo] = action.payload;
-  let pointsA: Array<IUnixTimePoint> = auxFunctions.randomContinousUnixTimePoints(dateRangeDateFrom, dateRangeDateTo);
-  let pointsB: Array<IUnixTimePoint> = auxFunctions.randomIntermittentUnixTimePoints(
-    dateFns.addHours(dateRangeDateFrom, dateFns.differenceInHours(dateRangeDateTo, dateRangeDateFrom)/3), 
-    dateFns.addHours(dateRangeDateTo, -dateFns.differenceInHours(dateRangeDateTo, dateRangeDateFrom)/3));
-  let pointsC: Array<IUnixTimePoint> = auxFunctions.randomIntermittentUnixTimePoints(
-    dateFns.addHours(dateRangeDateFrom, dateFns.differenceInHours(dateRangeDateTo, dateRangeDateFrom)/5), 
-    dateFns.addHours(dateRangeDateTo, -dateFns.differenceInHours(dateRangeDateTo, dateRangeDateFrom)/5));
+  let points: Array<IUnixTimePoint> = auxFunctions.randomContinousUnixTimePoints(dateRangeDateFrom, dateRangeDateTo);
   return setData(state, {
-    type: null,
+    type: hpTimeSeriesChartActionTypes.SET_DATA,
     payload: [{
       color: "orange",
       name: "Random Series",
-      points: pointsA,
+      points: points,
       type: EnumTimeSeriesType.Line,
-    }, {
-      color: "green",
-      name: "Random Series",
-      points: pointsB,
-      type: EnumTimeSeriesType.Dots
-    },
-    {
-      color: "red",
-      name: "Random Series",
-      points: pointsC,
-      type: EnumTimeSeriesType.DottedLine
     }]
   });
 }

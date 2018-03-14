@@ -22,6 +22,7 @@ import { IAppState } from '../state/index';
 import { IHpTimeSeriesChartState } from '../../hp-time-series-chart/state';
 import { HpTimeSeriesScroller } from '../../time-series-scroller';
 import { convertHpSliderScss, convertHpTimeSeriesChartScss } from '../../sass/styles';
+import { actionCreators } from './store-creator';
 
 export interface IGraphScreenProps {
   chartState: IHpTimeSeriesChartState;
@@ -33,7 +34,7 @@ export interface IGraphScreenState {
 
 export interface IGraphScreenDispatchProps {
   setZoomWindowLevel: (level: EnumZoomSelected) => EnumZoomSelected,
-  generateRandomData: (dates: Date[]) => void,
+  generateThreeRandomSeries: (dateFrom: Date, dateTo: Date) => void,
   loadCsv: (url: string, useStreaming: boolean) => void,
   setWindowUnixFromTo: (unixFrom: number, unixTo: number) => void
 }
@@ -114,10 +115,7 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                       bsSize="xs" 
                       onClick={() => {
                         let date = new Date();
-                        this.props.generateRandomData([date, 
-                                                      dateFns.addMonths(date, 1), 
-                                                      date, 
-                                                      dateFns.addMonths(date, 1)]);
+                        this.props.generateThreeRandomSeries(date, dateFns.addDays(date, 2))
                       }}>
                       Generate 1M
                     </Button>
@@ -163,7 +161,7 @@ const matchDispatchToProps = (dispatch: Dispatch<void>) => {
   return bindActionCreators({
     setZoomWindowLevel: hpTimeSeriesChartActionCreators.setZoomWindowLevel,
     loadCsv: hpTimeSeriesChartCsvLoadingActionCreators.loadCsv,
-    generateRandomData: hpTimeSeriesChartActionCreators.generateRandomData,
+    generateThreeRandomSeries: actionCreators.generateThreeRandomSeries,
     setWindowUnixFromTo: hpTimeSeriesChartActionCreators.setWindowUnixFromTo
   }, dispatch);
 }

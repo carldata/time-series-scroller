@@ -1,6 +1,8 @@
 import { IUnixTimePoint } from '../state/unix-time-point';
 
 export interface ITimeSeriesBucket {
+  sourceUnixFrom: number;
+  sourceUnixTo: number;
   unixFrom: number;
   unixTo: number;
   date: Date;

@@ -32,6 +32,8 @@ const getBucketOutside = (allData: IUnixTimePoint[],
       numberOfSamples: 1,
       leftboundY: sample.value,
       rightboundY: sample.value,
+      sourceUnixFrom: sample.unix,
+      sourceUnixTo: sample.unix,
       unixFrom: browseDirection == EnumBrowseDirection.Backward ? filterFrom : filterTo,
       unixTo: browseDirection == EnumBrowseDirection.Backward ? filterFrom : filterTo
     } : null;
@@ -57,8 +59,9 @@ const getTimeSeriesBuckets = (allData: IUnixTimePoint[],
   let referenceBucket: ITimeSeriesBucket = null;
   for (let i = indexFrom; i < allData.length; i++) {
     let el = allData[i];
-    if (el.unix > filterTo)
+    if (el.unix > filterTo) {
       break;
+    }
     if ((referenceBucket == null) || (referenceBucket.unixTo < el.unix)) {
       let bucketIndex = _.floor((el.unix - filterFrom) / bucketLengthUnix);
       referenceBucket = <ITimeSeriesBucket>{
@@ -68,15 +71,18 @@ const getTimeSeriesBuckets = (allData: IUnixTimePoint[],
         leftboundY: el.value,
         numberOfSamples: 0,
         minY: el.value,
-        maxY: el.value
+        maxY: el.value,
+        sourceUnixFrom: el.unix,
       }
       buckets.push(referenceBucket);
     }
     referenceBucket.rightboundY = el.value;
+    referenceBucket.sourceUnixTo = el.value;
     referenceBucket.numberOfSamples++;
     referenceBucket.minY = el.value < referenceBucket.minY ? el.value : referenceBucket.minY;
     referenceBucket.maxY = el.value > referenceBucket.maxY ? el.value : referenceBucket.maxY;
   }
+  buckets = _.filter(buckets, b => b.unixFrom >= filterFrom && b.unixTo <= filterTo);
   return {
     buckets: buckets,
     shadowPreceding: buckets.length > 0 && _.first(buckets).unixFrom <= filterFrom ? null : getBucketOutside(allData, EnumBrowseDirection.Backward, filterFrom, filterTo),

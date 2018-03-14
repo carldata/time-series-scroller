@@ -1,17 +1,45 @@
 import * as _ from 'lodash';
+import * as dateFns from 'date-fns';
 import { EnumRawCsvFormat } from '../../hp-time-series-chart/csv-loading/calculations';
 import { hpTimeSeriesChartActionTypes } from '../../hp-time-series-chart/action-creators';
 import { csvLoadingAuxiliary } from '../../hp-time-series-chart/csv-loading/auxiliary';
 import { hpTimeSeriesCsvLoadingChartActionTypes } from '../../hp-time-series-chart/csv-loading/action-creators';
-import { Action, handleActions } from "redux-actions";
+import { Action, handleActions, createAction } from "redux-actions";
 import { hpTimeSeriesChartReducers } from "../../hp-time-series-chart/reducers";
 import { IHpTimeSeriesChartState } from "../../hp-time-series-chart/state";
-import { EnumZoomSelected } from "../../hp-time-series-chart/state/enums";
+import { EnumZoomSelected, EnumTimeSeriesType } from "../../hp-time-series-chart/state/enums";
 import { hpTimeSeriesChartReducerAuxFunctions } from '../../hp-time-series-chart/reducers-aux';
+import { IExternalSourceTimeSeries } from '../..';
+
+export const actions = {
+  THREE_RANDOM_SERIES: 'THREE_RANDOM_SERIES'
+}
+
+export const actionCreators = {
+  generateThreeRandomSeries: createAction<{ dateFrom: Date, dateTo: Date }, Date, Date>(
+    actions.THREE_RANDOM_SERIES,
+    (dateFrom: Date, dateTo: Date) => { return { dateFrom, dateTo } }
+  )
+}
 
 export const storeCreator = handleActions<IHpTimeSeriesChartState, any>({
-  [hpTimeSeriesChartActionTypes.GENERATE_RANDOM_DATA]: (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
-    return hpTimeSeriesChartReducers.generateRandomData(state, action)
+  [actions.THREE_RANDOM_SERIES]: (state: IHpTimeSeriesChartState, action: Action<{ dateFrom: Date, dateTo: Date }>): IHpTimeSeriesChartState => {
+    return hpTimeSeriesChartReducers.setData(state, { 
+      type: hpTimeSeriesChartActionTypes.SET_DATA,
+      payload: [
+        <IExternalSourceTimeSeries> {
+          color: "orange",
+          name: "Time Series A",
+          points: hpTimeSeriesChartReducerAuxFunctions.randomContinousUnixTimePoints(action.payload.dateFrom, action.payload.dateTo),
+          type: EnumTimeSeriesType.Line
+        },
+        <IExternalSourceTimeSeries> {
+          color: "red",
+          name: "Anomalies",
+          points: hpTimeSeriesChartReducerAuxFunctions.randomContinousUnixTimePoints(action.payload.dateFrom, action.payload.dateTo),
+          type: EnumTimeSeriesType.DottedLine
+        }]
+      });
   },
   [hpTimeSeriesCsvLoadingChartActionTypes.STARTED_PROCESSING_CSV]: (state: IHpTimeSeriesChartState): IHpTimeSeriesChartState => {
     return _.extend({}, state, csvLoadingAuxiliary.startedLoadingCsvData(state));
