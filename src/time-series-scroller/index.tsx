@@ -107,7 +107,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
           >
             <HpTimeSeriesChart
               scss={this._getChartInSliderDimensions()}
-              state={this.state}
+              state={this.props.state}
               mode={EnumHpTimeSeriesChartMode.SliderEmbedded}
             />
           </HpSlider>
