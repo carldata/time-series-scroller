@@ -1,6 +1,7 @@
-import { hpTimeSeriesChartCalculations } from '../../src/hp-time-series-chart/calculations';
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
+import * as fs from 'fs';
+import { hpTimeSeriesChartCalculations } from '../../src/hp-time-series-chart/calculations';
 import { IUnixTimePoint } from '../../src/hp-time-series-chart/state/unix-time-point';
 import { csvLoadingCalculations } from '../../src/hp-time-series-chart/csv-loading/calculations';
 import { unixIndexMapCalculations } from '../../src/hp-time-series-chart/calculations/unix-index-map';
@@ -24,6 +25,43 @@ describe("time-series-chart calculations test", () => {
 
   const unevenDeltas = [0, 10, 11, 12, 31, 32, 33, 34, 35, 40, 45, 55, 56, 57, 58, 59, 60];
   const notEvenlyDistributedSeries = convertToDateTimePointArray(new Date(2016, 0, 15), unevenDeltas);
+
+  it('buckets reflects max/min values of time-series', () => {
+    const numberOfTrials = 20;
+    const unixFrom = new Date().getTime();
+    const unixTo = dateFns.addDays(unixFrom, 365).getTime();
+    const allData = hpTimeSeriesChartReducerAuxFunctions.randomContinousUnixTimePoints(new Date(unixFrom), new Date(unixTo));
+    const unixIndexMap = unixIndexMapCalculations.createUnixToIndexMap(allData);
+    const filterFrom = _.random(unixFrom, _.floor(unixFrom + (unixTo-unixFrom)/2)-1);
+    const filterTo = _.times(numberOfTrials, (i) => {
+      if (_.inRange(i, 0, 5)) {
+        return filterFrom + _.random(3600*1000, 2*24*3600*1000);
+      }
+      return _.random(_.floor(unixFrom + (unixTo-unixFrom)/2), unixTo);
+    })
+    _.times(numberOfTrials, (i) => {
+      const numberOfBuckets = _.random(500, 2400);
+      const filteredData = _.filter(allData, (el: IUnixTimePoint) => el.unix >= filterFrom && el.unix <= filterTo[i]);
+      const buckets = hpTimeSeriesChartCalculations.getTimeSeriesBuckets(allData, unixIndexMap, numberOfBuckets, filterFrom, filterTo[i]);
+      const [dataMin, dataMax] = ((values) => [_.min(values), _.max(values)])(_.map(filteredData, el => el.value));
+      const bucketMin = _.min(_.map(buckets.buckets, el => el.minY));
+      const bucketMax = _.max(_.map(buckets.buckets, el => el.maxY));
+      const failedTimeSeriesWithParamtersFileName = `./test-failed-time-series.${numberOfBuckets}.${new Date(filterFrom)}.${new Date(filterTo[i])}.json`;
+      try {
+        expect(dataMin).toEqual(bucketMin);
+        expect(dataMax).toEqual(bucketMax);
+      }
+      catch (err) {
+        fs.writeFile(failedTimeSeriesWithParamtersFileName, JSON.stringify(allData), function(err) {
+          if (err) {
+            return console.log(err);
+          }
+          console.log(`The failed test has been written to ${failedTimeSeriesWithParamtersFileName}`);
+        });
+        throw err;
+      }
+    })
+  });
   
   it('evenly distributed time series is placed into buckets properly', () => {
     let hours = _.random(1, 24);
