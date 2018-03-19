@@ -26,7 +26,7 @@ describe("time-series-chart calculations test", () => {
   const unevenDeltas = [0, 10, 11, 12, 31, 32, 33, 34, 35, 40, 45, 55, 56, 57, 58, 59, 60];
   const notEvenlyDistributedSeries = convertToDateTimePointArray(new Date(2016, 0, 15), unevenDeltas);
 
-  it('buckets reflects max/min values of time-series', () => {
+  it('buckets reflect max/min values of time-series', () => {
     const numberOfTrials = 20;
     const unixFrom = new Date().getTime();
     const unixTo = dateFns.addDays(unixFrom, 365).getTime();
