@@ -56,6 +56,8 @@ const filterBuckets = (buckets: ITimeSeriesBucket[], xScale: (value: any) => any
   //(surprisingly) dissapearing, which makes the poor user experience
   
   return _.filter<IOnScreenTimeSeriesBucket>(bucketsExtended, el => (el.distanceToPrecedingBucketPx >= cutoffPx) &&
+                                                                    (el.distanceToSucceedingBucketPx >= cutoffPx) && 
+                                                                    (el.numberOfSamples == 1));
 }
 
 const renderSvgCircles = (ctx: ITimeSeriesRendererContext, cutoffPx: number): JSX.Element[] => 
