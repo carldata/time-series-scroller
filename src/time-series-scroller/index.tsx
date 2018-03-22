@@ -1,9 +1,8 @@
 import * as _ from 'lodash';
+import * as dateFns from 'date-fns';
 import * as React from 'react';
 import { ButtonGroup, Button } from 'react-bootstrap';
 import { IDomain } from '../hp-slider/interfaces';
-import { EnumZoomSelected } from '../hp-time-series-chart/state/enums';
-import * as dateFns from 'date-fns';
 import { EnumHandleType } from '../hp-slider/enums';
 import { hpTimeSeriesChartCalculations } from '../hp-time-series-chart/calculations';
 import { HpSlider } from '../hp-slider';
@@ -12,15 +11,20 @@ import { IHpTimeSeriesChartScssGeneric, IHpSliderScssGeneric } from '../sass/sty
 import { IHpTimeSeriesChartState } from '../hp-time-series-chart/state';
 
 export interface IHpTimeSeriesScrollerProps {
-  state: IHpTimeSeriesChartState;
+  chartState: IHpTimeSeriesChartState;
   sliderScss: IHpSliderScssGeneric<number>;
   timeSeriesChartScss: IHpTimeSeriesChartScssGeneric<number>;
   displaySlider?: boolean;
-  zoomWindowLevelSet?: (zoomLevel: EnumZoomSelected, unixFrom: number, unixTo: number) => void;
-  displayZoomLevelButtons?: boolean;
+  fitToParentSize?: boolean;
 }
 
-export interface IHpTimeSeriesScrollerState extends IHpTimeSeriesChartState { }
+export interface IHpTimeSeriesScrollerState { 
+  windowUnixFrom: number;
+  windowUnixTo: number;
+  chartState: IHpTimeSeriesChartState;
+  sliderScss: IHpSliderScssGeneric<number>;
+  timeSeriesChartScss: IHpTimeSeriesChartScssGeneric<number>;
+}
 
 /**
  * This statefull component aggregates HpTimeSeriesChart and HpSlider components, acting as an example how to use them. 
@@ -28,39 +32,39 @@ export interface IHpTimeSeriesScrollerState extends IHpTimeSeriesChartState { }
  * For non-Redux usage please HpTimeSeriesScrollerWrapper.
  */
 export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerProps, IHpTimeSeriesScrollerState> {
+  private parentElement: HTMLElement;
+
   constructor(props: IHpTimeSeriesScrollerProps) {
     super(props);
-    this.state = _.extend({}, props.state);
+    this.state = {
+      windowUnixFrom: props.chartState.dateRangeUnixFrom,
+      windowUnixTo: props.chartState.dateRangeUnixTo,
+      chartState: props.chartState,
+      sliderScss: props.sliderScss,
+      timeSeriesChartScss: props.timeSeriesChartScss
+    };
   }
 
   componentWillReceiveProps(nextProps: Readonly<IHpTimeSeriesScrollerProps>, nextContext: any) {
-    this.setState(_.extend({}, nextProps.state));
+    this.setState(_.extend({}, {
+      chartState: nextProps.chartState,
+      sliderScss: _.extend(nextProps.sliderScss,
+        _.isObject(this.parentElement) && _.isBoolean(this.props.fitToParentSize) && this.props.fitToParentSize ? {
+          widthPx: this.parentElement.clientWidth
+        } as IHpSliderScssGeneric<number> : {}),  
+      timeSeriesChartScss: _.extend(nextProps.timeSeriesChartScss, 
+        _.isObject(this.parentElement) && _.isBoolean(this.props.fitToParentSize) && this.props.fitToParentSize ? {
+          widthPx: this.parentElement.clientWidth,
+          heightPx: this.parentElement.clientHeight
+        } as IHpTimeSeriesChartScssGeneric<number> : {}),
+      windowUnixFrom: nextProps.chartState.windowUnixFrom,
+      windowUnixTo: nextProps.chartState.windowUnixTo
+    } as IHpTimeSeriesScrollerState));
   }
 
   private getDomain = (): IDomain<number> => {
-    switch (this.state.chartZoomSettings.zoomSelected) {
-      case EnumZoomSelected.NoZoom:
-        return { domainMin: this.state.dateRangeUnixFrom, domainMax: this.state.dateRangeUnixTo }
-      case EnumZoomSelected.ZoomLevel1:
-        return { 
-          domainMin: this.state.chartZoomSettings.zoomLevel1FramePointsUnixFrom, 
-          domainMax: this.state.chartZoomSettings.zoomLevel1FramePointsUnixTo 
-        }
-      case EnumZoomSelected.ZoomLevel2:
-        return { 
-          domainMin: this.state.chartZoomSettings.zoomLevel2FramePointsUnixFrom, 
-          domainMax: this.state.chartZoomSettings.zoomLevel2FramePointsUnixTo 
-        }
-    }
+    return { domainMin: this.props.chartState.dateRangeUnixFrom, domainMax: this.props.chartState.dateRangeUnixTo }
   } 
-
-  private _getZoomButtonStyle = (stateMode: EnumZoomSelected, expectedMode: EnumZoomSelected): string => {
-    return stateMode == expectedMode ? "success" : "default";
-  }
-
-  private _isZoomButtonDisabled = (zoomLimitationLevelButtonIsPresenting: EnumZoomSelected, currentZoomLimitationLevel: EnumZoomSelected): boolean => {
-    return Math.abs(zoomLimitationLevelButtonIsPresenting - currentZoomLimitationLevel) > 1;
-  }
 
   private _getChartInSliderDimensions = (): IHpTimeSeriesChartScssGeneric<number> => {
     return {
@@ -73,75 +77,76 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
     }
   }
 
+  private resizeCallback = () => {
+    if (_.isObject(this.parentElement) && _.isBoolean(this.props.fitToParentSize) && this.props.fitToParentSize) {
+      this.setState({
+        sliderScss: _.extend(this.state.sliderScss, {
+          widthPx: this.parentElement.clientWidth
+        } as IHpSliderScssGeneric<number>),
+        timeSeriesChartScss: _.extend(this.state.timeSeriesChartScss, {
+          widthPx: this.parentElement.clientWidth,
+          heightPx: this.parentElement.clientHeight
+        } as IHpTimeSeriesChartScssGeneric<number>)
+      })
+    }
+  }
+
+  public componentWillMount() {
+    this.resizeCallback();
+  }
+
+  public componentDidMount() {
+    window.addEventListener("resize", this.resizeCallback);
+    this.resizeCallback();
+  }
+  
+  public componentWillUnmount() {
+    window.removeEventListener("resize", this.resizeCallback);
+  }
+
   public render() {
-    return (
-      <span>
-        <HpTimeSeriesChart scss={this.props.timeSeriesChartScss} state={this.state} />
-        <br />
-        {(_.isBoolean(this.props.displaySlider) ? this.props.displaySlider : true) &&
-          <HpSlider
-            domain={this.getDomain()}
-            handleValues={{ left: this.state.windowUnixFrom, right: this.state.windowUnixTo }}
-            scss={this.props.sliderScss}
-            displayDragBar={true}
-            handleMoved={(value: number | number[], type: EnumHandleType) => {
-              let newUnixFrom = this.state.windowUnixFrom;
-              let newUnixTo = this.state.windowUnixTo;
-              switch (type) {
-                case EnumHandleType.Left:
-                  newUnixFrom = _.isNumber(value) ? value : 0;
-                  break;
-                case EnumHandleType.Right:
-                  newUnixTo = _.isNumber(value) ? value : 0;
-                  break;
-                case EnumHandleType.DragBar:
-                  newUnixFrom = _.isArray(value) ? value[0] : 0
-                  newUnixTo = _.isArray(value) ? value[1] : 0
-                  break;
-              }
-              this.setState({
+    return (<div ref={(el) => { 
+      if (_.isObject(el))
+        this.parentElement = el.parentElement;
+    }}>
+      <HpTimeSeriesChart scss={this.state.timeSeriesChartScss} state={this.state.chartState} />
+      <br />
+      {(_.isBoolean(this.props.displaySlider) ? this.props.displaySlider : true) &&
+        <HpSlider
+          domain={this.getDomain()}
+          handleValues={{ left: this.state.windowUnixFrom, right: this.state.windowUnixTo }}
+          scss={this.props.sliderScss}
+          displayDragBar={true}
+          handleMoved={(value: number | number[], type: EnumHandleType) => {
+            let newUnixFrom = this.state.windowUnixFrom;
+            let newUnixTo = this.state.windowUnixTo;
+            switch (type) {
+              case EnumHandleType.Left:
+                newUnixFrom = _.isNumber(value) ? value : 0;
+                break;
+              case EnumHandleType.Right:
+                newUnixTo = _.isNumber(value) ? value : 0;
+                break;
+              case EnumHandleType.DragBar:
+                newUnixFrom = _.isArray(value) ? value[0] : 0
+                newUnixTo = _.isArray(value) ? value[1] : 0
+                break;
+            }
+            this.setState({
+              windowUnixFrom: newUnixFrom,
+              windowUnixTo: newUnixTo,
+              chartState: _.extend(this.state.chartState, {
                 windowUnixFrom: newUnixFrom,
                 windowUnixTo: newUnixTo
-              })
-            }}
-          >
-            <HpTimeSeriesChart
-              scss={this._getChartInSliderDimensions()}
-              state={this.props.state}
-              mode={EnumHpTimeSeriesChartMode.SliderEmbedded}
-            />
-          </HpSlider>
-        }
-        <br />
-        {_.isBoolean(this.props.displayZoomLevelButtons) && this.props.displayZoomLevelButtons &&
-          <ButtonGroup>
-            <Button
-              type="button"
-              disabled={this._isZoomButtonDisabled(EnumZoomSelected.NoZoom, this.state.chartZoomSettings.zoomSelected)} 
-              bsSize="xs"
-              onMouseUp={(e) => this.props.zoomWindowLevelSet(EnumZoomSelected.NoZoom, this.state.windowUnixFrom, this.state.windowUnixTo) } 
-              bsStyle={this._getZoomButtonStyle(this.state.chartZoomSettings.zoomSelected, EnumZoomSelected.NoZoom)}>
-              View All
-            </Button>
-            <Button 
-              type="button"
-              disabled={this._isZoomButtonDisabled(EnumZoomSelected.ZoomLevel1, this.state.chartZoomSettings.zoomSelected)}
-              bsSize="xs" 
-              onMouseUp={() => this.props.zoomWindowLevelSet(EnumZoomSelected.ZoomLevel1, this.state.windowUnixFrom, this.state.windowUnixTo) } 
-              bsStyle={this._getZoomButtonStyle(this.state.chartZoomSettings.zoomSelected, EnumZoomSelected.ZoomLevel1)}>
-              1
-            </Button>
-            <Button 
-              type="button"
-              disabled={this._isZoomButtonDisabled(EnumZoomSelected.ZoomLevel2, this.state.chartZoomSettings.zoomSelected)}
-              bsSize="xs" 
-              onMouseUp={() => this.props.zoomWindowLevelSet(EnumZoomSelected.ZoomLevel2, this.state.windowUnixFrom, this.state.windowUnixTo) } 
-              bsStyle={this._getZoomButtonStyle(this.state.chartZoomSettings.zoomSelected, EnumZoomSelected.ZoomLevel2)}>
-              2
-            </Button>
-          </ButtonGroup>
-        }
-      </span>
-    );
+              } as IHpTimeSeriesChartState)
+            })
+          }}>
+          <HpTimeSeriesChart
+            scss={this._getChartInSliderDimensions()}
+            state={this.props.chartState}
+            mode={EnumHpTimeSeriesChartMode.SliderEmbedded}
+          />
+        </HpSlider>}
+      </div>);
   }
 }

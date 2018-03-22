@@ -1,5 +1,4 @@
 import { IUnixTimePoint } from './unix-time-point'
-import { IChartZoomSettings } from './chart-zoom-settings';
 import { IHpTimeSeriesChartTimeSeries } from './time-series';
 
 export interface IHpTimeSeriesChartState {
@@ -29,8 +28,6 @@ export interface IHpTimeSeriesChartState {
    * Maximum y-value we can find in all the series of chart
    */
   yMax: number;
-
-  chartZoomSettings: IChartZoomSettings;
 
   /**
    * Series as displayed in component.

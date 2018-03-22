@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 import { Dots } from './components/dots';
 import { hpTimeSeriesChartCalculations } from './calculations';
 import { IUnixTimePoint } from './state/unix-time-point';
-import { IChartZoomSettings } from './state/chart-zoom-settings';
 import { TimeSeries } from './components/time-series';
 import { DateTimeAxis } from './components/date-time-axis';
 import { ValueAxis } from './components/value-axis';

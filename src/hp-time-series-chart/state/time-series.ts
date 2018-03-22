@@ -1,4 +1,3 @@
-import { IChartZoomSettings } from './chart-zoom-settings';
 import { IUnixTimePoint } from './unix-time-point';
 import { EnumTimeSeriesType } from './enums';
 import { IChartTimeSeriesBuckets } from '../calculations/interfaces';

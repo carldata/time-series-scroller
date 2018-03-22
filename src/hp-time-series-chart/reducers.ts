@@ -4,40 +4,33 @@
  */
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
-import { Action } from 'redux-actions';
-
+import * as actionTypes from './action-types';
 import { hpTimeSeriesChartCalculations as c } from './calculations';
 import { IHpTimeSeriesChartState } from './state';
-import { IChartZoomSettings } from './state/chart-zoom-settings';
 import { IUnixTimePoint } from './state/unix-time-point';
-import { EnumZoomSelected, EnumTimeSeriesType } from './state/enums';
+import { EnumTimeSeriesType } from './state/enums';
 import { unixIndexMapCalculations } from './calculations/unix-index-map';
-import { hpTimeSeriesChartReducerAuxFunctions as auxFunctions } from './reducers-aux';
+import { hpTimeSeriesChartReducerAuxFunctions as auxFunctions, hpTimeSeriesChartReducerAuxFunctions } from './reducers-aux';
 import { IExternalSourceTimeSeries, IHpTimeSeriesChartTimeSeries } from './state/time-series';
-import { hpTimeSeriesChartActionTypes } from '..';
+import { SetDataAction, GenerateRandomDataAction } from './actions';
 
+const initialState = hpTimeSeriesChartReducerAuxFunctions.buildInitialState();
 
 /**
  * Builds (initial) chart state with several outer settings
  */
-const generateRandomData = (state: IHpTimeSeriesChartState, action: Action<Date[]>): IHpTimeSeriesChartState => {
-  let [dateRangeDateFrom, dateRangeDateTo, windowDateFrom, windowDateTo] = action.payload;
-  let points: Array<IUnixTimePoint> = auxFunctions.randomContinousUnixTimePoints(dateRangeDateFrom, dateRangeDateTo);
-  return setData(state, {
-    type: hpTimeSeriesChartActionTypes.SET_DATA,
-    payload: [{
-      color: "orange",
-      name: "Random Series",
-      points: points,
-      type: EnumTimeSeriesType.Line,
-    }]
-  });
-}
+const generateRandomData = (state: IHpTimeSeriesChartState, action: GenerateRandomDataAction): IHpTimeSeriesChartState =>
+  setData(state, new SetDataAction([{
+    color: "orange",
+    name: "Random Series",
+    points: auxFunctions.randomContinousUnixTimePoints(action.from, action.to),
+    type: EnumTimeSeriesType.Line,
+  }]));
 
-const setData = (state: IHpTimeSeriesChartState, action: Action<IExternalSourceTimeSeries[]>): IHpTimeSeriesChartState => {
+const setData = (state: IHpTimeSeriesChartState, action: SetDataAction): IHpTimeSeriesChartState => {
   const stateWithSeries = <IHpTimeSeriesChartState> {
     series: _.map<IExternalSourceTimeSeries, IHpTimeSeriesChartTimeSeries>(
-      action.payload, 
+      action.series,
       (el: IExternalSourceTimeSeries) => <IHpTimeSeriesChartTimeSeries> {
         color: el.color,
         unixFrom: _.isEmpty(el.points) ? Number.MAX_VALUE : _.first(el.points).unix,
@@ -61,70 +54,16 @@ const setData = (state: IHpTimeSeriesChartState, action: Action<IExternalSourceT
     yMin: _.min(allValues),
     yMax: _.max(allValues)
   });
-  const stateWithChartSettings = <IHpTimeSeriesChartState> {
-    chartZoomSettings: {
-      zoomSelected: EnumZoomSelected.NoZoom,
-      zoomLevel1FramePointsUnixFrom: 0,
-      zoomLevel1FramePointsUnixTo: 0,
-      zoomLevel2FramePointsUnixFrom: 0,
-      zoomLevel2FramePointsUnixTo: 0
-    }
+  return _.extend(stateWithSeries, stateWithUnixFromTo);
+}
+
+export type HpTimeSeriesChartReducerActionTypes = GenerateRandomDataAction|SetDataAction;
+
+export const hpTimeSeriesChartReducer = (state: IHpTimeSeriesChartState = initialState, action: HpTimeSeriesChartReducerActionTypes): IHpTimeSeriesChartState => {
+  switch (action.type) {
+    case actionTypes.GENERATE_RANDOM_DATA:
+      return generateRandomData(state, action);
+    case actionTypes.SET_DATA:
+      return setData(state, action);
   }
-  return _.extend(stateWithSeries, stateWithUnixFromTo, stateWithChartSettings);
-}
-
-const cameToThisZoomLevelByZoomingIn = (currentMode: EnumZoomSelected, newMode: EnumZoomSelected) => {
-  return newMode > currentMode;
-}
-
-const setZoom = (state: IHpTimeSeriesChartState, action: Action<EnumZoomSelected>): IHpTimeSeriesChartState => {
-  let zoom = action.payload;
-  let result = <IHpTimeSeriesChartState>{};
-  let chartZoomSettings = <IChartZoomSettings> _.extend({}, state.chartZoomSettings, {
-    zoomSelected: action.payload
-  });
-  switch (zoom) {
-    case EnumZoomSelected.NoZoom:
-      result = _.extend({}, state, {
-        chartZoomSettings: chartZoomSettings
-      });
-      break;
-    case EnumZoomSelected.ZoomLevel1:
-      if (cameToThisZoomLevelByZoomingIn(state.chartZoomSettings.zoomSelected, zoom)) {
-        chartZoomSettings = _.extend({}, chartZoomSettings, <IChartZoomSettings>{
-          zoomLevel1FramePointsUnixFrom: state.windowUnixFrom,
-          zoomLevel1FramePointsUnixTo: state.windowUnixTo
-        });
-        result = _.extend({}, state, <IHpTimeSeriesChartState>{
-          chartZoomSettings: chartZoomSettings
-        });
-      } else {
-        result = _.extend({}, state, <IHpTimeSeriesChartState>{
-          chartZoomSettings: chartZoomSettings,
-          windowUnixFrom: state.windowUnixFrom,
-          windowUnixTo: state.windowUnixTo
-        });
-      }
-      break;
-    case EnumZoomSelected.ZoomLevel2:
-      if (cameToThisZoomLevelByZoomingIn(state.chartZoomSettings.zoomSelected, zoom)) {
-        chartZoomSettings = _.extend({}, chartZoomSettings, <IChartZoomSettings>{
-          zoomLevel2FramePointsUnixFrom: state.windowUnixFrom,
-          zoomLevel2FramePointsUnixTo: state.windowUnixTo
-        });
-        result = _.extend({}, state, {
-          chartZoomSettings: chartZoomSettings
-        });
-      } else {
-        //only 3 zoom levels - will not reach his else
-      }
-      break;
-  }
-  return result;
-}
-
-export const hpTimeSeriesChartReducers = {
-  generateRandomData,
-  setZoom,
-  setData
 }

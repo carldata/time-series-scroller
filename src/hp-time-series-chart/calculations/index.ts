@@ -1,15 +1,11 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
 import { IUnixTimePoint } from '../state/unix-time-point';
-import { IChartZoomSettings } from '../state/chart-zoom-settings';
-import { EnumZoomSelected } from '../state/enums';
 import { IHpTimeSeriesChartState } from '../state';
 import { IChartTimeSeriesBuckets, ITimeSeriesBucket } from './interfaces';
 import { csvLoadingCalculations } from '../csv-loading/calculations';
 import { unixIndexMapCalculations } from './unix-index-map';
 import { IHpTimeSeriesChartTimeSeries, IOnScreenTimeSeries } from '../state/time-series';
-
-const debug = true;
 
 enum EnumBrowseDirection {
   Backward,

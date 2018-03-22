@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
-import { handleActions, Action } from 'redux-actions';
 import { unixIndexMapCalculations } from '../calculations/unix-index-map';
 import { csvLoadingCalculations as csvCalculations, EnumRawCsvFormat, IExtractUnixTimePointsConfig } from './calculations';
 import { IHpTimeSeriesChartState } from '../state/index';

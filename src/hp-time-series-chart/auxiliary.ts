@@ -1,20 +1,12 @@
 import * as _ from "lodash";
 import { IHpTimeSeriesChartState } from "./state";
-import { hpTimeSeriesChartReducers } from "../hp-time-series-chart/reducers";
-import { hpTimeSeriesChartActionTypes } from "../hp-time-series-chart/action-creators";
 import { IExternalSourceTimeSeries } from "./state/time-series";
 import { hpTimeSeriesChartReducerAuxFunctions } from "./reducers-aux";
+import { SetDataAction } from "./actions";
+import { hpTimeSeriesChartReducer } from "./reducers";
 
-const seriesContainsData = (series: IExternalSourceTimeSeries[]): boolean => 
-_.reduce(series, (acc, el) => acc || (el.points.length > 0), false)
-
-const buildStateFromExternalSource = (series: IExternalSourceTimeSeries[]): IHpTimeSeriesChartState => {
-return seriesContainsData(series) ? 
-  hpTimeSeriesChartReducers.setData(null, { 
-    type: hpTimeSeriesChartActionTypes.SET_DATA,
-    payload: series
-  }) : hpTimeSeriesChartReducerAuxFunctions.buildInitialState();
-}
+const buildStateFromExternalSource = (series: IExternalSourceTimeSeries[]): IHpTimeSeriesChartState => 
+  hpTimeSeriesChartReducer(hpTimeSeriesChartReducerAuxFunctions.buildInitialState(), new SetDataAction(series))
 
 export const hpTimeSeriesChartAuxiliary = {
   buildStateFromExternalSource

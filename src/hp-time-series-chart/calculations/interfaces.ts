@@ -11,7 +11,7 @@ export interface ITimeSeriesBucket {
   lastSample: IUnixTimePoint;
   /**
    * The left unix boundary of the bucket
-   */  
+   */
   unixFrom: number;
   /**
    * The right unix boundary of the bucket

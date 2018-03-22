@@ -1,7 +1,5 @@
 import * as _ from "lodash";
 import * as dateFns from "date-fns";
-import { IChartZoomSettings } from "./state/chart-zoom-settings";
-import { EnumZoomSelected } from "./state/enums";
 import { IUnixTimePoint } from "./state/unix-time-point";
 import { IHpTimeSeriesChartState } from "./state";
 import { IHpTimeSeriesChartTimeSeries } from "./state/time-series";
@@ -12,9 +10,6 @@ const SECONDS_PER_SAMPLE = 60;
 const buildInitialState = ():IHpTimeSeriesChartState => {
   let currentDate = new Date();
   let result: IHpTimeSeriesChartState = <IHpTimeSeriesChartState>{
-    chartZoomSettings: <IChartZoomSettings>{
-      zoomSelected: EnumZoomSelected.NoZoom
-    },
     series: [<IHpTimeSeriesChartTimeSeries>{
       name: "red",
       color: "red",
@@ -37,12 +32,12 @@ const buildInitialState = ():IHpTimeSeriesChartState => {
 /**
  * For testing only
  */
-const randomContinousUnixTimePoints = (dateRangeDateFrom: Date, dateRangeDateTo: Date): IUnixTimePoint[] => {
-  let referenceDate = new Date(dateRangeDateFrom.getTime());
+const randomContinousUnixTimePoints = (dateFrom: Date, dateTo: Date): IUnixTimePoint[] => {
+  let referenceDate = new Date(dateFrom.getTime());
   let result = [];
   let currentValue = _.random(50, 100);
   let iterationIndex = 0;
-  while (dateFns.isBefore(referenceDate, dateRangeDateTo)) {
+  while (dateFns.isBefore(referenceDate, dateTo)) {
     result.push(<IUnixTimePoint>{ 
       unix: referenceDate.getTime(), 
       value: currentValue

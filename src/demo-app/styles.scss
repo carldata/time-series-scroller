@@ -1,3 +1,39 @@
-.form-group {
-  padding: 4px;
+@import './node_modules/bootstrap/scss/bootstrap.scss';
+
+
+.form-control-xs {
+  @extend .form-control;
+  height: 24px;
+  padding: 1px 1px;
+  margin: 5px;
+}
+
+.card-body {
+  @extend .card-body;
+  padding: 0.5rem;
+}
+
+.col {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+div .time-series-scroller {
+  max-height: 450px;
+}
+
+@include media-breakpoint-up(xs) { 
+  .master-div {
+    padding-top: 0px;
+  }
+}
+@include media-breakpoint-up(sm) { 
+  .master-div {
+    padding-top: 10px;
+  } 
+ }
+@include media-breakpoint-up(md) { 
+  .master-div {
+    padding-top: 15px;
+  } 
 }

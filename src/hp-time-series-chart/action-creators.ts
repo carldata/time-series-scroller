@@ -3,60 +3,21 @@
  */
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
-import { createAction, Action } from 'redux-actions';
-import { Dispatch } from 'redux';
-import { EnumZoomSelected } from './state/enums';
 import { IExternalSourceTimeSeries } from './state/time-series';
+import { GenerateRandomDataAction, SetDataAction } from './actions';
 
-export const hpTimeSeriesChartActionTypes = {
-  /**
-   * Used for test purposes only 
-   */
-  GENERATE_RANDOM_DATA: 'GENERATE_RANDOM_DATA',
-  SET_WINDOW_UNIX_FROM_TO: 'SET_WINDOW_UNIX_FROM_TO',
-  SET_WINDOW_WIDTH_MINUTES: 'SET_WINDOW_WIDTH_MINUTES',
-  SET_ZOOM: 'SET_ZOOM',
-  /**
-   * Action cast as datas source is set from external source 
-   */
-  SET_DATA: 'SET_DATA',
-  SCROLL_TO_THE_NEXT_FRAME: 'SCROLL_TO_THE_NEXT_FRAME',
-  SCROLL_TO_THE_PREVIOUS_FRAME: 'SCROLL_TO_THE_PREVIOUS_FRAME'
+type IGenerateRandomDataActionActionCreator = (from: Date, to: Date) => GenerateRandomDataAction;
+type ISetDataActionCreator = (series: IExternalSourceTimeSeries[]) => SetDataAction;
+
+const generateRandomData: IGenerateRandomDataActionActionCreator = (from: Date, to: Date) =>
+  _.toPlainObject(new GenerateRandomDataAction(from, to));
+
+const setData: ISetDataActionCreator = (series: IExternalSourceTimeSeries[]) =>
+  _.toPlainObject(new SetDataAction(series));
+
+export {
+  IGenerateRandomDataActionActionCreator,
+  generateRandomData,
+  ISetDataActionCreator,
+  setData
 };
-
-/**
- * Public API of HP Time Series Chart component
- * This fragment of code that actually transforms call arguments 
- * (used in conjunction with dispatch(actionCall())) to action payload object 
- * (the returned type is the FIRST generic type parameter).
- */
-export const hpTimeSeriesChartActionCreators = {
-  generateRandomData: createAction<Date[], Date[]>(
-    hpTimeSeriesChartActionTypes.GENERATE_RANDOM_DATA,
-    (dates: Date[]) => dates
-  ),
-  setData: createAction<IExternalSourceTimeSeries[], IExternalSourceTimeSeries[]>(
-    hpTimeSeriesChartActionTypes.SET_DATA,
-    (series: IExternalSourceTimeSeries[]) => series
-  ),
-  setWindowUnixFromTo: createAction<number[], number, number>(
-    hpTimeSeriesChartActionTypes.SET_WINDOW_UNIX_FROM_TO,
-    (unixFrom: number, unixTo: number) => [unixFrom, unixTo]
-  ),
-  setWindowWidthMinutes: createAction<number, number>(
-    hpTimeSeriesChartActionTypes.SET_WINDOW_WIDTH_MINUTES,
-    (v: number) => v
-  ),
-  setZoomWindowLevel: createAction<[EnumZoomSelected, number], EnumZoomSelected, number>(
-    hpTimeSeriesChartActionTypes.SET_ZOOM,
-    (zoom: EnumZoomSelected, widthPx: number) => [zoom, widthPx]
-  ),
-  scrollToThePreviousFrame: createAction<void>(
-    hpTimeSeriesChartActionTypes.SCROLL_TO_THE_PREVIOUS_FRAME,
-    () => null
-  ),
-  scrollToTheNextFrame: createAction<void>(
-    hpTimeSeriesChartActionTypes.SCROLL_TO_THE_NEXT_FRAME,
-    () => null
-  )
-}

@@ -52,11 +52,16 @@ module.exports = env => {
         },
         {
           test: /\.scss$/,
-          use: recompileScssToDts ? ['typings-for-css-modules-loader?modules&namedExport&sass&camelCase'] : [
-            'style-loader',
-            'css-loader',
-            'sass-loader'
-          ],
+          use: recompileScssToDts ? ['typings-for-css-modules-loader?modules&namedExport&sass&camelCase'] : [{
+            loader: "style-loader"
+          }, {
+            loader: "css-loader"
+          }, {
+            loader: "sass-loader",
+            options: {
+              includePaths: []
+            }
+          }],
         },
         {
           test: /\.(png|jpg|gif)$/,

@@ -13,7 +13,7 @@ namespace CsvFiles
     /**
       This C# program generates CSV records in a time,value format
      */
-    class Program
+    class CsvTimeSeriesGenerator
     {
         
         private static void GenerateRecords(int numberOfRecords, string outputFileName) 
