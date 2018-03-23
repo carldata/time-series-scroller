@@ -43,6 +43,9 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
     }
   }
 
+  private isWorkingInDevMode = (): boolean =>
+    _.startsWith(document.baseURI, 'http://localhost:9000');
+
   public render() {
     return (
       <div className="container container-fluid">
@@ -78,15 +81,18 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
                     <button type="button" className="btn" onClick={() => this.props.loadCsv("50.csv", this.state.useStreaming)}>
                       Load 50
                     </button>
-                    <button type="button" className="btn" onClick={() => this.props.loadCsv("50k.csv", this.state.useStreaming)}>
+                    <button type="button" className="btn" onClick={() => this.props.loadCsv("10k.csv", this.state.useStreaming)}>
+                      Load 10k
+                    </button>
+                    {this.isWorkingInDevMode() && <button type="button" className="btn" onClick={() => this.props.loadCsv("50k.csv", this.state.useStreaming)}>
                       Load 50k
-                    </button>
-                    <button type="button" className="btn" onClick={() => this.props.loadCsv("250k.csv", this.state.useStreaming)}>
+                    </button>}
+                    {this.isWorkingInDevMode() && <button type="button" className="btn" onClick={() => this.props.loadCsv("250k.csv", this.state.useStreaming)}>
                       Load 250k
-                    </button>
-                    <button type="button" className="btn" onClick={() => this.props.loadCsv("2M.csv", this.state.useStreaming)}>
+                    </button>}
+                    {this.isWorkingInDevMode() && <button type="button" className="btn" onClick={() => this.props.loadCsv("2M.csv", this.state.useStreaming)}>
                       Load 2M
-                    </button>
+                    </button>}
                   </div> &nbsp;
                   <label htmlFor="chbUseStreaming">
                     <input
