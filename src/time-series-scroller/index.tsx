@@ -39,7 +39,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
     this.state = {
       windowUnixFrom: props.chartState.dateRangeUnixFrom,
       windowUnixTo: props.chartState.dateRangeUnixTo,
-      chartState: props.chartState,
+      chartState: _.cloneDeep(props.chartState),
       sliderScss: props.sliderScss,
       timeSeriesChartScss: props.timeSeriesChartScss
     };
@@ -47,7 +47,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
 
   componentWillReceiveProps(nextProps: Readonly<IHpTimeSeriesScrollerProps>, nextContext: any) {
     this.setState(_.extend({}, {
-      chartState: nextProps.chartState,
+      chartState: _.cloneDeep(nextProps.chartState),
       sliderScss: _.extend(nextProps.sliderScss,
         _.isObject(this.parentElement) && _.isBoolean(this.props.fitToParentSize) && this.props.fitToParentSize ? {
           widthPx: this.parentElement.clientWidth

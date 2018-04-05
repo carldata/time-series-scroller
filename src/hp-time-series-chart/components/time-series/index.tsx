@@ -4,7 +4,7 @@ import { IOnScreenTimeSeries } from '../../state/time-series';
 import { ITimeSeriesBucket } from '../../calculations/interfaces';
 import { EnumTimeSeriesType } from '../../state/enums';
 import { renderLineTimeSeries } from './line-time-series';
-import { renderDotTimeSeries } from './dot-time-series';
+import { renderDotTimeSeries, EnumDotRenderStrategy } from './dot-time-series';
 
 export interface ITimeSeriesProps {
   /**
@@ -47,11 +47,11 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
           result.push(renderLineTimeSeries(ctx));
           break;
         case EnumTimeSeriesType.Dots:
-          result.push(renderDotTimeSeries(ctx, 2));
+          result.push(renderDotTimeSeries(ctx, EnumDotRenderStrategy.ShowAll));
           break;
         case EnumTimeSeriesType.DottedLine:
           result.push(renderLineTimeSeries(ctx));
-          result.push(renderDotTimeSeries(ctx, 2));
+          result.push(renderDotTimeSeries(ctx, EnumDotRenderStrategy.ShowDataSourceProximityFiltered));
           break;
       }
     })

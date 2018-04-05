@@ -75,12 +75,11 @@ const getTimeSeriesBuckets = (allData: IUnixTimePoint[],
     referenceBucket.minY = el.value < referenceBucket.minY ? el.value : referenceBucket.minY;
     referenceBucket.maxY = el.value > referenceBucket.maxY ? el.value : referenceBucket.maxY;
   }
-  const filtered = _.filter(buckets, b => b.unixFrom >= filterFrom && b.unixTo <= filterTo);
   return {
-    buckets: filtered,
-    shadowPreceding: buckets.length > 0 && _.first(buckets).unixFrom <= filterFrom ? null : getBucketOutside(allData, EnumBrowseDirection.Backward, filterFrom, filterTo),
-    shadowSucceeding: buckets.length > 0 && _.last(buckets).unixTo >= filterTo ? null : getBucketOutside(allData, EnumBrowseDirection.Forward, filterFrom, filterTo)
-  };
+    buckets: _.filter(buckets, b => b.unixFrom >= filterFrom && b.unixTo <= filterTo),
+    shadowPreceding: getBucketOutside(allData, EnumBrowseDirection.Backward, filterFrom, filterTo),
+    shadowSucceeding: getBucketOutside(allData, EnumBrowseDirection.Forward, filterFrom, filterTo)
+  } as IChartTimeSeriesBuckets;
 }
 
 const convertToOnScreenTimeSeries = (series: IHpTimeSeriesChartTimeSeries[],
