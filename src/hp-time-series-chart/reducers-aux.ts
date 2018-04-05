@@ -24,7 +24,8 @@ const buildInitialState = ():IHpTimeSeriesChartState => {
     windowUnixFrom: currentDate.getTime(),
     windowUnixTo: dateFns.addHours(currentDate, 6).getTime(),
     yMin: 0,
-    yMax: 0
+    yMax: 0,
+    rangeSelections: []
   };
   return result;
 }

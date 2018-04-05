@@ -5,6 +5,7 @@ $hpTimeSeriesChartPaddingBottomPx: 50px;
 $hpTimeSeriesChartPaddingLeftPx: 40px;
 $hpTimeSeriesChartPaddingRightPx: 10px;
 $hpTimeSeriesChartPaddingTopPx: 10px;
+$hpTimeSeriesUnixRangeColor: rgba(128, 128, 128, 128);
 :export {
   widthPx: strip-unit($hpTimeSeriesChartWidthPx);
   heightPx: strip-unit($hpTimeSeriesChartHeightPx);
@@ -12,4 +13,5 @@ $hpTimeSeriesChartPaddingTopPx: 10px;
   paddingLeftPx: strip-unit($hpTimeSeriesChartPaddingLeftPx);
   paddingRightPx: strip-unit($hpTimeSeriesChartPaddingRightPx);
   paddingTopPx: strip-unit($hpTimeSeriesChartPaddingTopPx);
+  unixRangeColor: $hpTimeSeriesUnixRangeColor;
 }

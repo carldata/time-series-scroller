@@ -1,5 +1,6 @@
 import { IUnixTimePoint } from './unix-time-point'
 import { IHpTimeSeriesChartTimeSeries } from './time-series';
+import { IUnixTimeRangeSelection } from './unix-time-range-selection';
 
 export interface IHpTimeSeriesChartState {
   /**
@@ -34,4 +35,6 @@ export interface IHpTimeSeriesChartState {
    * Currently there is support for only one !
    */
   series: IHpTimeSeriesChartTimeSeries[];
+
+  rangeSelections: IUnixTimeRangeSelection[];
 };

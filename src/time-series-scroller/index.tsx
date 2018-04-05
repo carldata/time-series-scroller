@@ -9,11 +9,13 @@ import { HpSlider } from '../hp-slider';
 import { EnumHpTimeSeriesChartMode, HpTimeSeriesChart } from '../hp-time-series-chart';
 import { IHpTimeSeriesChartScssGeneric, IHpSliderScssGeneric } from '../sass/styles';
 import { IHpTimeSeriesChartState } from '../hp-time-series-chart/state';
+import { IInteractions } from '../hp-time-series-chart/interactions';
 
 export interface IHpTimeSeriesScrollerProps {
   chartState: IHpTimeSeriesChartState;
   sliderScss: IHpSliderScssGeneric<number>;
   timeSeriesChartScss: IHpTimeSeriesChartScssGeneric<number>;
+  interactions?: IInteractions;
   displaySlider?: boolean;
   fitToParentSize?: boolean;
 }
@@ -91,6 +93,11 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
     }
   }
 
+  private addMouseCallbacks() {
+    this.parentElement.onmouseup = (ev) => console.log(ev.offsetX);
+    this.parentElement.onmousedown = (ev) => console.log(ev.offsetX);
+  }
+
   public componentWillMount() {
     this.resizeCallback();
   }
@@ -102,12 +109,17 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
   
   public componentWillUnmount() {
     window.removeEventListener("resize", this.resizeCallback);
+    if (_.isObject(this.parentElement)) {
+      this.parentElement.onmouseup = null;
+      this.parentElement.onmousedown = null;
+    }
   }
 
   public render() {
     return (<div ref={(el) => { 
       if (_.isObject(el))
         this.parentElement = el.parentElement;
+        this.addMouseCallbacks();
     }}>
       <HpTimeSeriesChart scss={this.state.timeSeriesChartScss} state={this.state.chartState} />
       <br />
