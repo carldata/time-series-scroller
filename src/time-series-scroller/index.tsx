@@ -93,11 +93,6 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
     }
   }
 
-  private addMouseCallbacks() {
-    this.parentElement.onmouseup = (ev) => console.log(ev.offsetX);
-    this.parentElement.onmousedown = (ev) => console.log(ev.offsetX);
-  }
-
   public componentWillMount() {
     this.resizeCallback();
   }
@@ -119,7 +114,6 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
     return (<div ref={(el) => { 
       if (_.isObject(el))
         this.parentElement = el.parentElement;
-        this.addMouseCallbacks();
     }}>
       <HpTimeSeriesChart scss={this.state.timeSeriesChartScss} state={this.state.chartState} />
       <br />

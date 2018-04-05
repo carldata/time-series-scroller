@@ -11,6 +11,7 @@ import { ValueAxis } from './components/value-axis';
 import { IHpTimeSeriesChartScss } from '../sass/styles';
 import { IHpTimeSeriesChartState } from './state';
 import { IOnScreenTimeSeries, IHpTimeSeriesChartTimeSeries } from './state/time-series';
+import { registerInteractionsCallbacks } from './interactions';
 
 export enum EnumHpTimeSeriesChartMode {
   Standalone,
@@ -61,6 +62,10 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
   return (
     <svg 
       style={getStyle()}
+      ref={(el) => {
+        if (_.isObject(el))
+          registerInteractionsCallbacks(el);
+      }}
       width={props.scss.widthPx} 
       height={props.scss.heightPx}>
       <TimeSeries 

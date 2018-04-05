@@ -3,3 +3,7 @@ export interface IInteractions {
   mouseButtonUp: (unix: number) => void;
   mouseMoved: (unix: number) => void;
 }
+
+export const registerInteractionsCallbacks = (el: SVGSVGElement) => {
+  el.onmouseup = (ev) => console.log(ev.offsetX);
+}
