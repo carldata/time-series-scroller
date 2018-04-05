@@ -88,8 +88,12 @@ Snapshots:   0 total
 ## Exposing as npm package:
 
 In src folder run:
-```
-tsc --jsx react --listEmittedFiles --declaration --outDir build
+```javascript
+grunt --os=osx //mac
+grunt --os=win //windows
 ```
 
-
+then 
+```javascript
+npm version patch
+```

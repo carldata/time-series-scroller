@@ -28,8 +28,8 @@ const getBucketOutside = (allData: IUnixTimePoint[],
       numberOfSamples: 1,
       firstSample: sample,
       lastSample: sample,
-      unixFrom: browseDirection == EnumBrowseDirection.Backward ? filterFrom : filterTo,
-      unixTo: browseDirection == EnumBrowseDirection.Backward ? filterFrom : filterTo
+      unixFrom: sample.unix,
+      unixTo: sample.unix
     } : null;
 }
 

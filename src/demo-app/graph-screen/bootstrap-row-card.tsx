@@ -1,13 +1,13 @@
 import * as _ from "lodash";
 import * as React from "react";
 
-interface IProps extends React.Props<string> {
+export interface IBootstrapRowCardProps extends React.Props<string> {
   additionalCssStyle: string;
   title: string;
   subtitle?: string;
 }
 
-export const BoostrapRowCard = (props: IProps) => {
+export const BoostrapRowCard = (props: IBootstrapRowCardProps) => {
   const className = `col card ${props.additionalCssStyle}`;
   return (<div className='row'>
     <div className={className}>
