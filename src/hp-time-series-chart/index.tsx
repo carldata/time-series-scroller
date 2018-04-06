@@ -11,7 +11,7 @@ import { ValueAxis } from './components/value-axis';
 import { IHpTimeSeriesChartScss } from '../sass/styles';
 import { IHpTimeSeriesChartState } from './state';
 import { IOnScreenTimeSeries, IHpTimeSeriesChartTimeSeries } from './state/time-series';
-import { registerInteractionsCallbacks } from './interactions';
+import { IInteractions } from './interactions';
 
 export enum EnumHpTimeSeriesChartMode {
   Standalone,
@@ -21,6 +21,7 @@ export enum EnumHpTimeSeriesChartMode {
 export interface IHpTimeSeriesChartProps {
   state: IHpTimeSeriesChartState;
   scss: IHpTimeSeriesChartScss;
+  interactions?: IInteractions;
   mode?: EnumHpTimeSeriesChartMode;
 }
 
@@ -42,13 +43,20 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
     return (_.isUndefined(props.mode) || (props.mode == EnumHpTimeSeriesChartMode.Standalone));
   }
 
-  const getXScale = () => {
-    return d3.scaleTime()
+  /**
+   * converts x (on screen) coordinate to unix date-time
+   */
+  const convertXToUnix = (x: number): number => {
+    return props.state.windowUnixFrom + (x - props.scss.paddingLeftPx)/ 
+      (props.scss.widthPx - props.scss.paddingLeftPx - props.scss.paddingRightPx)*
+      (props.state.windowUnixTo - props.state.windowUnixFrom);
+  }
+
+  const getXScale = () => 
+    d3.scaleTime()
       .domain([props.state.windowUnixFrom, props.state.windowUnixTo])
-      .range([props.scss.paddingLeftPx, 
-        props.scss.widthPx - props.scss.paddingLeftPx - props.scss.paddingRightPx]);
-  };
-  
+      .range([props.scss.paddingLeftPx, props.scss.widthPx - props.scss.paddingRightPx]);
+
   const getYScale = () => {
     return d3.scaleLinear()
       .domain([props.state.yMin, props.state.yMax])
@@ -62,9 +70,13 @@ export const HpTimeSeriesChart = (props: IHpTimeSeriesChartProps) => {
   return (
     <svg 
       style={getStyle()}
-      ref={(el) => {
-        if (_.isObject(el))
-          registerInteractionsCallbacks(el);
+      ref={(svg) => {
+        if (_.isObject(props.interactions) && _.isObject(svg)) {
+          if (_.isFunction(props.interactions.mouseButtonDown))
+            svg.onmousedown = (ev) => props.interactions.mouseButtonDown(convertXToUnix(ev.offsetX));
+          if (_.isFunction(props.interactions.mouseButtonUp))
+            svg.onmouseup = (ev) => props.interactions.mouseButtonUp(convertXToUnix(ev.offsetX));
+        }
       }}
       width={props.scss.widthPx} 
       height={props.scss.heightPx}>

@@ -113,6 +113,10 @@ class GraphScreenComponent extends React.Component<IGraphScreenProps & IGraphScr
             timeSeriesChartScss={convertHpTimeSeriesChartScss(hpTimeSeriesChartStyles)}
             chartState={this.props.chartState}
             fitToParentSize
+            interactions={{
+              mouseButtonDown: (unixTime) => console.log(`Mouse button down ${new Date(unixTime)}`),
+              mouseButtonUp: (unixTime) => console.log(`Mouse button up ${new Date(unixTime)}`),
+            }}
           />
         </div>
       </div>

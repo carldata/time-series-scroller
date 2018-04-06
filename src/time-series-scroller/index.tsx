@@ -115,7 +115,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
       if (_.isObject(el))
         this.parentElement = el.parentElement;
     }}>
-      <HpTimeSeriesChart scss={this.state.timeSeriesChartScss} state={this.state.chartState} />
+      <HpTimeSeriesChart scss={this.state.timeSeriesChartScss} state={this.state.chartState} interactions={this.props.interactions} />
       <br />
       {(_.isBoolean(this.props.displaySlider) ? this.props.displaySlider : true) &&
         <HpSlider
