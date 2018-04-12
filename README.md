@@ -3,7 +3,7 @@
 Specialized time-series-over-domain component focused on code quality and performance. 
 100% functional, yet not mature - still beta/under development (see project goals below).
 All components are written from scratch using D3 and primitive HTML elements, 
-this is not a mock over a third-party library.
+this is not a wrapper over a third-party library.
 
 ## Getting started with the development version
 
