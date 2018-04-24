@@ -10,8 +10,7 @@ import { EnumHpTimeSeriesChartMode, HpTimeSeriesChart } from '../hp-time-series-
 import { IHpTimeSeriesChartScssGeneric, IHpSliderScssGeneric } from '../sass/styles';
 import { IHpTimeSeriesChartState } from '../hp-time-series-chart/state';
 import { IInteractions } from '../hp-time-series-chart/interactions';
-import { handleMovedCallback } from './slider-to-chart-integration';
-export { handleMovedCallback };
+import { handleMovedCallback } from '../common/slider-to-chart-integration';
 
 export interface IHpTimeSeriesScrollerProps {
   chartState: IHpTimeSeriesChartState;
@@ -117,7 +116,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
       if (_.isObject(el))
         this.parentElement = el.parentElement;
     }}>
-      <HpTimeSeriesChart scss={this.state.timeSeriesChartScss} state={this.state.chartState} interactions={this.props.interactions} />
+      <HpTimeSeriesChart scss={this.state.timeSeriesChartScss} state={this.state.chartState} />
       <br />
       {(_.isBoolean(this.props.displaySlider) ? this.props.displaySlider : true) &&
         <HpSlider

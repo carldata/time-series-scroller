@@ -1,0 +1,44 @@
+@import 'aux-functions';
+$hpSliderWidthPx: 750px;
+$hpSliderHeightPx: 80px;
+$hpSliderHandleWidthPx: 15px;
+$hpSliderBorderRadiusPx: 5px;
+.hp-slider {
+  position: relative;
+}
+
+.hp-slider-inner-border-rect {
+  border: 1px solid gray;
+  height: $hpSliderHeightPx;
+  border-radius: $hpSliderBorderRadiusPx;
+}
+
+.hp-slider-handle {
+  background-color: navy;
+  opacity: 0.5;
+  height: $hpSliderHeightPx;
+}
+
+.hp-slider-handle-right {
+  border-top-right-radius: $hpSliderBorderRadiusPx;
+  border-bottom-right-radius: $hpSliderBorderRadiusPx;
+}
+
+.hp-slider-handle-left {
+  border-top-left-radius: $hpSliderBorderRadiusPx;
+  border-bottom-left-radius: $hpSliderBorderRadiusPx;
+}
+
+.hp-slider-handle-dragBar {
+  background-color: cadetblue
+}
+
+.hpSliderHandle-pressed {
+  background-color: red
+}
+
+:export {
+  widthPx: strip-unit($hpSliderWidthPx);
+  heightPx: strip-unit($hpSliderHeightPx);
+  handleWidthPx: strip-unit($hpSliderHandleWidthPx);
+}
