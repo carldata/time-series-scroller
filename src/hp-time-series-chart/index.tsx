@@ -13,6 +13,17 @@ import { IHpTimeSeriesChartState } from './state';
 import { IOnScreenTimeSeries, IHpTimeSeriesChartTimeSeries } from './state/time-series';
 import { IInteractions } from './interactions';
 
+export { hpTimeSeriesChartReducer } from './reducers';
+export { csvLoadingAuxiliary } from './csv-loading/auxiliary';
+export { IUnixTimePoint } from './state/unix-time-point';
+export { hpTimeSeriesChartCalculations } from './calculations';
+export { generateRandomData, setData, IGenerateRandomDataActionActionCreator, ISetDataActionCreator } from './action-creators';
+export { hpTimeSeriesChartAuxiliary } from './auxiliary';
+export { IHpTimeSeriesChartState } from './state';
+export { hpTimeSeriesChartReducerAuxFunctions } from './reducers-aux';
+export { IExternalSourceTimeSeries } from './state/time-series';
+export { EnumTimeSeriesType } from './state/enums';
+
 export enum EnumHpTimeSeriesChartMode {
   Standalone,
   SliderEmbedded

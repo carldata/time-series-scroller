@@ -2,8 +2,8 @@ import './styles.scss';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { GraphScreen } from './graph-screen';
-import { store } from './graph-screen/store-creator';
+import { GraphScreen } from './time-series-scroller';
+import { store } from './time-series-scroller/store-creator';
 
 ReactDOM.render(
   <Provider store={store}>
