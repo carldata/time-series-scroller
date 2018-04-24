@@ -10,6 +10,8 @@ import { EnumHpTimeSeriesChartMode, HpTimeSeriesChart } from '../hp-time-series-
 import { IHpTimeSeriesChartScssGeneric, IHpSliderScssGeneric } from '../sass/styles';
 import { IHpTimeSeriesChartState } from '../hp-time-series-chart/state';
 import { IInteractions } from '../hp-time-series-chart/interactions';
+import { handleMovedCallback } from './slider-to-chart-integration';
+export { handleMovedCallback };
 
 export interface IHpTimeSeriesScrollerProps {
   chartState: IHpTimeSeriesChartState;
@@ -64,7 +66,7 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
     } as IHpTimeSeriesScrollerState));
   }
 
-  private getDomain = (): IDomain<number> => {
+  public getDomain = (): IDomain<number> => {
     return { domainMin: this.props.chartState.dateRangeUnixFrom, domainMax: this.props.chartState.dateRangeUnixTo }
   } 
 
@@ -124,28 +126,15 @@ export class HpTimeSeriesScroller extends React.Component<IHpTimeSeriesScrollerP
           scss={this.props.sliderScss}
           displayDragBar={true}
           handleMoved={(value: number | number[], type: EnumHandleType) => {
-            let newUnixFrom = this.state.windowUnixFrom;
-            let newUnixTo = this.state.windowUnixTo;
-            switch (type) {
-              case EnumHandleType.Left:
-                newUnixFrom = _.isNumber(value) ? value : 0;
-                break;
-              case EnumHandleType.Right:
-                newUnixTo = _.isNumber(value) ? value : 0;
-                break;
-              case EnumHandleType.DragBar:
-                newUnixFrom = _.isArray(value) ? value[0] : 0
-                newUnixTo = _.isArray(value) ? value[1] : 0
-                break;
-            }
+            const { windowUnixFrom, windowUnixTo } = handleMovedCallback(value, type, this.state);
             this.setState({
-              windowUnixFrom: newUnixFrom,
-              windowUnixTo: newUnixTo,
+              windowUnixFrom: windowUnixFrom,
+              windowUnixTo: windowUnixTo,
               chartState: _.extend(this.state.chartState, {
-                windowUnixFrom: newUnixFrom,
-                windowUnixTo: newUnixTo
+                windowUnixFrom: windowUnixFrom,
+                windowUnixTo: windowUnixTo
               } as IHpTimeSeriesChartState)
-            })
+            });
           }}>
           <HpTimeSeriesChart
             scss={this._getChartInSliderDimensions()}
