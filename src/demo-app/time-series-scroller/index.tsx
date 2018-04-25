@@ -19,7 +19,7 @@ import { convertHpSliderScss, convertHpTimeSeriesChartScss } from '../../sass/st
 import { loadCsv, ILoadCsvEffect } from '../../hp-time-series-chart/csv-loading/effects';
 import { generateTwoRandomSeries, IGenerateTwoRandomSeriesActionCreator } from './action-creators';
 import { IAppState } from './state';
-import { BoostrapRowCard } from './bootstrap-row-card';
+import { BoostrapRowCard } from '../common/bootstrap-row-card';
 
 export interface IGraphScreenProps {
   chartState: IHpTimeSeriesChartState;

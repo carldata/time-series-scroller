@@ -14,7 +14,7 @@ export const BoostrapRowCard = (props: IBootstrapRowCardProps) => {
       <div className="card-body">
         <div className="card-title"><h5>{props.title}</h5>
           {_.isString(props.subtitle) && 
-            <small className="form-text text-white">Display demo of HpTimeSeriesScroller controller</small>}
+            <small className="form-text text-white">{props.subtitle}</small>}
         </div>
         {_.isObject(props.children) && <div className="card-text">{props.children}</div>}
       </div>

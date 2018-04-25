@@ -1,9 +1,12 @@
 import * as _ from "lodash";
 import { EnumHandleType } from "..";
 
-export type UnixFromTo = { windowUnixFrom: number, windowUnixTo: number };
+export interface IUnixFromTo { 
+  windowUnixFrom: number,
+  windowUnixTo: number 
+};
 
-export const handleMovedCallback = (value: number | number[], type: EnumHandleType, state: UnixFromTo): UnixFromTo => {
+export const handleMovedCallback = (value: number | number[], type: EnumHandleType, state: IUnixFromTo): IUnixFromTo => {
   let newUnixFrom = state.windowUnixFrom;
   let newUnixTo = state.windowUnixTo;
   switch (type) {
@@ -21,5 +24,5 @@ export const handleMovedCallback = (value: number | number[], type: EnumHandleTy
   return {
     windowUnixFrom: newUnixFrom,
     windowUnixTo: newUnixTo,
-  } as UnixFromTo;
+  } as IUnixFromTo;
 }

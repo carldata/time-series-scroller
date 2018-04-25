@@ -20,4 +20,6 @@ export {
   setData,
 } from './hp-time-series-chart';
 
-export { HpTimeSeriesScroller, IHpTimeSeriesScrollerProps, handleMovedCallback } from './time-series-scroller';
+export { HpTimeSeriesScroller, IHpTimeSeriesScrollerProps } from './time-series-scroller';
+
+export { handleMovedCallback, IUnixFromTo } from './common/slider-to-chart-integration';
