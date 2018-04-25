@@ -1,6 +1,11 @@
-export interface IHpSliderScssGeneric<T extends string|number> {
+export interface IHpResizableScssGeneric<T extends string|number> {
   widthPx: T;
   heightPx: T;
+}
+
+export type IHpResizableScss = IHpResizableScssGeneric<number>;
+
+export interface IHpSliderScssGeneric<T extends string|number> extends IHpResizableScssGeneric<T> {
   handleWidthPx: T;
 }
 
@@ -14,9 +19,7 @@ export const convertHpSliderScss = (source: IHpSliderScssGeneric<string>): IHpSl
   }
 }
 
-export interface IHpTimeSeriesChartScssGeneric<T extends string|number> {
-  widthPx: T;
-  heightPx: T;
+export interface IHpTimeSeriesChartScssGeneric<T extends string|number> extends IHpResizableScssGeneric<T> {
   paddingBottomPx: T;
   paddingLeftPx: T;
   paddingRightPx: T;
