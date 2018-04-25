@@ -7,6 +7,8 @@ import { HpSliderHandle, IHpSliderHandleMoved } from './components/handle';
 import { EnumHandleType } from './enums';
 import { IHpSliderScss } from '../sass/styles';
 
+export { EnumHandleType };
+
 export interface IHpSliderProps {
   scss: IHpSliderScss;
   /**
