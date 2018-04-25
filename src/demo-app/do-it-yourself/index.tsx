@@ -111,6 +111,7 @@ class DoItYourselfDemoComponent extends React.Component<IDoItYourselfDemoCompone
                 handleValues={{ left: this.state.windowUnixFrom, right: this.state.windowUnixTo }}
                 scss={scss.slider}
                 displayDragBar={true}
+                fitToParent={{ toWidth: true, offsetWidth: 35 }}
                 handleMoved={(value: number | number[], type: EnumHandleType) => {
                   const { windowUnixFrom, windowUnixTo } = handleMovedCallback(value, type, this.state);
                   this.setState({
@@ -139,6 +140,7 @@ class DoItYourselfDemoComponent extends React.Component<IDoItYourselfDemoCompone
                   scss={this._getChartInSliderDimensions()}
                   state={this.props.chartsState.rainfallChartState}
                   mode={EnumHpTimeSeriesChartMode.SliderEmbedded}
+                  fitToParent={{ toWidth: true, offsetWidth: 35 }}
                 />
               </HpSlider>
             </div>

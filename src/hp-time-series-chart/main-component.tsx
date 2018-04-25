@@ -2,27 +2,12 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import { IHpTimeSeriesChartBaseProps, HpTimeSeriesChartBase } from './base-component';
 import { IHpTimeSeriesChartScss } from '../sass/styles';
-import { HpResizeableComponent, IHpResizeableComponentProps, IHpResizeableComponentState } from '../hp-resizeable';
+import { HpBaseComponent, IHpBaseComponentProps, IHpBaseComponentState } from '../hp-base-component';
 
-export interface IParentSizeFitParamaters {
-  toWidth?: boolean;
-  toHeight?: boolean;
-  /**
-   * If fitToParentWidth is true, defines the offset of width that will be substracted
-   * from parent HTML client width and set as the final width to rendered SVG element
-   */
-  offsetWidth?: number;
-  /**
-   * If fitToParentWidth is true, defines the offset of height that will be substracted
-   * from parent HTML client height and set as the final height to rendered SVG element
-   */
-  offsetHeight?: number;
+export interface IHpTimeSeriesChartProps extends IHpTimeSeriesChartBaseProps, IHpBaseComponentProps<IHpTimeSeriesChartScss> {
 }
 
-export interface IHpTimeSeriesChartProps extends IHpTimeSeriesChartBaseProps, IHpResizeableComponentProps<IHpTimeSeriesChartScss> {
-}
-
-interface IHpTimeSeriesChartState extends IHpResizeableComponentState {
+interface IHpTimeSeriesChartState extends IHpBaseComponentState {
   /**
    * Since there are fitToParentWidth, fitToParentHeight props, 
    * we could keep recommended width/height in state only.
@@ -32,7 +17,7 @@ interface IHpTimeSeriesChartState extends IHpResizeableComponentState {
   scss: IHpTimeSeriesChartScss;
 }
 
-export class HpTimeSeriesChart extends HpResizeableComponent<IHpTimeSeriesChartBaseProps & IHpResizeableComponentProps<IHpTimeSeriesChartScss>, IHpTimeSeriesChartState, IHpTimeSeriesChartScss> {
+export class HpTimeSeriesChart extends HpBaseComponent<IHpTimeSeriesChartBaseProps & IHpBaseComponentProps<IHpTimeSeriesChartScss>, IHpTimeSeriesChartState, IHpTimeSeriesChartScss> {
   constructor(props: IHpTimeSeriesChartProps) {
     super(props);
     this.state = {

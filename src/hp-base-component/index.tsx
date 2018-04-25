@@ -7,26 +7,30 @@ export interface IParentSizeFitParamaters {
   toHeight?: boolean;
   /**
    * If fitToParentWidth is true, defines the offset of width that will be substracted
-   * from parent HTML client width and set as the final width to rendered SVG element
+   * from parent HTML client width and set as the final width
    */
   offsetWidth?: number;
   /**
    * If fitToParentWidth is true, defines the offset of height that will be substracted
-   * from parent HTML client height and set as the final height to rendered SVG element
+   * from parent HTML client height and set as the final height
    */
   offsetHeight?: number;
 }
 
-export interface IHpResizeableComponentProps<TCSS> {
+export interface IHpBaseComponentProps<TCSS> {
   fitToParent?: IParentSizeFitParamaters;
   scss: TCSS;
 }
 
-export interface IHpResizeableComponentState {
+export interface IHpBaseComponentState {
   scss: IHpResizableScss;
 }
 
-export abstract class HpResizeableComponent<P extends IHpResizeableComponentProps<TCSS>, S extends IHpResizeableComponentState, TCSS extends IHpResizableScss> extends React.Component<P, S> {
+/**
+ * Base component - to aviod code duplication with inheriting components. Current functionality include:
+ * - "fitting to" parent width and/or height
+ */
+export abstract class HpBaseComponent<P extends IHpBaseComponentProps<TCSS>, S extends IHpBaseComponentState, TCSS extends IHpResizableScss> extends React.Component<P, S> {
   protected parentElement: HTMLElement = null;
 
   private fitToParentWidth = (): boolean => _.isObject(this.props.fitToParent) && _.isBoolean(this.props.fitToParent.toWidth) && this.props.fitToParent.toWidth;
@@ -67,7 +71,7 @@ export abstract class HpResizeableComponent<P extends IHpResizeableComponentProp
     window.removeEventListener("resize", this.resizeCallback);
   }
 
-  public componentWillReceiveProps(nextProps: Readonly<IHpResizeableComponentProps<TCSS>>, nextContext: any) {
+  public componentWillReceiveProps(nextProps: Readonly<IHpBaseComponentProps<TCSS>>, nextContext: any) {
     this.setState({
       scss: _.extend(nextProps.scss, {
         widthPx: this.fitToParentWidth() ? this.parentElement.clientWidth - this.fitToParentWidthOffset() : nextProps.scss.widthPx,

@@ -1,0 +1,1 @@
+export { HpSlider, IHpSliderProps  } from './main-component';

@@ -7,7 +7,7 @@ import { HpSliderHandle, IHpSliderHandleMoved } from './components/handle';
 import { EnumHandleType } from './enums';
 import { IHpSliderScss } from '../sass/styles';
 
-export interface IHpSliderProps {
+export interface IHpSliderBaseProps {
   scss: IHpSliderScss;
   /**
    * The (real number, linear) domain provided for convenience of a particluar applications.
@@ -28,15 +28,16 @@ export interface IHpSliderProps {
    * Renders an additional element called a "drag bar", since it is designed for dragging.
    */
   displayDragBar: boolean;
-  handleMoved: IHpSliderHandleMoved;  
+  handleMoved: IHpSliderHandleMoved;
+  parentCallback?: (svg: HTMLElement) => void;
 }
 
-export interface IHpSliderState {
+interface IHpSliderBaseState {
   pressedHandle?: EnumHandleType | null;
   previousScreenX?: number;
 }
 
-export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
+export class HpSliderBase extends React.Component<IHpSliderBaseProps, IHpSliderBaseState>{
   constructor(props) {
     super(props);
     this.state = {
@@ -134,7 +135,11 @@ export class HpSlider extends React.Component<IHpSliderProps, IHpSliderState>{
   render() { 
     let correctedValues = this.correctedHandleValues();
     return (
-      <div className="hp-slider">
+      <div className="hp-slider" ref={(div) => {
+        if (_.isObject(div) && _.isFunction(this.props.parentCallback)) {
+          this.props.parentCallback(div);
+        }
+      }}>
         {this.props.children}
         <div 
           style={{ width: this.props.scss.widthPx, position: "absolute" }}

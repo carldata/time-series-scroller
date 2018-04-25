@@ -1,5 +1,7 @@
 export { EnumHandleType } from './hp-slider/enums';
-export { HpSlider, IHpSliderProps, IHpSliderState } from './hp-slider';
+
+export { HpSlider, IHpSliderProps } from './hp-slider';
+
 export { IHpTimeSeriesChartScss, convertHpTimeSeriesChartScss, IHpSliderScss, convertHpSliderScss } from './sass/styles';
 
 export { 
