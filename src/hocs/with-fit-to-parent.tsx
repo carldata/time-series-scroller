@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import { IResizableScss } from './scss';
 
-interface IWithFitToParentState {
+export interface IWithFitToParentState {
   width: number;
   height: number;
 }
@@ -34,13 +34,7 @@ export interface IResizeableComponentProps {
 export function withFitToParent<P extends IResizeableComponentProps>(WrappedComponent: React.ComponentClass<IResizeableComponentProps>|
                                                                                        React.StatelessComponent<IResizeableComponentProps>) {
   return class extends React.Component<P & IWithFitToParentProps, IWithFitToParentState> {
-    private parentElement: any = null;
-
-    private fitToParentWidth = (): boolean => _.isObject(this.props.fitToParent) && _.isBoolean(this.props.fitToParent.toWidth) && this.props.fitToParent.toWidth;
-    private fitToParentHeight = (): boolean => _.isObject(this.props.fitToParent) && _.isBoolean(this.props.fitToParent.toHeight) && this.props.fitToParent.toHeight;
-  
-    private fitToParentWidthOffset = (): number => _.isObject(this.props.fitToParent) && _.isNumber(this.props.fitToParent.offsetWidth) ? this.props.fitToParent.offsetWidth : 0;
-    private fitToParentHeightOffset = (): number => _.isObject(this.props.fitToParent) && _.isNumber(this.props.fitToParent.offsetHeight) ? this.props.fitToParent.offsetHeight : 0;
+    parentElement: any = null;
 
     constructor(props: P & IWithFitToParentProps) {
       super(props);
@@ -50,31 +44,37 @@ export function withFitToParent<P extends IResizeableComponentProps>(WrappedComp
       };
     }
 
-    protected resizeCallback = () => {
+    resizeCallback = () => {
+      const fitToParentWidth = (): boolean => _.isObject(this.props.fitToParent) && _.isBoolean(this.props.fitToParent.toWidth) && this.props.fitToParent.toWidth;
+      const fitToParentHeight = (): boolean => _.isObject(this.props.fitToParent) && _.isBoolean(this.props.fitToParent.toHeight) && this.props.fitToParent.toHeight;
+    
+      const fitToParentWidthOffset = (): number => _.isObject(this.props.fitToParent) && _.isNumber(this.props.fitToParent.offsetWidth) ? this.props.fitToParent.offsetWidth : 0;
+      const fitToParentHeightOffset = (): number => _.isObject(this.props.fitToParent) && _.isNumber(this.props.fitToParent.offsetHeight) ? this.props.fitToParent.offsetHeight : 0;
+  
       if (_.isObject(this.parentElement)) {
-        if (this.fitToParentWidth()) {
-          this.setState({ width: this.parentElement.clientWidth - this.fitToParentWidthOffset() });
+        if (fitToParentWidth()) {
+          this.setState({ width: this.parentElement.clientWidth - fitToParentWidthOffset() });
         }
-        if (this.fitToParentHeight()) {
-          this.setState({ height: this.parentElement.clientHeight - this.fitToParentHeightOffset() });
+        if (fitToParentHeight()) {
+          this.setState({ height: this.parentElement.clientHeight - fitToParentHeightOffset() });
         }
       }
     }
   
-    public componentWillMount() {
+    componentWillMount() {
       this.resizeCallback();
     }
   
-    public componentDidMount() {
+    componentDidMount() {
       window.addEventListener("resize", this.resizeCallback);
       this.resizeCallback();
     }
     
-    public componentWillUnmount() {
+    componentWillUnmount() {
       window.removeEventListener("resize", this.resizeCallback);
     }
   
-    public render(): JSX.Element {
+    render(): JSX.Element {
       return <WrappedComponent
         {...this.props}
         scss={_.extend(this.props.scss, {

@@ -32,7 +32,7 @@ export interface IHpSliderBaseProps {
   refCallback?: (svg: HTMLElement) => void;
 }
 
-interface IHpSliderBaseState {
+export interface IHpSliderBaseState {
   pressedHandle?: EnumHandleType | null;
   previousScreenX?: number;
 }
@@ -46,11 +46,11 @@ export class HpSliderBase extends React.Component<IHpSliderBaseProps, IHpSliderB
     };
   }
 
-  public componentDidMount() {
+  componentDidMount() {
     window.addEventListener('mouseup', this.globalMouseUp, false);
   }
 
-  public componentWillUnmount() {
+  componentWillUnmount() {
     window.removeEventListener('mouseup', this.globalMouseUp);
   }
 
