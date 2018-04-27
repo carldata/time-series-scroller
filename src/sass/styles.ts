@@ -1,11 +1,6 @@
-export interface IHpResizableScssGeneric<T extends string|number> {
-  widthPx: T;
-  heightPx: T;
-}
+import { IResizableScssGeneric } from "../hocs/scss";
 
-export type IHpResizableScss = IHpResizableScssGeneric<number>;
-
-export interface IHpSliderScssGeneric<T extends string|number> extends IHpResizableScssGeneric<T> {
+export interface IHpSliderScssGeneric<T extends string|number> extends IResizableScssGeneric<T> {
   handleWidthPx: T;
 }
 
@@ -19,7 +14,7 @@ export const convertHpSliderScss = (source: IHpSliderScssGeneric<string>): IHpSl
   }
 }
 
-export interface IHpTimeSeriesChartScssGeneric<T extends string|number> extends IHpResizableScssGeneric<T> {
+export interface IHpTimeSeriesChartScssGeneric<T extends string|number> extends IResizableScssGeneric<T> {
   paddingBottomPx: T;
   paddingLeftPx: T;
   paddingRightPx: T;

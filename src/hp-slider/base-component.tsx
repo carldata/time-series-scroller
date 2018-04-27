@@ -29,7 +29,7 @@ export interface IHpSliderBaseProps {
    */
   displayDragBar: boolean;
   handleMoved: IHpSliderHandleMoved;
-  parentCallback?: (svg: HTMLElement) => void;
+  refCallback?: (svg: HTMLElement) => void;
 }
 
 interface IHpSliderBaseState {
@@ -136,8 +136,8 @@ export class HpSliderBase extends React.Component<IHpSliderBaseProps, IHpSliderB
     let correctedValues = this.correctedHandleValues();
     return (
       <div className="hp-slider" ref={(div) => {
-        if (_.isObject(div) && _.isFunction(this.props.parentCallback)) {
-          this.props.parentCallback(div);
+        if (_.isObject(div) && _.isFunction(this.props.refCallback)) {
+          this.props.refCallback(div);
         }
       }}>
         {this.props.children}
