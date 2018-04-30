@@ -12,6 +12,7 @@ import { IHpTimeSeriesChartScss } from '../sass/styles';
 import { IHpTimeSeriesChartState } from './state';
 import { IOnScreenTimeSeries, IHpTimeSeriesChartTimeSeries } from './state/time-series';
 import { IInteractions } from './interactions';
+import { IParentSizeFitParamaters } from '../hocs/with-fit-to-parent';
 
 export enum EnumHpTimeSeriesChartMode {
   Standalone,
@@ -23,7 +24,7 @@ export interface IHpTimeSeriesChartBaseProps {
   scss: IHpTimeSeriesChartScss;
   interactions?: IInteractions;
   mode?: EnumHpTimeSeriesChartMode;
-  parentCallback?: (svg: HTMLElement) => void;
+  refCallback?: (ref: any) => void;
 }
 
 export const HpTimeSeriesChartBase = (props: IHpTimeSeriesChartBaseProps) => {
@@ -73,8 +74,8 @@ export const HpTimeSeriesChartBase = (props: IHpTimeSeriesChartBaseProps) => {
       style={getStyle()}
       ref={(svg) => {
         if (_.isObject(svg)) {
-          if (_.isFunction(props.parentCallback))
-            props.parentCallback(svg);
+          if (_.isFunction(props.refCallback))
+            props.refCallback(svg);
           if (_.isObject(props.interactions)) {
             if (_.isFunction(props.interactions.mouseButtonDown))
               svg.onmousedown = (ev) => props.interactions.mouseButtonDown(convertXToUnix(ev.offsetX));

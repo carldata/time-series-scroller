@@ -1,3 +1,14 @@
+export { 
+  IResizableScss,  
+} from './hocs/scss';
+
+export { 
+  IParentSizeFitParamaters,
+  IResizeableComponentProps,
+  IWithFitToParentProps,
+  withFitToParent,
+} from './hocs/with-fit-to-parent';
+
 export { EnumHandleType } from './hp-slider/enums';
 
 export { HpSlider, IHpSliderProps } from './hp-slider';

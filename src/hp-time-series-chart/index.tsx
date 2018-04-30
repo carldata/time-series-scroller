@@ -8,5 +8,5 @@ export { IHpTimeSeriesChartState } from './state';
 export { hpTimeSeriesChartReducerAuxFunctions } from './reducers-aux';
 export { IExternalSourceTimeSeries } from './state/time-series';
 export { EnumTimeSeriesType } from './state/enums';
-export { IHpTimeSeriesChartProps, HpTimeSeriesChart } from './main-component';
-export { EnumHpTimeSeriesChartMode } from './base-component';
+export { HpTimeSeriesChart } from './main-component';
+export { EnumHpTimeSeriesChartMode, IHpTimeSeriesChartBaseProps as IHpTimeSeriesChartProps } from './base-component';
