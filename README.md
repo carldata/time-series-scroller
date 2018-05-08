@@ -14,9 +14,9 @@ npm i
 npm run dev
 ```
 
-Everything succeeded, you should be seeing this (click below for brief You Tube demo):
+## Demo
 
-[![IMAGE ALT component demo](https://img.youtube.com/vi/yALqQtGD_Ak/0.jpg)](https://www.youtube.com/watch?v=yALqQtGD_Ak)
+[See it in action !](https://carldata.github.io/time-series-scroller/demo/)
 
 ## Getting started with the npm-dependency
 
