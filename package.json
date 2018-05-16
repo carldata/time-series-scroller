@@ -6,7 +6,6 @@
     "type": "git"
   },
   "scripts": {
-    "postinstall": "typings install",
     "dev": "webpack-dev-server --open --config webpack.config.js",
     "prod": "webpack --config webpack.config.js",
     "scss2dts": "webpack --config webpack.config.js --env.mode=scss2dts",
