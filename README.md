@@ -1,3 +1,5 @@
+[![Build status](https://travis-ci.org/carldata/time-series-scroller.svg?branch=master)](https://travis-ci.org/carldata/time-series-scroller)
+
 # time-series-scroller
 
 Specialized time-series-over-domain component focused on code quality and performance. 
