@@ -58,7 +58,7 @@ Note that each of the components can be used separately for different purposes :
 ## Testing
 
 ```
-npm run tests
+npm run test
 ```
 
 Currently it checks the bucketing algorithm calculations:
