@@ -3,7 +3,6 @@ import * as dateFns from 'date-fns';
 import { IUnixTimePoint } from '../state/unix-time-point';
 import { IHpTimeSeriesChartState } from '../state';
 import { IChartTimeSeriesBuckets, ITimeSeriesBucket } from './interfaces';
-import { csvLoadingCalculations } from '../csv-loading/calculations';
 import { unixIndexMapCalculations } from './unix-index-map';
 import { IHpTimeSeriesChartTimeSeries, IOnScreenTimeSeries } from '../state/time-series';
 

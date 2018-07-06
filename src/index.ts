@@ -36,3 +36,10 @@ export {
 export { HpTimeSeriesScroller, IHpTimeSeriesScrollerProps } from './time-series-scroller';
 
 export { handleMovedCallback, IUnixFromTo } from './common/slider-to-chart-integration';
+
+export { 
+  csvLoadingCalculations,
+  IExtractUnixTimePointsConfig, 
+  EnumRawCsvFormat 
+} from './hp-time-series-chart/csv-loading/calculations';
+
