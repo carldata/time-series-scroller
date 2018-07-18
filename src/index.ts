@@ -11,9 +11,18 @@ export {
 
 export { EnumHandleType } from './hp-slider/enums';
 
-export { HpSlider, IHpSliderProps } from './hp-slider';
+export {
+  HpSlider,
+  IHpSliderProps,
+  IDomain
+} from './hp-slider';
 
-export { IHpTimeSeriesChartScss, convertHpTimeSeriesChartScss, IHpSliderScss, convertHpSliderScss } from './sass/styles';
+export {
+  IHpTimeSeriesChartScss,
+  convertHpTimeSeriesChartScss,
+  IHpSliderScss,
+  convertHpSliderScss
+} from './sass/styles';
 
 export { 
   csvLoadingAuxiliary,
@@ -33,7 +42,10 @@ export {
   setData,
 } from './hp-time-series-chart';
 
-export { HpTimeSeriesScroller, IHpTimeSeriesScrollerProps } from './time-series-scroller';
+export {
+  HpTimeSeriesScroller, 
+  IHpTimeSeriesScrollerProps,
+} from './time-series-scroller';
 
 export { handleMovedCallback, IUnixFromTo } from './common/slider-to-chart-integration';
 

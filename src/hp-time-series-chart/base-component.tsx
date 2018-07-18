@@ -24,6 +24,10 @@ export interface IHpTimeSeriesChartBaseProps {
   scss: IHpTimeSeriesChartScss;
   interactions?: IInteractions;
   mode?: EnumHpTimeSeriesChartMode;
+  /**
+   * Set formatting accordingly: https://github.com/d3/d3-time-format/blob/master/README.md#timeFormat
+   */
+  dateTimeAxisTickFormat?: string;
   refCallback?: (ref: any) => void;
 }
 
@@ -94,7 +98,7 @@ export const HpTimeSeriesChartBase = (props: IHpTimeSeriesChartBaseProps) => {
                                                                                    props.state.windowUnixTo,
                                                                                    props.scss.widthPx)}
       />
-      {displayAxis() && <DateTimeAxis xScale={xScale} scss={props.scss} />}
+      {displayAxis() && <DateTimeAxis xScale={xScale} scss={props.scss} tickFormat={props.dateTimeAxisTickFormat} />}
       {displayAxis() && <ValueAxis yScale={yScale} scss={props.scss} />}
     </svg>
   );
