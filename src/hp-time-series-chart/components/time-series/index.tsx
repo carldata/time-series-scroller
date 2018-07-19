@@ -16,7 +16,6 @@ export interface ITimeSeriesProps {
    * placeholder for D3 function that calculates y-scale
    */
   yScale: (value: number) => number;
-  
   chartTimeSeries: IOnScreenTimeSeries[];
   yMin: number;
   yMax: number;

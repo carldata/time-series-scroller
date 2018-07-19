@@ -13,13 +13,3 @@ ReactDOM.render(
   </Provider>,
   document.body.appendChild(document.createElement('div'))
 );
-
-// import { timeSeriesScrollerStore } from './time-series-scroller/store-creator';
-// ReactDOM.render(
-//   <Provider store={timeSeriesScrollerStore}>
-//     <div className="master-div">
-//       <GraphScreen />
-//     </div>
-//   </Provider>,
-//   document.body.appendChild(document.createElement('div'))
-// );
