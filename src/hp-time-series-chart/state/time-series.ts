@@ -16,9 +16,10 @@ export interface IBaseTimeSeries {
  */
 export interface IOnScreenTimeSeries extends IBaseTimeSeries {
   /** 
-   * Identifier that is used in React key - it makes possible to display 
-   * sematically the same time series that consists of different fragments -
-   * as a matter of fact each fragment (on screen) is a different time series
+   * Identifier used in the React key to avoid collisions 
+   * amongst different series having the same (or no) name.
+   * Time series name + fragment id make up a (complex) key, 
+   * uniquely identifying the series component knows about. 
    */
   fragmentId: number;
   buckets: IChartTimeSeriesBuckets;

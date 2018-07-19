@@ -1,5 +1,6 @@
 export enum EnumTimeSeriesType {
   Line,
   Dots,
-  DottedLine
+  DottedLine,
+  Bars,
 }

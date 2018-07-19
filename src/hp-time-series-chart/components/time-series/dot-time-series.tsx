@@ -1,7 +1,6 @@
-import * as _ from 'lodash';
-import * as d3 from 'd3';
-import * as React from 'react';
-import { ITimeSeriesBucket, IChartTimeSeriesBuckets } from "../../calculations/interfaces";
+import _ from 'lodash';
+import React from 'react';
+import { ITimeSeriesBucket } from "../../calculations/interfaces";
 import { IOnScreenTimeSeries } from "../../state/time-series";
 import { ITimeSeriesRendererContext } from '.';
 import { SvgCircle } from './svg-circle';

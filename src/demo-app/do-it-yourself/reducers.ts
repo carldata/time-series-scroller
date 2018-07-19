@@ -1,16 +1,12 @@
 import * as _ from 'lodash';
 import * as dateFns from 'date-fns';
-import { IHpTimeSeriesChartState } from  '../../hp-time-series-chart/state';
 import { hpTimeSeriesChartReducer } from '../../hp-time-series-chart/reducers';
 import { GenerateRandomSeriesDataAction } from './actions';
-import { ReceivedCsvChunkAction, FinishedProcessingCsvAction, StartedProcessingCsvAction } from '../../hp-time-series-chart/csv-loading/actions';
 import { SetDataAction } from '../../hp-time-series-chart/actions';
 import { IExternalSourceTimeSeries } from '../../hp-time-series-chart/state/time-series';
 import { hpTimeSeriesChartReducerAuxFunctions } from '../../hp-time-series-chart/reducers-aux';
 import { EnumTimeSeriesType } from '../../hp-time-series-chart/state/enums';
 import { GENERATE_RANDOM_SERIES } from './action-types';
-import { csvLoadingAuxiliary } from '../../hp-time-series-chart/csv-loading/auxiliary';
-import { EnumRawCsvFormat } from '../../hp-time-series-chart/csv-loading/calculations';
 import { IUnixTimePoint } from '../../index';
 import { IChartsState } from './state';
 
@@ -20,6 +16,7 @@ const state = {
   rainfallChartState: hpTimeSeriesChartReducerAuxFunctions.buildInitialState(),
   waterflowChartState: hpTimeSeriesChartReducerAuxFunctions.buildInitialState(),
   voltageChartState: hpTimeSeriesChartReducerAuxFunctions.buildInitialState(),
+  anomaliesChartState: hpTimeSeriesChartReducerAuxFunctions.buildInitialState(),
 }
 
 const initialState: IChartsState = {
@@ -78,10 +75,13 @@ const rainfallSeries = (dateFrom: Date, dateTo: Date): IUnixTimePoint[] => {
   return result;
 };
 
+const anomaliesSeries = (series: IUnixTimePoint[], threshold: number): IUnixTimePoint[] =>
+  _.map(series, el => ({ unix: el.unix, value: el.value > threshold ? 1 : 0 }));
 
 export const doItYourselfContainerReducer = (state: IChartsState = initialState, action: DoItYourselfContainerReducerActionTypes): IChartsState => {
   switch (action.type) {
     case GENERATE_RANDOM_SERIES:
+      const rainfall = rainfallSeries(action.dateFrom, action.dateTo);
       const chartStates = {
         voltageChartState: hpTimeSeriesChartReducer(state.voltageChartState, new SetDataAction([
           <IExternalSourceTimeSeries> {
@@ -95,16 +95,23 @@ export const doItYourselfContainerReducer = (state: IChartsState = initialState,
           <IExternalSourceTimeSeries> {
             color: 'blue',
             name: 'Rainfall',
-            points: rainfallSeries(action.dateFrom, action.dateTo),
+            points: rainfall,
             type: EnumTimeSeriesType.Line
           }])),
         waterflowChartState: hpTimeSeriesChartReducer(state.waterflowChartState, new SetDataAction([
           <IExternalSourceTimeSeries> {
             color: 'navy',
-            name: 'Rainfall',
+            name: 'Water Flow',
             points: hpTimeSeriesChartReducerAuxFunctions.randomContinousUnixTimePoints(action.dateFrom, action.dateTo),
-            type: EnumTimeSeriesType.Line
+            type: EnumTimeSeriesType.Bars
           }])),
+        anomaliesChartState: hpTimeSeriesChartReducer(state.anomaliesChartState, new SetDataAction([
+            <IExternalSourceTimeSeries> {
+              color: 'red',
+              name: 'Anomalies',
+              points: anomaliesSeries(rainfall, 4),
+              type: EnumTimeSeriesType.Bars
+            }])),
       } as IChartsState;
       const boundaryUnixFrom = _.min([chartStates.rainfallChartState.dateRangeUnixFrom,
                                       chartStates.voltageChartState.dateRangeUnixFrom,
@@ -116,6 +123,7 @@ export const doItYourselfContainerReducer = (state: IChartsState = initialState,
         voltageChartState: { ...chartStates.voltageChartState, windowUnixFrom: boundaryUnixFrom, windowUnixTo: boundaryUnixTo },
         rainfallChartState: { ...chartStates.rainfallChartState, windowUnixFrom: boundaryUnixFrom, windowUnixTo: boundaryUnixTo },
         waterflowChartState: { ...chartStates.waterflowChartState, windowUnixFrom: boundaryUnixFrom, windowUnixTo: boundaryUnixTo },
+        anomaliesChartState: { ...chartStates.anomaliesChartState,  windowUnixFrom: boundaryUnixFrom, windowUnixTo: boundaryUnixTo },
         dateRangeUnixFrom: boundaryUnixFrom,
         dateRangeUnixTo: boundaryUnixTo
       } as IChartsState;

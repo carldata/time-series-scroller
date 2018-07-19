@@ -1,7 +1,6 @@
-import * as dateFns from 'date-fns';
-import * as React from 'react';
+import React from 'react';
 import * as d3 from 'd3';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { Dots } from './components/dots';
 import { hpTimeSeriesChartCalculations } from './calculations';
 import { IUnixTimePoint } from './state/unix-time-point';
@@ -24,10 +23,23 @@ export interface IHpTimeSeriesChartBaseProps {
   scss: IHpTimeSeriesChartScss;
   interactions?: IInteractions;
   mode?: EnumHpTimeSeriesChartMode;
+  /**
+   * Optional parameter giving the ability to set custom D3 y-axis scale domain.
+   * The domain in this case is just a pair of numbers indicating 
+   * the maximum and minimum value.
+   * 
+   * If not set, the minimum/maximum value is the minimum/maximum float 
+   * number found in all the series.
+   */
+  scaleLinearDomain?: (yMin: number, yMax: number) => { yMin: number, yMax: number };
   refCallback?: (ref: any) => void;
 }
 
 export const HpTimeSeriesChartBase = (props: IHpTimeSeriesChartBaseProps) => {
+  const { yMin, yMax } = _.isFunction(props.scaleLinearDomain) ? 
+    (props.scaleLinearDomain(props.state.yMin, props.state.yMax)) :
+    { yMin: props.state.yMin, yMax: props.state.yMax };
+
   const getStyle = ():React.CSSProperties => {
     if (_.isUndefined(props.mode))
       return { };
@@ -59,12 +71,11 @@ export const HpTimeSeriesChartBase = (props: IHpTimeSeriesChartBaseProps) => {
       .domain([props.state.windowUnixFrom, props.state.windowUnixTo])
       .range([props.scss.paddingLeftPx, props.scss.widthPx - props.scss.paddingRightPx]);
 
-  const getYScale = () => {
-    return d3.scaleLinear()
-      .domain([props.state.yMin, props.state.yMax])
+  const getYScale = () =>
+    d3.scaleLinear()
+      .domain([yMin, yMax])
       .range([props.scss.heightPx - props.scss.paddingTopPx - props.scss.paddingBottomPx, 
         props.scss.paddingTopPx]);
-  };
 
   let xScale = getXScale();
   let yScale = getYScale();
@@ -87,8 +98,10 @@ export const HpTimeSeriesChartBase = (props: IHpTimeSeriesChartBaseProps) => {
       width={props.scss.widthPx} 
       height={props.scss.heightPx}>
       <TimeSeries 
-        xScale={xScale} 
+        xScale={xScale}
         yScale={yScale}
+        yMin={yMin}
+        yMax={yMax}
         chartTimeSeries={hpTimeSeriesChartCalculations.convertToOnScreenTimeSeries(props.state.series,
                                                                                    props.state.windowUnixFrom,
                                                                                    props.state.windowUnixTo,

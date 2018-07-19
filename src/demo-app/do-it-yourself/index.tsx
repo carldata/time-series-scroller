@@ -128,6 +128,11 @@ class DoItYourselfDemoComponent extends React.Component<IDoItYourselfDemoCompone
                         windowUnixFrom: windowUnixFrom,
                         windowUnixTo: windowUnixTo,
                       },
+                      anomaliesChartState: {
+                        ...this.state.chartsState.anomaliesChartState,
+                        windowUnixFrom: windowUnixFrom,
+                        windowUnixTo: windowUnixTo,
+                      },
                       waterflowChartState: { 
                         ...this.state.chartsState.waterflowChartState,
                         windowUnixFrom: windowUnixFrom,
@@ -148,19 +153,35 @@ class DoItYourselfDemoComponent extends React.Component<IDoItYourselfDemoCompone
           <div className="row">
             <div className="col-md-12">
               <em>Rainfall</em><br />
-              <HpTimeSeriesChart scss={scss.timeSeries} state={this.state.chartsState.rainfallChartState} fitToParent={{ toWidth: true, offsetWidth: 35 }} />
+              <HpTimeSeriesChart scss={scss.timeSeries}
+                state={this.state.chartsState.rainfallChartState}
+                fitToParent={{ toWidth: true, offsetWidth: 35 }} />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-12">
+              <em>Anomalies</em><br />
+              <HpTimeSeriesChart
+                scss={scss.timeSeries}
+                state={this.state.chartsState.anomaliesChartState}
+                scaleLinearDomain={(yMin, yMax) => ({ yMin: 0, yMax: 25 })}
+                fitToParent={{ toWidth: true, offsetWidth: 35 }} />
             </div>
           </div>
           <div className="row">
             <div className="col-md-12">
               <em>Voltage</em><br />
-              <HpTimeSeriesChart scss={scss.timeSeries} state={this.state.chartsState.voltageChartState} fitToParent={{ toWidth: true, offsetWidth: 35 }} />
+              <HpTimeSeriesChart scss={scss.timeSeries}
+                state={this.state.chartsState.voltageChartState}
+                fitToParent={{ toWidth: true, offsetWidth: 35 }} />
             </div>
           </div>
           <div className="row">
             <div className="col-md-12">
               <em>Water flow</em><br />
-              <HpTimeSeriesChart scss={scss.timeSeries} state={this.state.chartsState.waterflowChartState} fitToParent={{ toWidth: true, offsetWidth: 35 }} />
+              <HpTimeSeriesChart scss={scss.timeSeries}
+                state={this.state.chartsState.waterflowChartState}
+                fitToParent={{ toWidth: true, offsetWidth: 35 }} />
             </div>
           </div>
           </BoostrapRowCard>
