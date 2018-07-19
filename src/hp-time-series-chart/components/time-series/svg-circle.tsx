@@ -1,6 +1,4 @@
-import * as React from "react";
-import { IOnScreenTimeSeries } from "../../state/time-series";
-import { ITimeSeriesBucket } from "../../calculations/interfaces";
+import React from "react";
 import { ITimeSeriesRendererContext } from ".";
 
 export interface ISvgCircleProps {
@@ -9,12 +7,9 @@ export interface ISvgCircleProps {
   y: number;
 } 
 
-export class SvgCircle extends React.Component<ISvgCircleProps> {
-  render() {
-    return <circle
-      cx={this.props.ctx.xScale(this.props.date)} 
-      cy={this.props.ctx.yScale(this.props.y)} 
-      fill={this.props.ctx.ts.color} 
-      r={2} />
-  }
-}
+export const SvgCircle = (props: ISvgCircleProps) =>
+  <circle
+    cx={props.ctx.xScale(props.date)} 
+    cy={props.ctx.yScale(props.y)} 
+    fill={props.ctx.ts.color} 
+    r={2} />;

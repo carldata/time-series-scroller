@@ -5,6 +5,7 @@ import { ITimeSeriesBucket } from '../../calculations/interfaces';
 import { EnumTimeSeriesType } from '../../state/enums';
 import { renderLineTimeSeries } from './line-time-series';
 import { renderDotTimeSeries, EnumDotRenderStrategy } from './dot-time-series';
+import { renderBarTimeSeries } from './bar-time-series';
 
 export interface ITimeSeriesProps {
   /**
@@ -16,21 +17,21 @@ export interface ITimeSeriesProps {
    */
   yScale: (value: number) => number;
   chartTimeSeries: IOnScreenTimeSeries[];
-}
-
-export interface ITimeSeriesState {
+  yMin: number;
+  yMax: number;
 }
 
 export interface ITimeSeriesRendererContext {
   ts: IOnScreenTimeSeries;
   xScale: (value: any) => any;
-  yScale: (value: number) => number
+  yScale: (value: number) => number;
+  yMin: number;
+  yMax: number;
 }
 
-export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesState> {
+export class TimeSeries extends React.Component<ITimeSeriesProps> {
   constructor(props) {
     super(props);
-    this.state = {}
   }
 
   renderSvgPrimitives() {
@@ -39,8 +40,10 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
       let ctx: ITimeSeriesRendererContext = {
         ts: ts,
         xScale: this.props.xScale,
-        yScale: this.props.yScale
-      }
+        yScale: this.props.yScale,
+        yMin: this.props.yMin,
+        yMax: this.props.yMax,
+      };
       switch (ts.type) {
         case EnumTimeSeriesType.Line:
           result.push(renderLineTimeSeries(ctx));
@@ -51,6 +54,9 @@ export class TimeSeries extends React.Component<ITimeSeriesProps, ITimeSeriesSta
         case EnumTimeSeriesType.DottedLine:
           result.push(renderLineTimeSeries(ctx));
           result.push(renderDotTimeSeries(ctx, EnumDotRenderStrategy.ShowDataSourceProximityFiltered));
+          break;
+        case EnumTimeSeriesType.Bars:
+          result.push(renderBarTimeSeries(ctx));
           break;
       }
     })
