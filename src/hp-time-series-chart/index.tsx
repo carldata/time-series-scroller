@@ -6,7 +6,7 @@ export { generateRandomData, setData, IGenerateRandomDataActionActionCreator, IS
 export { hpTimeSeriesChartAuxiliary } from './auxiliary';
 export { IHpTimeSeriesChartState } from './state';
 export { hpTimeSeriesChartReducerAuxFunctions } from './reducers-aux';
-export { IExternalSourceTimeSeries } from './state/time-series';
+export { IExternalSourceTimeSeries, IHpTimeSeriesChartTimeSeries } from './state/time-series';
 export { EnumTimeSeriesType } from './state/enums';
 export { HpTimeSeriesChart } from './main-component';
 export { EnumHpTimeSeriesChartMode, IHpTimeSeriesChartBaseProps as IHpTimeSeriesChartProps } from './base-component';
