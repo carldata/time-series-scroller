@@ -34,6 +34,7 @@ export {
   hpTimeSeriesChartReducer,
   hpTimeSeriesChartReducerAuxFunctions,
   IExternalSourceTimeSeries,
+  IHpTimeSeriesChartTimeSeries,
   IGenerateRandomDataActionActionCreator,
   IHpTimeSeriesChartProps,
   IHpTimeSeriesChartState,

@@ -5,6 +5,7 @@ import { IHpTimeSeriesChartState } from '../state';
 import { IChartTimeSeriesBuckets, ITimeSeriesBucket } from './interfaces';
 import { unixIndexMapCalculations } from './unix-index-map';
 import { IHpTimeSeriesChartTimeSeries, IOnScreenTimeSeries } from '../state/time-series';
+import { TimeSeries } from '../components/time-series';
 
 enum EnumBrowseDirection {
   Backward,
@@ -100,7 +101,43 @@ const convertToOnScreenTimeSeries = (series: IHpTimeSeriesChartTimeSeries[],
 }
 
 
+/**
+ * Finds yMin, yMax based on windowUnixFrom, windowUnixTo of state: IHpTimeSeriesChartState
+ * Might be useful for dynamic scaling of Y-axis based on the scroller date range
+ */
+const findMinMaxValuesBasedOnWindow = (state: IHpTimeSeriesChartState): { yMin: number, yMax: number } => {
+  if ((state.dateRangeUnixFrom === state.windowUnixFrom) &&
+      (state.dateRangeUnixTo === state.windowUnixTo)) {
+    return {
+      yMin: state.yMin,
+      yMax: state.yMax,
+    };
+  }
+  const pointsFiltered = (points: IUnixTimePoint[]): IUnixTimePoint[] =>
+    _.filter(points, (p) => _.inRange(p.unix, state.windowUnixFrom, state.windowUnixTo));
+
+  return {
+    yMin: _.min(_.map(state.series, (x) => _.min(_.map(pointsFiltered(x.points), (y) => y.value)))),
+    yMax: _.max(_.map(state.series, (x) => _.max(_.map(pointsFiltered(x.points), (y) => y.value)))),
+  };
+};
+
+/**
+ * Creates Map<number, number> out of time series provided, holding (point) unix (*) as the key and (point) value as the value.
+ *  
+ * (*) number of milliseconds since January 1, 1970, 00:00:00 UTC, with leap seconds ignored) 
+ * see also https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+ * @param timeSeries 
+ */
+const mapifyTimeSeries = (timeSeries: TimeSeries): Map<number, number> => 
+  _.reduce(timeSeries, (map, el) => {
+    map.set(el.unix, el.value);
+    return map;
+  }, new Map<number, number>())
+
 export const hpTimeSeriesChartCalculations = {
   getTimeSeriesBuckets,
   convertToOnScreenTimeSeries,
+  findMinMaxValuesBasedOnWindow,
+  mapifyTimeSeries,
 }
